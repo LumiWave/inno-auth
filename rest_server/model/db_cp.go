@@ -46,7 +46,7 @@ func (o *DB) SelectGetCpInfoByIdx(idx int64) (*context.CpInfo, error) {
 	return cp, err
 }
 
-func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.CpInfo, error) {
+func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.ResponseCpInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", cpName)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -56,10 +56,10 @@ func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.CpInfo, error) {
 	}
 	defer rows.Close()
 
-	cp := new(context.CpInfo)
-
+	cp := new(context.ResponseCpInfo)
+	var create_dt int64
 	for rows.Next() {
-		if err := rows.Scan(&cp.Idx, &cp.CpName, &cp.CreateDt); err != nil {
+		if err := rows.Scan(&cp.Idx, &cp.CpName, &create_dt); err != nil {
 			log.Error(err)
 			return nil, err
 		}

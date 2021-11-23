@@ -59,11 +59,11 @@ func GetCPExists(c echo.Context, cpInfo *context.CpInfo) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if value, err := model.GetDB().SelectGetCpInfoByCpName(cpInfo.CpName); err != nil {
+	if respCpInfo, err := model.GetDB().SelectGetCpInfoByCpName(cpInfo.CpName); err != nil {
 		resp.SetReturn(resultcode.Result_DBError)
 	} else {
-		if len(value.CpName) != 0 {
-			resp.Value = value
+		if len(respCpInfo.CpName) != 0 {
+			resp.Value = respCpInfo
 		} else {
 			resp.SetReturn(resultcode.Result_Auth_NotFoundCpName)
 		}

@@ -12,8 +12,17 @@ type CpInfo struct {
 	CreateDt int64 `json:"create_dt"`
 }
 
+type ResponseCpInfo struct {
+	Idx    int64  `json:"idx"`
+	CpName string `json:"cp_name"`
+}
+
 func NewCpInfo() *CpInfo {
 	return new(CpInfo)
+}
+
+func NewRespCpInfo() *ResponseCpInfo {
+	return new(ResponseCpInfo)
 }
 
 func (o *CpInfo) CheckValidate() *base.BaseResponse {
