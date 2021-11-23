@@ -63,3 +63,19 @@ func DelAppUnRegister(c echo.Context, appInfo *context.AppInfo) error {
 	}
 	return c.JSON(http.StatusOK, resp)
 }
+
+func GetAppExists(c echo.Context, appInfo *context.AppInfo) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	if value, err := model.GetDB().SelectGetAppInfoByAppName(appInfo.AppName); err != nil {
+		resp.SetReturn(resultcode.Result_DBError)
+	} else {
+		if len(value.AppName) != 0 {
+			resp.Value = value
+		} else {
+			resp.SetReturn(resultcode.Result_Auth_NotFoundAppName)
+		}
+	}
+	return c.JSON(http.StatusOK, resp)
+}
