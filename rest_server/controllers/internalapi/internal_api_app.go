@@ -11,7 +11,6 @@ import (
 // App 신규 추가
 func (o *InternalAPI) PostAppRegister(c echo.Context) error {
 	appInfo := context.NewAppInfo()
-
 	if err := c.Bind(appInfo); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
@@ -19,4 +18,14 @@ func (o *InternalAPI) PostAppRegister(c echo.Context) error {
 	context.MakeDt(&appInfo.CreateDt)
 
 	return commonapi.PostAppRegister(c, appInfo)
+}
+
+// App 삭제
+func (o *InternalAPI) DelAppUnRegister(c echo.Context) error {
+	appInfo := context.NewAppInfo()
+	if err := c.Bind(appInfo); err != nil {
+		log.Error(err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+	return commonapi.DelAppUnRegister(c, appInfo)
 }

@@ -8,20 +8,12 @@ import (
 	"github.com/labstack/echo"
 )
 
-func ParseCPInfo(c echo.Context) (*context.CpInfo, error) {
+// CP사 신규 가입
+func (o *InternalAPI) PostCPRegister(c echo.Context) error {
 	cpInfo := context.NewCpInfo()
 	if err := c.Bind(cpInfo); err != nil {
 		log.Error(err)
-		return cpInfo, base.BaseJSONInternalServerError(c, err)
-	}
-	return cpInfo, nil
-}
-
-// CP사 신규 가입
-func (o *InternalAPI) PostCPRegister(c echo.Context) error {
-	cpInfo, err := ParseCPInfo(c)
-	if err != nil {
-		return err
+		return base.BaseJSONInternalServerError(c, err)
 	}
 	context.MakeDt(&cpInfo.CreateDt)
 
@@ -30,9 +22,10 @@ func (o *InternalAPI) PostCPRegister(c echo.Context) error {
 
 // CP사 탈퇴
 func (o *InternalAPI) DelCPUnRegister(c echo.Context) error {
-	cpInfo, err := ParseCPInfo(c)
-	if err != nil {
-		return err
+	cpInfo := context.NewCpInfo()
+	if err := c.Bind(cpInfo); err != nil {
+		log.Error(err)
+		return base.BaseJSONInternalServerError(c, err)
 	}
 	return commonapi.DelCPUnRegister(c, cpInfo)
 }
