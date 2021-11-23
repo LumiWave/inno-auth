@@ -15,7 +15,7 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-#
+# Files to exclude
 bin/
 etc/onbuffcerti.crt
 etc/onbuffcerti.key
