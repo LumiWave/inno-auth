@@ -10,12 +10,12 @@ import (
 
 // 회원 로그인
 func (o *ExternalAPI) PostMemberLogin(c echo.Context) error {
-	params := context.NewMemberInfo()
+	memberInfo := context.NewMemberInfo()
 
-	if err := c.Bind(params); err != nil {
+	if err := c.Bind(memberInfo); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostMemberLogin(c, params)
+	return commonapi.PostMemberLogin(c, memberInfo)
 }

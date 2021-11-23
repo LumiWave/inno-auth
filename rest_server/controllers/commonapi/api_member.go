@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostMemberLogin(c echo.Context, params *context.MemberInfo) error {
+func PostMemberLogin(c echo.Context, memberInfo *context.MemberInfo) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 

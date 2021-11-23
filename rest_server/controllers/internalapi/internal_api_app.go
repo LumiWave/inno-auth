@@ -10,13 +10,13 @@ import (
 
 // App 신규 추가
 func (o *InternalAPI) PostAppRegister(c echo.Context) error {
-	params := context.NewAppInfo()
+	appInfo := context.NewAppInfo()
 
-	if err := c.Bind(params); err != nil {
+	if err := c.Bind(appInfo); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
-	context.MakeDt(&params.CreateDt)
+	context.MakeDt(&appInfo.CreateDt)
 
-	return commonapi.PostAppRegister(c, params)
+	return commonapi.PostAppRegister(c, appInfo)
 }
