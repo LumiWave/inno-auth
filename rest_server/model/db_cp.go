@@ -1,7 +1,6 @@
 package model
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
@@ -26,7 +25,10 @@ func (o *DB) InsertCP(cpInfo *context.CpInfo) error {
 	return nil
 }
 
-func ParseCP(rows *sql.Rows, err error) (*context.CpInfo, error) {
+func (o *DB) SelectGetCpInfoByIdx(idx int64) (*context.CpInfo, error) {
+	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE idx=%v", idx)
+	rows, err := o.Mssql.Query(sqlQuery)
+
 	if err != nil {
 		log.Error(err)
 		return nil, err
@@ -44,16 +46,26 @@ func ParseCP(rows *sql.Rows, err error) (*context.CpInfo, error) {
 	return cp, err
 }
 
-func (o *DB) SelectGetCpInfoByIdx(idx int64) (*context.CpInfo, error) {
-	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE idx=%v", idx)
-	rows, err := o.Mssql.Query(sqlQuery)
-	return ParseCP(rows, err)
-}
-
 func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.CpInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", cpName)
 	rows, err := o.Mssql.Query(sqlQuery)
-	return ParseCP(rows, err)
+
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	cp := new(context.CpInfo)
+
+	for rows.Next() {
+		if err := rows.Scan(&cp.Idx, &cp.CpName, &cp.CreateDt); err != nil {
+			log.Error(err)
+			return nil, err
+		}
+	}
+
+	return cp, err
 }
 
 func (o *DB) DeleteCP(cpInfo *context.CpInfo) error {
