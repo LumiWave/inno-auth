@@ -46,3 +46,20 @@ func PostAppRegister(c echo.Context, appInfo *context.AppInfo) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+func DelAppUnRegister(c echo.Context, appInfo *context.AppInfo) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	// App 이름 빈문자열 체크
+	if err := appInfo.CheckValidate(); err != nil {
+		return c.JSON(http.StatusOK, err)
+	}
+
+	// 테이블 row 삭제
+	if err := model.GetDB().DeleteApp(appInfo); err != nil {
+		log.Error(err)
+		resp.SetReturn(resultcode.Result_DBError)
+	}
+	return c.JSON(http.StatusOK, resp)
+}

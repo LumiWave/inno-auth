@@ -44,3 +44,15 @@ func (o *DB) SelectApp(appInfo *context.AppInfo) (*context.AppInfo, error) {
 	}
 	return app, err
 }
+
+func (o *DB) DeleteApp(appInfo *context.AppInfo) error {
+	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_app WHERE app_name='%v'", appInfo.AppName)
+	rows, err := o.Mssql.Query(sqlQuery)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	defer rows.Close()
+
+	return nil
+}
