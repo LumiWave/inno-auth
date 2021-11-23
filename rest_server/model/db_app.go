@@ -25,26 +25,6 @@ func (o *DB) InsertApp(appInfo *context.AppInfo) error {
 	return nil
 }
 
-func (o *DB) SelectApp(appInfo *context.AppInfo) (*context.AppInfo, error) {
-	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE app_name='%v'", appInfo.AppName)
-	rows, err := o.Mssql.Query(sqlQuery)
-	if err != nil {
-		log.Error(err)
-		return nil, err
-	}
-	defer rows.Close()
-
-	app := new(context.AppInfo)
-
-	for rows.Next() {
-		if err := rows.Scan(&app.Idx, &app.AppName, &app.CpIdx, &app.Account.LoginId, &app.Account.LoginPwd, &app.CreateDt); err != nil {
-			log.Error(err)
-			return nil, err
-		}
-	}
-	return app, err
-}
-
 func (o *DB) DeleteApp(appInfo *context.AppInfo) error {
 	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_app WHERE app_name='%v'", appInfo.AppName)
 	rows, err := o.Mssql.Query(sqlQuery)
@@ -57,7 +37,7 @@ func (o *DB) DeleteApp(appInfo *context.AppInfo) error {
 	return nil
 }
 
-func (o *DB) SelectGetAppInfoByAppName(appName string) (*context.AppInfo, error) {
+func (o *DB) SelectGetAppInfoByAppName(appName string) (*context.ResponseAppInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE app_name='%v'", appName)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -67,10 +47,11 @@ func (o *DB) SelectGetAppInfoByAppName(appName string) (*context.AppInfo, error)
 	}
 	defer rows.Close()
 
-	app := new(context.AppInfo)
+	app := new(context.ResponseAppInfo)
 
+	var loginId, loginPwd, createDt string
 	for rows.Next() {
-		if err := rows.Scan(&app.Idx, &app.AppName, &app.CpIdx, &app.Account.LoginId, &app.Account.LoginPwd, &app.CreateDt); err != nil {
+		if err := rows.Scan(&app.Idx, &app.AppName, &app.CpIdx, &loginId, &loginPwd, &createDt); err != nil {
 			log.Error(err)
 			return nil, err
 		}

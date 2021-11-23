@@ -14,8 +14,18 @@ type AppInfo struct {
 	CreateDt int64 `json:"create_dt"`
 }
 
+type ResponseAppInfo struct {
+	Idx     int64  `json:"idx"`
+	CpIdx   int64  `json:"cp_idx"`
+	AppName string `json:"app_name"`
+}
+
 func NewAppInfo() *AppInfo {
 	return new(AppInfo)
+}
+
+func NewRespAppInfo() *ResponseAppInfo {
+	return new(ResponseAppInfo)
 }
 
 func (o *AppInfo) CheckValidate() *base.BaseResponse {

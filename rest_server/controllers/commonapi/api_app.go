@@ -21,8 +21,8 @@ func PostAppRegister(c echo.Context, appInfo *context.AppInfo) error {
 	}
 
 	// App 이름 중복 체크
-	if value, err := model.GetDB().SelectApp(appInfo); err == nil {
-		if len(value.AppName) > 0 {
+	if respAppInfo, err := model.GetDB().SelectGetAppInfoByAppName(appInfo.AppName); err == nil {
+		if len(respAppInfo.AppName) > 0 {
 			log.Error("PostAppRegister exists app_name=", appInfo.AppName, " errorCode:", resultcode.Result_Auth_ExistsAppName)
 			resp.SetReturn(resultcode.Result_Auth_ExistsAppName)
 			return c.JSON(http.StatusOK, resp)
