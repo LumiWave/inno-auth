@@ -18,6 +18,7 @@ const (
 	Result_Auth_NotFoundAppName = 21003
 
 	Result_Auth_EmptyMemberSocialInfo  = 22001
+	Result_Auth_ExistsMemberSocialInfo = 22002
 )
 
 var ResultCodeText = map[int]string{
@@ -37,5 +38,6 @@ var ResultCodeText = map[int]string{
 	Result_Auth_ExistsAppName:   "Exists App Name",
 	Result_Auth_NotFoundAppName: "Not Found App Name",
 
-	Result_Auth_EmptyMemberSocialInfo: "Empty Member Social Info",
+	Result_Auth_EmptyMemberSocialInfo:  "Empty Member Social Info",
+	Result_Auth_ExistsMemberSocialInfo: "Exists Member Social Info",
 }
