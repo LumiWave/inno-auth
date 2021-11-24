@@ -21,7 +21,7 @@ func NewMemberInfo() *MemberInfo {
 }
 
 func (o *MemberInfo) CheckValidate() *base.BaseResponse {
-	if len(o.SocialUID) == 0 || len(o.SocialName) == 0 {
+	if len(o.Social.SocialUID) == 0 {
 		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyMemberSocialInfo)
 	}
 	return nil
