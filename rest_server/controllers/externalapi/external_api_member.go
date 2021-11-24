@@ -19,3 +19,15 @@ func (o *ExternalAPI) PostMemberLogin(c echo.Context) error {
 
 	return commonapi.PostMemberLogin(c, memberInfo)
 }
+
+// App 존재 여부 확인
+func (o *ExternalAPI) GetMemberExists(c echo.Context) error {
+	memberInfo := context.NewMemberInfo()
+
+	if err := c.Bind(memberInfo); err != nil {
+		log.Error(err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+
+	return commonapi.GetMemberExists(c, memberInfo)
+}

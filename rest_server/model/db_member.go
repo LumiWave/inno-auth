@@ -25,7 +25,7 @@ func (o *DB) InsertMember(memberInfo *context.MemberInfo) error {
 	return nil
 }
 
-func (o *DB) SelectGetMemberInfoByASocialUID(SocialUID string) (*context.MemberInfo, error) {
+func (o *DB) SelectGetMemberInfoByASocialUID(SocialUID string) (*context.ResponseMemberInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_member WHERE social_uid='%v'", SocialUID)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -35,10 +35,12 @@ func (o *DB) SelectGetMemberInfoByASocialUID(SocialUID string) (*context.MemberI
 	}
 	defer rows.Close()
 
-	member := new(context.MemberInfo)
+	member := new(context.ResponseMemberInfo)
+
+	var idx, createDt int64
 
 	for rows.Next() {
-		if err := rows.Scan(&member.Idx, &member.MemberID, &member.AppIdx, &member.Social.SocialUID, &member.Social.SocialID, &member.CreateDt); err != nil {
+		if err := rows.Scan(&idx, &member.MemberID, &member.AppIdx, &member.Social.SocialUID, &member.Social.SocialID, &createDt); err != nil {
 			log.Error(err)
 			return nil, err
 		}

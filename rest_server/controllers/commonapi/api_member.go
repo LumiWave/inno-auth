@@ -38,6 +38,22 @@ func PostMemberRegister(c echo.Context, memberInfo *context.MemberInfo) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
+func GetMemberExists(c echo.Context, memberInfo *context.MemberInfo) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	if value, err := model.GetDB().SelectGetMemberInfoByASocialUID(memberInfo.Social.SocialUID); err != nil {
+		resp.SetReturn(resultcode.Result_DBError)
+	} else {
+		if len(value.Social.SocialUID) != 0 {
+			resp.Value = value
+		} else {
+			resp.SetReturn(resultcode.Result_Auth_EmptyMemberSocialInfo)
+		}
+	}
+	return c.JSON(http.StatusOK, resp)
+}
+
 func PostMemberLogin(c echo.Context, memberInfo *context.MemberInfo) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
