@@ -15,9 +15,9 @@ type MemberInfo struct {
 }
 
 type ResponseMemberInfo struct {
-	Idx      int64  `json:"idx" query:"idx"`
-	MemberID string `json:"member_id"`
-	AppIdx   int64  `json:"app_idx"`
+	MemberID string     `json:"member_id"`
+	AppIdx   int64      `json:"app_idx"`
+	Social   SocialInfo `json:"social_info" validate:"required"`
 }
 
 func NewMemberInfo() *MemberInfo {
