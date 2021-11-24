@@ -14,6 +14,10 @@ type MemberInfo struct {
 	CreateDt int64 `json:"create_dt"`
 }
 
+type ResponseMemberInfo struct {
+	Idx      int64  `json:"idx" query:"idx"`
+	MemberID string `json:"member_id"`
+	AppIdx   int64  `json:"app_idx"`
 }
 
 func NewMemberInfo() *MemberInfo {
