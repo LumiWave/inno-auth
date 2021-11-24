@@ -6,13 +6,14 @@ import (
 )
 
 type MemberInfo struct {
-	Idx        int64  `json:"idx" query:"idx"`
-	MemberID   string `json:"member_id"`
-	AppIdx     int64  `json:"app_idx"`
-	SocialUID  string `json:"social_uid" validate:"required"`
-	SocialName string `json:"social_name" validate:"required"`
-	Token      TokenInfo
-	CreateDt   int64 `json:"create_dt"`
+	Idx      int64      `json:"idx" query:"idx"`
+	MemberID string     `json:"member_id"`
+	AppIdx   int64      `json:"app_idx" validate:"required"`
+	Social   SocialInfo `json:"social_info" validate:"required"`
+	Token    TokenInfo
+	CreateDt int64 `json:"create_dt"`
+}
+
 }
 
 func NewMemberInfo() *MemberInfo {
