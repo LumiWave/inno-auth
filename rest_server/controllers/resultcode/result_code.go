@@ -13,11 +13,11 @@ const (
 	Result_Auth_NotFoundCpName = 20003
 	Result_Auth_NotFoundCpIdx  = 20004
 
-	Result_Auth_EmptyAppName    = 30001
-	Result_Auth_ExistsAppName   = 30002
-	Result_Auth_NotFoundAppName = 30003
+	Result_Auth_EmptyAppName    = 21001
+	Result_Auth_ExistsAppName   = 21002
+	Result_Auth_NotFoundAppName = 21003
 
-	Result_Auth_EmptyMemberSocialInfo = 40001
+	Result_Auth_EmptyMemberSocialInfo  = 22001
 )
 
 var ResultCodeText = map[int]string{
