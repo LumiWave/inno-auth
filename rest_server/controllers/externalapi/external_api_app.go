@@ -20,6 +20,11 @@ func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
 	return commonapi.PostAppLogin(c, appInfo)
 }
 
+// App 로그아웃
+func (o *ExternalAPI) DelAppLogout(c echo.Context) error {
+	return commonapi.DelAppLogout(c)
+}
+
 // App 존재 여부 확인
 func (o *ExternalAPI) GetAppExists(c echo.Context) error {
 	appInfo := context.NewAppInfo()

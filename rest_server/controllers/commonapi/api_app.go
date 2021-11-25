@@ -101,3 +101,13 @@ func PostAppLogin(c echo.Context, reqAppInfo *context.RequestAppLoginInfo) error
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+func DelAppLogout(c echo.Context) error {
+	ctx := base.GetContext(c).(*context.InnoAuthContext)
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	auth.GetIAuth().DeleteJwtInfo(ctx.Uuid)
+
+	return c.JSON(http.StatusOK, resp)
+}
