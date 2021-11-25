@@ -19,6 +19,8 @@ const (
 
 	Result_Auth_EmptyMemberSocialInfo  = 22001
 	Result_Auth_ExistsMemberSocialInfo = 22002
+
+	Result_Auth_MakeTokenError = 23001
 )
 
 var ResultCodeText = map[int]string{
@@ -40,4 +42,6 @@ var ResultCodeText = map[int]string{
 
 	Result_Auth_EmptyMemberSocialInfo:  "Empty Member Social Info",
 	Result_Auth_ExistsMemberSocialInfo: "Exists Member Social Info",
+
+	Result_Auth_MakeTokenError: "Make Token Error.",
 }

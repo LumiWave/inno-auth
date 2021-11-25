@@ -5,6 +5,7 @@ import (
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -77,5 +78,26 @@ func GetAppExists(c echo.Context, appInfo *context.AppInfo) error {
 			resp.SetReturn(resultcode.Result_Auth_NotFoundAppName)
 		}
 	}
+	return c.JSON(http.StatusOK, resp)
+}
+
+func PostAppLogin(c echo.Context, reqAppInfo *context.RequestAppLoginInfo) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	// 1. 가입 정보 확인
+
+	// 2. redis duplicate check
+	// redis에 기존 정보가 있다면 기존에 발급된 토큰으로 응답한다.
+	appInfo := new(context.AppInfo)
+	appInfo.Account = reqAppInfo.Account
+
+	// 3. create Auth Token
+	if jwtInfoValue, err := auth.GetIAuth().MakeToken(appInfo); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+	} else {
+		resp.Value = jwtInfoValue
+	}
+
 	return c.JSON(http.StatusOK, resp)
 }

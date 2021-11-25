@@ -64,6 +64,5 @@ func PostMemberLogin(c echo.Context, memberInfo *context.MemberInfo) error {
 	// redis에 기존 정보가 있다면 기존에 발급된 토큰으로 응답한다.
 
 	// 3. create Auth Token
-
 	return c.JSON(http.StatusOK, resp)
 }

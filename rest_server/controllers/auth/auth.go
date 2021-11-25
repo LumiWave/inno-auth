@@ -64,6 +64,7 @@ func (o *IAuth) MakeToken(appInfo *context.AppInfo) (*context.JwtInfo, error) {
 
 	//redis save
 	jwtInfo.RefreshToken = refreshToken
+	appInfo.Token = *jwtInfo
 	if err := o.SetJwtInfo(jwtInfo, appInfo); err != nil {
 		return nil, err
 	}

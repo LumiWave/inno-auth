@@ -8,6 +8,18 @@ import (
 	"github.com/labstack/echo"
 )
 
+// App 로그인
+func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
+	appInfo := context.NewRequestAppLoginInfo()
+
+	if err := c.Bind(appInfo); err != nil {
+		log.Error(err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+
+	return commonapi.PostAppLogin(c, appInfo)
+}
+
 // App 존재 여부 확인
 func (o *ExternalAPI) GetAppExists(c echo.Context) error {
 	appInfo := context.NewAppInfo()
