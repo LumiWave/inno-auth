@@ -37,7 +37,7 @@ func (o *IAuth) MakeToken(appInfo *context.AppInfo) (*context.JwtInfo, error) {
 		RtExpireDt: time.Now().Add(time.Minute * time.Duration(o.conf.TokenExpiryPeriod)).Unix(),
 	}
 
-	//create accesst token
+	//create access token
 	atClaims := jwt.MapClaims{}
 	atClaims["access_uuid"] = jwtInfo.AccessUuid
 	atClaims["idx"] = appInfo.Idx
