@@ -10,7 +10,7 @@ type MemberInfo struct {
 	MemberID string     `json:"member_id"`
 	AppIdx   int64      `json:"app_idx" validate:"required"`
 	Social   SocialInfo `json:"social_info" validate:"required"`
-	Token    TokenInfo
+	Token    JwtInfo
 	CreateDt int64 `json:"create_dt"`
 }
 

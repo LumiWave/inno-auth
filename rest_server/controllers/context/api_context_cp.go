@@ -8,7 +8,7 @@ import (
 type CpInfo struct {
 	Idx      int64  `json:"idx" query:"idx"`
 	CpName   string `json:"cp_name" query:"cp_name" validate:"required"`
-	Token    TokenInfo
+	Token    JwtInfo
 	CreateDt int64 `json:"create_dt"`
 }
 

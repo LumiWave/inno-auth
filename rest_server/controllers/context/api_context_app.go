@@ -10,7 +10,7 @@ type AppInfo struct {
 	AppName  string      `json:"app_name" query:"app_name" validate:"required"`
 	CpIdx    int64       `json:"cp_idx" query:"cp_idx" validate:"required"`
 	Account  AccountInfo `json:"account_info" query:"app_name" validate:"required"`
-	Token    TokenInfo
+	Token    JwtInfo
 	CreateDt int64 `json:"create_dt"`
 }
 
