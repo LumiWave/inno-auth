@@ -37,6 +37,28 @@ func (o *DB) DeleteApp(appInfo *context.AppInfo) error {
 	return nil
 }
 
+func (o *DB) SelectGetExistsAppAccount(Account context.AccountInfo) (*context.ResponseAppInfo, error) {
+	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE login_id='%v' AND login_pwd='%v'", Account.LoginId, Account.LoginPwd)
+	rows, err := o.Mssql.Query(sqlQuery)
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	app := new(context.ResponseAppInfo)
+
+	var loginId, loginPwd, createDt string
+	for rows.Next() {
+		if err := rows.Scan(&app.Idx, &app.AppName, &app.CpIdx, &loginId, &loginPwd, &createDt); err != nil {
+			log.Error(err)
+			return nil, err
+		}
+	}
+
+	return app, err
+}
+
 func (o *DB) SelectGetAppInfoByAppName(appName string) (*context.ResponseAppInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE app_name='%v'", appName)
 	rows, err := o.Mssql.Query(sqlQuery)

@@ -10,14 +10,14 @@ import (
 
 // App 로그인
 func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
-	appInfo := context.NewRequestAppLoginInfo()
+	reqAppLoginInfo := context.NewRequestAppLoginInfo()
 
-	if err := c.Bind(appInfo); err != nil {
+	if err := c.Bind(reqAppLoginInfo); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostAppLogin(c, appInfo)
+	return commonapi.PostAppLogin(c, reqAppLoginInfo)
 }
 
 // App 로그아웃

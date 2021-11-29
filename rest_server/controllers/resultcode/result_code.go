@@ -13,9 +13,10 @@ const (
 	Result_Auth_NotFoundCpName = 20003
 	Result_Auth_NotFoundCpIdx  = 20004
 
-	Result_Auth_EmptyAppName    = 21001
-	Result_Auth_ExistsAppName   = 21002
-	Result_Auth_NotFoundAppName = 21003
+	Result_Auth_EmptyAppName       = 21001
+	Result_Auth_ExistsAppName      = 21002
+	Result_Auth_NotFoundAppName    = 21003
+	Result_Auth_NotMatchAppAccount = 21004
 
 	Result_Auth_EmptyMemberSocialInfo  = 22001
 	Result_Auth_ExistsMemberSocialInfo = 22002
@@ -36,9 +37,10 @@ var ResultCodeText = map[int]string{
 	Result_Auth_NotFoundCpName: "Not Found CP Name",
 	Result_Auth_NotFoundCpIdx:  "Not Found CP Idx",
 
-	Result_Auth_EmptyAppName:    "Empty App Name",
-	Result_Auth_ExistsAppName:   "Exists App Name",
-	Result_Auth_NotFoundAppName: "Not Found App Name",
+	Result_Auth_EmptyAppName:       "Empty App Name",
+	Result_Auth_ExistsAppName:      "Exists App Name",
+	Result_Auth_NotFoundAppName:    "Not Found App Name",
+	Result_Auth_NotMatchAppAccount: "Account information does not match.",
 
 	Result_Auth_EmptyMemberSocialInfo:  "Empty Member Social Info",
 	Result_Auth_ExistsMemberSocialInfo: "Exists Member Social Info",

@@ -81,18 +81,24 @@ func GetAppExists(c echo.Context, appInfo *context.AppInfo) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PostAppLogin(c echo.Context, reqAppInfo *context.RequestAppLoginInfo) error {
+func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// 1. 가입 정보 확인
-
-	// 2. redis duplicate check
-	// redis에 기존 정보가 있다면 기존에 발급된 토큰으로 응답한다.
 	appInfo := new(context.AppInfo)
-	appInfo.Account = reqAppInfo.Account
 
-	// 3. create Auth Token
+	// 1. 가입 정보 확인
+	if value, err := model.GetDB().SelectGetExistsAppAccount(reqAppLoginInfo.Account); err != nil {
+		resp.SetReturn(resultcode.Result_DBError)
+	} else {
+		if len(value.AppName) == 0 {
+			resp.SetReturn(resultcode.Result_Auth_NotMatchAppAccount)
+			return c.JSON(http.StatusOK, resp)
+		}
+		appInfo.Account = reqAppLoginInfo.Account
+	}
+
+	// 2. 토큰 생성
 	if jwtInfoValue, err := auth.GetIAuth().MakeToken(appInfo); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 	} else {
