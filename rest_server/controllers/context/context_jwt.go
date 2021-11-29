@@ -10,3 +10,7 @@ type JwtInfo struct {
 	AtExpireDt   int64  `json:"access_token_expire_dt"`
 	RtExpireDt   int64  `json:"refresh_token_expire_dt"`
 }
+
+type RenewTokenRequest struct {
+	RefreshToken string `json:"refresh_token" validate:"required"`
+}
