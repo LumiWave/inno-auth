@@ -33,8 +33,8 @@ func (o *IAuth) MakeToken(appInfo *context.AppInfo) (*context.JwtInfo, error) {
 		AccessUuid:  uuid.NewV4().String(),
 		RefreshUuid: uuid.NewV4().String(),
 
-		AtExpireDt: time.Now().Add(time.Minute * time.Duration(o.conf.TokenExpiryPeriod)).Unix(),
-		RtExpireDt: time.Now().Add(time.Minute * time.Duration(o.conf.TokenExpiryPeriod)).Unix(),
+		AtExpireDt: time.Now().Add(time.Minute * time.Duration(o.conf.AccessTokenExpiryPeriod)).Unix(),
+		RtExpireDt: time.Now().Add(time.Minute * time.Duration(o.conf.RefreshTokenExpiryPeriod)).Unix(),
 	}
 
 	//create access token

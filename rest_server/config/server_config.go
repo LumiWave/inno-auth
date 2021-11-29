@@ -15,12 +15,13 @@ type InnoAuthServer struct {
 }
 
 type ApiAuth struct {
-	AuthEnable        bool   `yaml:"auth_enable"`
-	AccessSecretKey   string `yaml:"access_secret_key"`
-	RefreshSecretKey  string `yaml:"refresh_secret_key"`
-	TokenExpiryPeriod int64  `yaml:"token_expiry_period"`
-	SignExpiryPeriod  int64  `yaml:"sign_expiry_period"`
-	AesKey            string `yaml:"aes_key"`
+	AuthEnable               bool   `yaml:"auth_enable"`
+	AccessSecretKey          string `yaml:"access_secret_key"`
+	RefreshSecretKey         string `yaml:"refresh_secret_key"`
+	AccessTokenExpiryPeriod  int64  `yaml:"access_token_expiry_period"`
+	RefreshTokenExpiryPeriod int64  `yaml:"refresh_token_expiry_period"`
+	SignExpiryPeriod         int64  `yaml:"sign_expiry_period"`
+	AesKey                   string `yaml:"aes_key"`
 }
 
 type ServerConfig struct {

@@ -16,13 +16,13 @@ func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, appInfo *context.AppInfo) er
 	conf := config.GetInstance()
 
 	cKey := makeCacheKeyByAuth(tokenInfo.AccessUuid)
-	err := o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.TokenExpiryPeriod*int64(time.Minute)))
+	err := o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.AccessTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
 
 	cKey = makeCacheKeyByAuth(tokenInfo.RefreshUuid)
-	err = o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.TokenExpiryPeriod*int64(time.Minute)))
+	err = o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.RefreshTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
