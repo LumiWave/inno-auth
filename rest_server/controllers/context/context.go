@@ -8,15 +8,15 @@ import (
 type LoginType int
 
 const (
-	Cp LoginType = iota
-	App
-	Member
+	CpLogin LoginType = iota
+	AppLogin
+	MemberLogin
 )
 
 var LoginTypeText = map[LoginType]string{
-	Cp:     "CP",
-	App:    "APP",
-	Member: "MEMBER",
+	CpLogin:     "CP",
+	AppLogin:    "APP",
+	MemberLogin: "MEMBER",
 }
 
 // InnoAuthServerContext API의 Request Context
