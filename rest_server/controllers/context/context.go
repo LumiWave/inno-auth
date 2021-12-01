@@ -5,11 +5,26 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/baseutil/datetime"
 )
 
+type LoginType int
+
+const (
+	Cp LoginType = iota
+	App
+	Member
+)
+
+var LoginTypeText = map[LoginType]string{
+	Cp:     "CP",
+	App:    "APP",
+	Member: "MEMBER",
+}
+
 // InnoAuthServerContext API의 Request Context
 type InnoAuthContext struct {
 	*base.BaseContext
-	appInfo *AppInfo
-	Uuid    string
+	appInfo   *AppInfo
+	loginType LoginType
+	Uuid      string
 }
 
 // NewInnoAuthServerContext 새로운 InnoAuthServer Context 생성
@@ -28,8 +43,9 @@ func NewInnoAuthServerContext(baseCtx *base.BaseContext) interface{} {
 func AppendRequestParameter() {
 }
 
-func (o *InnoAuthContext) SetAppInfo(appInfo *AppInfo, uuid string) {
+func (o *InnoAuthContext) SetAppInfo(appInfo *AppInfo, loginType LoginType, uuid string) {
 	o.appInfo = appInfo
+	o.loginType = loginType
 	o.Uuid = uuid
 }
 
