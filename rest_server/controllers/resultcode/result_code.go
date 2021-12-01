@@ -40,7 +40,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_EmptyAppName:       "Empty App Name",
 	Result_Auth_ExistsAppName:      "Exists App Name",
 	Result_Auth_NotFoundAppName:    "Not Found App Name",
-	Result_Auth_NotMatchAppAccount: "Account information does not match.",
+	Result_Auth_NotMatchAppAccount: "Account information does not match",
 
 	Result_Auth_EmptyMemberSocialInfo:  "Empty Member Social Info",
 	Result_Auth_ExistsMemberSocialInfo: "Exists Member Social Info",
