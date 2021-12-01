@@ -40,7 +40,8 @@ func (o *IAuth) MakeToken(appInfo *context.AppInfo) (*context.JwtInfo, error) {
 	//create access token
 	atClaims := jwt.MapClaims{}
 	atClaims["access_uuid"] = jwtInfo.AccessUuid
-	atClaims["idx"] = appInfo.Idx
+	atClaims["cp_idx"] = appInfo.CpIdx
+	atClaims["app_idx"] = appInfo.Idx
 	atClaims["exp"] = jwtInfo.AtExpireDt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -53,7 +54,8 @@ func (o *IAuth) MakeToken(appInfo *context.AppInfo) (*context.JwtInfo, error) {
 	//create refresh token
 	rtClaims := jwt.MapClaims{}
 	rtClaims["refresh_uuid"] = jwtInfo.RefreshUuid
-	rtClaims["idx"] = appInfo.Idx
+	rtClaims["cp_idx"] = appInfo.CpIdx
+	rtClaims["app_idx"] = appInfo.Idx
 	rtClaims["exp"] = jwtInfo.RtExpireDt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)

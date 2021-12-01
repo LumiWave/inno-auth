@@ -95,6 +95,8 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 			resp.SetReturn(resultcode.Result_Auth_NotMatchAppAccount)
 			return c.JSON(http.StatusOK, resp)
 		}
+		appInfo.CpIdx = value.CpIdx
+		appInfo.Idx = value.Idx
 		appInfo.Account = reqAppLoginInfo.Account
 	}
 
