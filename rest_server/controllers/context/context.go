@@ -8,7 +8,8 @@ import (
 type LoginType int
 
 const (
-	CpLogin LoginType = iota
+	NoneLogin LoginType = iota
+	CpLogin
 	AppLogin
 	MemberLogin
 )
