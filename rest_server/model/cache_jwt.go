@@ -9,19 +9,19 @@ import (
 )
 
 // 로그인 성공시 정보 추가
-func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, appInfo *context.AppInfo) error {
+func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType, appInfo *context.AppInfo) error {
 	if !o.Cache.Enable() {
 		log.Warnf("redis disable")
 	}
 	conf := config.GetInstance()
 
-	cKey := makeCacheKeyByAuth(tokenInfo.AccessUuid)
+	cKey := makeCacheKeyByAuth(loginType, tokenInfo.AccessUuid)
 	err := o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.AccessTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
 
-	cKey = makeCacheKeyByAuth(tokenInfo.RefreshUuid)
+	cKey = makeCacheKeyByAuth(loginType, tokenInfo.RefreshUuid)
 	err = o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.RefreshTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
@@ -30,19 +30,19 @@ func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, appInfo *context.AppInfo) er
 	return nil
 }
 
-func (o *DB) GetJwtInfo(uuid string) (*context.AppInfo, error) {
-	cKey := makeCacheKeyByAuth(uuid)
+func (o *DB) GetJwtInfo(loginType context.LoginType, uuid string) (*context.AppInfo, error) {
+	cKey := makeCacheKeyByAuth(loginType, uuid)
 	appInfo := new(context.AppInfo)
 	err := o.Cache.Get(cKey, appInfo)
 	return appInfo, err
 }
 
-func (o *DB) DeleteJwtInfo(uuid string) error {
-	cKey := makeCacheKeyByAuth(uuid)
+func (o *DB) DeleteJwtInfo(loginType context.LoginType, uuid string) error {
+	cKey := makeCacheKeyByAuth(loginType, uuid)
 	err := o.Cache.Del(cKey)
 	return err
 }
 
-func makeCacheKeyByAuth(id string) string {
-	return config.GetInstance().DBPrefix + ":INNO-AUTH-APP:" + id
+func makeCacheKeyByAuth(loginType context.LoginType, uuid string) string {
+	return config.GetInstance().DBPrefix + ":INNO-AUTH-" + context.LoginTypeText[loginType] + ":" + uuid
 }

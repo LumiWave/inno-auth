@@ -101,7 +101,7 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 	}
 
 	// 2. 토큰 생성
-	if jwtInfoValue, err := auth.GetIAuth().MakeToken(appInfo); err != nil {
+	if jwtInfoValue, err := auth.GetIAuth().MakeToken(context.LoginType(context.AppLogin), appInfo); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 	} else {
 		resp.Value = jwtInfoValue
@@ -115,7 +115,7 @@ func DelAppLogout(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	auth.GetIAuth().DeleteJwtInfo(ctx.Uuid)
+	auth.GetIAuth().DeleteJwtInfo(context.LoginType(context.AppLogin), ctx.Uuid)
 
 	return c.JSON(http.StatusOK, resp)
 }

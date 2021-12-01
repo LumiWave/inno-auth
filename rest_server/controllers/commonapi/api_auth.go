@@ -24,15 +24,15 @@ func PostTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenReque
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if appInfo, uuid, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
+	if appInfo, loginType, uuid, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
 	} else {
 		// Make Renew Token.
-		if jwtInfoValue, err := auth.GetIAuth().MakeToken(appInfo); err != nil {
+		if jwtInfoValue, err := auth.GetIAuth().MakeToken(loginType, appInfo); err != nil {
 			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 		} else {
 			// Delete the uuid in Redis.
-			auth.GetIAuth().DeleteJwtInfo(uuid)
+			auth.GetIAuth().DeleteJwtInfo(loginType, uuid)
 			resp.Value = jwtInfoValue
 		}
 	}
