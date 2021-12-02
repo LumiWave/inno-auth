@@ -115,7 +115,9 @@ func DelAppLogout(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	auth.GetIAuth().DeleteJwtInfo(context.LoginType(context.AppLogin), ctx.Uuid)
+	if err := auth.GetIAuth().DeleteJwtInfo(context.LoginType(context.AppLogin), ctx.Uuid); err != nil {
+		resp.SetReturn(resultcode.Result_DBError)
+	}
 
 	return c.JSON(http.StatusOK, resp)
 }
