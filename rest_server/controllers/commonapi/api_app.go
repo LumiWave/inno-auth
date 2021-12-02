@@ -87,22 +87,23 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 
 	appInfo := new(context.AppInfo)
 
-	// 1. 가입 정보 확인
-	if value, err := model.GetDB().SelectGetExistsAppAccount(reqAppLoginInfo.Account); err != nil {
-		resp.SetReturn(resultcode.Result_DBError)
-	} else {
-		if len(value.AppName) == 0 {
+	// 1. 인증 서버 접근
+	if appID, CompanyID, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Account); err != nil || returnValue != 1 {
+		if err != nil {
+			resp.SetReturn(resultcode.Result_DBError)
+		} else {
 			resp.SetReturn(resultcode.Result_Auth_NotMatchAppAccount)
-			return c.JSON(http.StatusOK, resp)
 		}
-		appInfo.CpIdx = value.CpIdx
-		appInfo.Idx = value.Idx
-		appInfo.Account = reqAppLoginInfo.Account
+		return c.JSON(http.StatusOK, resp)
+	} else {
+		appInfo.Idx = appID
+		appInfo.CpIdx = CompanyID
 	}
 
-	// 2. 토큰 생성
+	// 2. Access, Refresh 토큰 생성
 	if jwtInfoValue, err := auth.GetIAuth().MakeToken(context.LoginType(context.AppLogin), appInfo); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+		return c.JSON(http.StatusOK, resp)
 	} else {
 		resp.Value = jwtInfoValue
 	}
@@ -116,7 +117,7 @@ func DelAppLogout(c echo.Context) error {
 	resp.Success()
 
 	if err := auth.GetIAuth().DeleteJwtInfo(context.LoginType(context.AppLogin), ctx.Uuid); err != nil {
-		resp.SetReturn(resultcode.Result_DBError)
+		resp.SetReturn(resultcode.Result_RedisError)
 	}
 
 	return c.JSON(http.StatusOK, resp)
