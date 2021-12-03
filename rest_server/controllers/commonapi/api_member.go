@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostMemberRegister(c echo.Context, memberInfo *context.MemberInfo) error {
+func PostMemberRegister(c echo.Context, memberInfo *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
@@ -20,14 +20,14 @@ func PostMemberRegister(c echo.Context, memberInfo *context.MemberInfo) error {
 		return c.JSON(http.StatusOK, err)
 	}
 
-	// Member Social Info 중복 체크
-	if value, err := model.GetDB().SelectGetMemberInfoByASocialUID(memberInfo.Social.SocialUID); err == nil {
-		if len(value.Social.SocialUID) > 0 {
-			log.Error("PostMemberRegister exists social_uid", value.Social.SocialUID, " errorCode:", resultcode.Result_Auth_ExistsMemberSocialInfo)
-			resp.SetReturn(resultcode.Result_Auth_ExistsMemberSocialInfo)
-			return c.JSON(http.StatusOK, resp)
-		}
-	}
+	// // Member Social Info 중복 체크
+	// if value, err := model.GetDB().SelectGetMemberInfoByASocialUID(memberInfo.SocialID); err == nil {
+	// 	if len(value.SocialID) > 0 {
+	// 		log.Error("PostMemberRegister exists social_uid", value.Social.SocialUID, " errorCode:", resultcode.Result_Auth_ExistsMemberSocialInfo)
+	// 		resp.SetReturn(resultcode.Result_Auth_ExistsMemberSocialInfo)
+	// 		return c.JSON(http.StatusOK, resp)
+	// 	}
+	// }
 
 	// 테이블에 신규 row 생성
 	if err := model.GetDB().InsertMember(memberInfo); err != nil {
@@ -38,23 +38,23 @@ func PostMemberRegister(c echo.Context, memberInfo *context.MemberInfo) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func GetMemberExists(c echo.Context, memberInfo *context.MemberInfo) error {
+func GetMemberExists(c echo.Context, memberInfo *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if value, err := model.GetDB().SelectGetMemberInfoByASocialUID(memberInfo.Social.SocialUID); err != nil {
-		resp.SetReturn(resultcode.Result_DBError)
-	} else {
-		if len(value.Social.SocialUID) != 0 {
-			resp.Value = value
-		} else {
-			resp.SetReturn(resultcode.Result_Auth_EmptyMemberSocialInfo)
-		}
-	}
+	// if value, err := model.GetDB().SelectGetMemberInfoByASocialUID(memberInfo.SocialID); err != nil {
+	// 	resp.SetReturn(resultcode.Result_DBError)
+	// } else {
+	// 	if len(value.SocialID) != 0 {
+	// 		resp.Value = value
+	// 	} else {
+	// 		resp.SetReturn(resultcode.Result_Auth_EmptyMemberSocialInfo)
+	// 	}
+	// }
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PostMemberLogin(c echo.Context, memberInfo *context.MemberInfo) error {
+func PostMemberLogin(c echo.Context, memberInfo *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 

@@ -88,7 +88,7 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 	app := context.NewApplication()
 
 	// 1. 인증 서버 접근
-	if appID, CompanyID, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Account); err != nil || returnValue != 1 {
+	if appID, CompanyID, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Access); err != nil || returnValue != 1 {
 		if err != nil {
 			resp.SetReturn(resultcode.Result_DBError)
 		} else {

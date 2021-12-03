@@ -10,24 +10,24 @@ import (
 
 // 회원 로그인
 func (o *ExternalAPI) PostMemberLogin(c echo.Context) error {
-	memberInfo := context.NewMemberInfo()
+	account := context.NewAccount()
 
-	if err := c.Bind(memberInfo); err != nil {
+	if err := c.Bind(account); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostMemberLogin(c, memberInfo)
+	return commonapi.PostMemberLogin(c, account)
 }
 
 // App 존재 여부 확인
 func (o *ExternalAPI) GetMemberExists(c echo.Context) error {
-	memberInfo := context.NewMemberInfo()
+	account := context.NewAccount()
 
-	if err := c.Bind(memberInfo); err != nil {
+	if err := c.Bind(account); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.GetMemberExists(c, memberInfo)
+	return commonapi.GetMemberExists(c, account)
 }

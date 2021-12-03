@@ -1,6 +1,8 @@
 package externalapi
 
 import (
+	"net/http"
+
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi"
@@ -15,6 +17,10 @@ func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
 	if err := c.Bind(reqAppLoginInfo); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
+	}
+
+	if err := reqAppLoginInfo.Access.CheckValidate(); err != nil {
+		return c.JSON(http.StatusOK, err)
 	}
 
 	return commonapi.PostAppLogin(c, reqAppLoginInfo)

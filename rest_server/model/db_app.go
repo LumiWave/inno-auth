@@ -11,7 +11,7 @@ import (
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
 
-func (o *DB) GetApplications(accountInfo *context.AccountInfo) (int, int, int, error) {
+func (o *DB) GetApplications(accountInfo *context.AccessInfo) (int, int, int, error) {
 	var appID, CompanyID int
 	var returnValue orginMssql.ReturnStatus
 	_, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[D-INNO-ACCOUNT01].[dbo].[USPAU_Get_Applications]",
@@ -25,7 +25,7 @@ func (o *DB) GetApplications(accountInfo *context.AccountInfo) (int, int, int, e
 func (o *DB) InsertApp(app *context.Application) error {
 	sqlQuery := fmt.Sprintf("INSERT INTO onbuff_inno.dbo.auth_app(app_name, company_id, access_id, access_pw, create_dt) output inserted.idx "+
 		"VALUES('%v', %v, '%v', '%v', %v)",
-		app.AppName, app.CompanyID, app.Account.AccessID, app.Account.AccessPW, 0)
+		app.AppName, app.CompanyID, app.Access.AccessID, app.Access.AccessPW, 0)
 
 	var lastInsertId int64
 	err := o.Mssql.QueryRow(sqlQuery, &lastInsertId)
@@ -52,7 +52,7 @@ func (o *DB) DeleteApp(app *context.Application) error {
 	return nil
 }
 
-func (o *DB) SelectGetExistsAppAccount(Account context.AccountInfo) (*context.ResponseAppInfo, error) {
+func (o *DB) SelectGetExistsAppAccount(Account context.AccessInfo) (*context.ResponseAppInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE login_id='%v' AND login_pwd='%v'", Account.AccessID, Account.AccessPW)
 	rows, err := o.Mssql.Query(sqlQuery)
 	if err != nil {

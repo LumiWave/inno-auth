@@ -10,12 +10,11 @@ import (
 
 // Member 신규 가입
 func (o *InternalAPI) PostMemberRegister(c echo.Context) error {
-	memberInfo := context.NewMemberInfo()
-	if err := c.Bind(memberInfo); err != nil {
+	account := context.NewAccount()
+	if err := c.Bind(account); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
-	context.MakeDt(&memberInfo.CreateDt)
 
-	return commonapi.PostMemberRegister(c, memberInfo)
+	return commonapi.PostMemberRegister(c, account)
 }
