@@ -20,8 +20,8 @@ const (
 	Result_Auth_EmptyAccessID      = 21005
 	Result_Auth_EmptyAccessPW      = 21006
 
-	Result_Auth_EmptyMemberSocialInfo  = 22001
-	Result_Auth_ExistsMemberSocialInfo = 22002
+	Result_Auth_EmptyAccountSocialInfo  = 22001
+	Result_Auth_ExistsAccountSocialInfo = 22002
 
 	Result_Auth_MakeTokenError = 23001
 )
@@ -46,8 +46,8 @@ var ResultCodeText = map[int]string{
 	Result_Auth_EmptyAccessID:      "Empty Access ID",
 	Result_Auth_EmptyAccessPW:      "Empty Access PW",
 
-	Result_Auth_EmptyMemberSocialInfo:  "Empty Member Social Info",
-	Result_Auth_ExistsMemberSocialInfo: "Exists Member Social Info",
+	Result_Auth_EmptyAccountSocialInfo:  "Empty Account Social Info",
+	Result_Auth_ExistsAccountSocialInfo: "Exists Account Social Info",
 
 	Result_Auth_MakeTokenError: "Make Token Error.",
 }

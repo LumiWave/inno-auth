@@ -9,7 +9,7 @@ import (
 )
 
 // 회원 로그인
-func (o *ExternalAPI) PostMemberLogin(c echo.Context) error {
+func (o *ExternalAPI) PostAccountLogin(c echo.Context) error {
 	account := context.NewAccount()
 
 	if err := c.Bind(account); err != nil {
@@ -17,11 +17,11 @@ func (o *ExternalAPI) PostMemberLogin(c echo.Context) error {
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostMemberLogin(c, account)
+	return commonapi.PostAccountLogin(c, account)
 }
 
 // App 존재 여부 확인
-func (o *ExternalAPI) GetMemberExists(c echo.Context) error {
+func (o *ExternalAPI) GetAccountExists(c echo.Context) error {
 	account := context.NewAccount()
 
 	if err := c.Bind(account); err != nil {
@@ -29,5 +29,5 @@ func (o *ExternalAPI) GetMemberExists(c echo.Context) error {
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.GetMemberExists(c, account)
+	return commonapi.GetAccountExists(c, account)
 }

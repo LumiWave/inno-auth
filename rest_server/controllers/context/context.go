@@ -11,13 +11,13 @@ const (
 	NoneLogin LoginType = iota
 	CpLogin
 	AppLogin
-	MemberLogin
+	AccountLogin
 )
 
 var LoginTypeText = map[LoginType]string{
-	CpLogin:     "CP",
-	AppLogin:    "APP",
-	MemberLogin: "MEMBER",
+	CpLogin:      "CP",
+	AppLogin:     "APP",
+	AccountLogin: "ACCOUNT",
 }
 
 // InnoAuthServerContext API의 Request Context

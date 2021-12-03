@@ -11,26 +11,19 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostMemberRegister(c echo.Context, memberInfo *context.Account) error {
+func PostAccountRegister(c echo.Context, account *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// Member Social Info 빈문자열 체크
-	if err := memberInfo.CheckValidate(); err != nil {
+	// Account Social Info 빈문자열 체크
+	if err := account.CheckValidate(); err != nil {
 		return c.JSON(http.StatusOK, err)
 	}
 
-	// // Member Social Info 중복 체크
-	// if value, err := model.GetDB().SelectGetMemberInfoByASocialUID(memberInfo.SocialID); err == nil {
-	// 	if len(value.SocialID) > 0 {
-	// 		log.Error("PostMemberRegister exists social_uid", value.Social.SocialUID, " errorCode:", resultcode.Result_Auth_ExistsMemberSocialInfo)
-	// 		resp.SetReturn(resultcode.Result_Auth_ExistsMemberSocialInfo)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
-	// }
+	// // Account Social Info 중복 체크
 
 	// 테이블에 신규 row 생성
-	if err := model.GetDB().InsertMember(memberInfo); err != nil {
+	if err := model.GetDB().InsertAccount(account); err != nil {
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_DBError)
 	}
@@ -38,23 +31,23 @@ func PostMemberRegister(c echo.Context, memberInfo *context.Account) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func GetMemberExists(c echo.Context, memberInfo *context.Account) error {
+func GetAccountExists(c echo.Context, account *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// if value, err := model.GetDB().SelectGetMemberInfoByASocialUID(memberInfo.SocialID); err != nil {
+	// if value, err := model.GetDB().SelectGetAccountInfoByASocialUID(account.SocialID); err != nil {
 	// 	resp.SetReturn(resultcode.Result_DBError)
 	// } else {
 	// 	if len(value.SocialID) != 0 {
 	// 		resp.Value = value
 	// 	} else {
-	// 		resp.SetReturn(resultcode.Result_Auth_EmptyMemberSocialInfo)
+	// 		resp.SetReturn(resultcode.Result_Auth_EmptyAccountSocialInfo)
 	// 	}
 	// }
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PostMemberLogin(c echo.Context, memberInfo *context.Account) error {
+func PostAccountLogin(c echo.Context, account *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 

@@ -24,7 +24,7 @@ func NewAccount() *Account {
 
 func (o *Account) CheckValidate() *base.BaseResponse {
 	if len(o.SocialID) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyMemberSocialInfo)
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialInfo)
 	}
 	return nil
 }

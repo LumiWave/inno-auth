@@ -8,13 +8,13 @@ import (
 	"github.com/labstack/echo"
 )
 
-// Member 신규 가입
-func (o *InternalAPI) PostMemberRegister(c echo.Context) error {
+// Account 신규 가입
+func (o *InternalAPI) PostAccountRegister(c echo.Context) error {
 	account := context.NewAccount()
 	if err := c.Bind(account); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostMemberRegister(c, account)
+	return commonapi.PostAccountRegister(c, account)
 }
