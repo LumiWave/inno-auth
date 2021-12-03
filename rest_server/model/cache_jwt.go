@@ -9,20 +9,20 @@ import (
 )
 
 // 로그인 성공시 정보 추가
-func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType, app *context.Application) error {
+func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, payload *context.Payload) error {
 	if !o.Cache.Enable() {
 		log.Warnf("redis disable")
 	}
 	conf := config.GetInstance()
 
-	cKey := makeCacheKeyByAuth(loginType, tokenInfo.AccessUuid)
-	err := o.Cache.Set(cKey, app, time.Duration(conf.Auth.AccessTokenExpiryPeriod*int64(time.Minute)))
+	cKey := makeCacheKeyByAuth(payload, tokenInfo.AccessUuid)
+	err := o.Cache.Set(cKey, tokenInfo, time.Duration(conf.Auth.AccessTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
 
-	cKey = makeCacheKeyByAuth(loginType, tokenInfo.RefreshUuid)
-	err = o.Cache.Set(cKey, app, time.Duration(conf.Auth.RefreshTokenExpiryPeriod*int64(time.Minute)))
+	cKey = makeCacheKeyByAuth(payload, tokenInfo.RefreshUuid)
+	err = o.Cache.Set(cKey, tokenInfo, time.Duration(conf.Auth.RefreshTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
@@ -30,19 +30,19 @@ func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType,
 	return nil
 }
 
-func (o *DB) GetJwtInfo(loginType context.LoginType, uuid string) (*context.Application, error) {
-	cKey := makeCacheKeyByAuth(loginType, uuid)
-	app := context.NewApplication()
-	err := o.Cache.Get(cKey, app)
-	return app, err
+func (o *DB) GetJwtInfo(payload *context.Payload) (*context.JwtInfo, error) {
+	cKey := makeCacheKeyByAuth(payload, payload.Uuid)
+	jwtInfo := new(context.JwtInfo)
+	err := o.Cache.Get(cKey, jwtInfo)
+	return jwtInfo, err
 }
 
-func (o *DB) DeleteJwtInfo(loginType context.LoginType, uuid string) error {
-	cKey := makeCacheKeyByAuth(loginType, uuid)
+func (o *DB) DeleteJwtInfo(payload *context.Payload) error {
+	cKey := makeCacheKeyByAuth(payload, payload.Uuid)
 	err := o.Cache.Del(cKey)
 	return err
 }
 
-func makeCacheKeyByAuth(loginType context.LoginType, uuid string) string {
-	return config.GetInstance().DBPrefix + ":INNO-AUTH-" + context.LoginTypeText[loginType] + ":" + uuid
+func makeCacheKeyByAuth(payload *context.Payload, uuid string) string {
+	return config.GetInstance().DBPrefix + ":INNO-AUTH-" + context.LoginTypeText[payload.LoginType] + ":" + uuid
 }

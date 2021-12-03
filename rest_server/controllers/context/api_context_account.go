@@ -8,7 +8,12 @@ import (
 type Account struct {
 	AUID       int    `json:"au_id"`
 	SocialID   string `json:"social_id" validate:"required"`
-	SocialType int    `json:"social_type"`
+	SocialType int    `json:"social_type" validate:"required"`
+}
+
+type RequestAccountAuth struct {
+	Account     Account `json:"account" validate:"required"`
+	AccessToken string  `json:"access_token" validate:"required"`
 }
 
 type AccountCoin struct {
@@ -22,9 +27,13 @@ func NewAccount() *Account {
 	return new(Account)
 }
 
-func (o *Account) CheckValidate() *base.BaseResponse {
-	if len(o.SocialID) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialInfo)
+func (o *RequestAccountAuth) CheckValidate() *base.BaseResponse {
+	if len(o.Account.SocialID) == 0 {
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialID)
+	} else if o.Account.SocialType == 0 {
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialType)
+	} else if len(o.AccessToken) == 0 {
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialType)
 	}
 	return nil
 }

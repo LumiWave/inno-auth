@@ -4,29 +4,13 @@ import (
 	"net/http"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
 )
 
 func PostAccountRegister(c echo.Context, account *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
-
-	// Account Social Info 빈문자열 체크
-	if err := account.CheckValidate(); err != nil {
-		return c.JSON(http.StatusOK, err)
-	}
-
-	// // Account Social Info 중복 체크
-
-	// 테이블에 신규 row 생성
-	if err := model.GetDB().InsertAccount(account); err != nil {
-		log.Error(err)
-		resp.SetReturn(resultcode.Result_DBError)
-	}
 
 	return c.JSON(http.StatusOK, resp)
 }
@@ -47,7 +31,7 @@ func GetAccountExists(c echo.Context, account *context.Account) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PostAccountLogin(c echo.Context, account *context.Account) error {
+func PostAccountLogin(c echo.Context, account *context.RequestAccountAuth) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 

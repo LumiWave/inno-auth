@@ -85,7 +85,7 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	app := context.NewApplication()
+	payload := new(context.Payload)
 
 	// 1. 인증 서버 접근
 	if appID, CompanyID, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Access); err != nil || returnValue != 1 {
@@ -96,12 +96,13 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 		}
 		return c.JSON(http.StatusOK, resp)
 	} else {
-		app.AppID = appID
-		app.CompanyID = CompanyID
+		payload.CompanyID = CompanyID
+		payload.AppID = appID
+		payload.LoginType = context.AppLogin
 	}
 
 	// 2. Access, Refresh 토큰 생성
-	if jwtInfoValue, err := auth.GetIAuth().MakeToken(context.LoginType(context.AppLogin), app); err != nil {
+	if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 		return c.JSON(http.StatusOK, resp)
 	} else {
@@ -116,7 +117,11 @@ func DelAppLogout(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if err := auth.GetIAuth().DeleteJwtInfo(context.LoginType(context.AppLogin), ctx.Uuid); err != nil {
+	payload := new(context.Payload)
+	payload.LoginType = context.AppLogin
+	payload.Uuid = ctx.Payload.Uuid
+
+	if err := auth.GetIAuth().DeleteJwtInfo(payload); err != nil {
 		resp.SetReturn(resultcode.Result_RedisError)
 	}
 

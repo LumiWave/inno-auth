@@ -14,9 +14,6 @@ func GetTokenVerify(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	ctx := base.GetContext(c).(*context.InnoAuthContext)
-	resp.Value = ctx.Application()
-
 	return c.JSON(http.StatusOK, resp)
 }
 
@@ -24,15 +21,15 @@ func PostTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenReque
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if app, loginType, uuid, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
+	if payload, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
 	} else {
 		// Make Renew Token.
-		if jwtInfoValue, err := auth.GetIAuth().MakeToken(loginType, app); err != nil {
+		if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
 			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 		} else {
 			// Delete the uuid in Redis.
-			auth.GetIAuth().DeleteJwtInfo(loginType, uuid)
+			auth.GetIAuth().DeleteJwtInfo(payload)
 			resp.Value = jwtInfoValue
 		}
 	}

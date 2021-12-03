@@ -1,6 +1,8 @@
 package externalapi
 
 import (
+	"net/http"
+
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi"
@@ -10,14 +12,20 @@ import (
 
 // 회원 로그인
 func (o *ExternalAPI) PostAccountLogin(c echo.Context) error {
-	account := context.NewAccount()
+	//ctx := base.GetContext(c).
+	reqAccountAuth := new(context.RequestAccountAuth)
 
-	if err := c.Bind(account); err != nil {
+	if err := c.Bind(reqAccountAuth); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostAccountLogin(c, account)
+	if err := reqAccountAuth.CheckValidate(); err != nil {
+		log.Error(err)
+		return c.JSON(http.StatusOK, err)
+	}
+
+	return commonapi.PostAccountLogin(c, reqAccountAuth)
 }
 
 // App 존재 여부 확인
