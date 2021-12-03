@@ -6,34 +6,24 @@ import (
 )
 
 type AppInfo struct {
-	Idx      int64       `json:"idx" query:"idx"`
-	AppName  string      `json:"app_name" query:"app_name" validate:"required"`
-	CpIdx    int64       `json:"cp_idx" query:"cp_idx" validate:"required"`
-	Account  AccountInfo `json:"account_info" query:"account_info" validate:"required"`
-	Token    JwtInfo
-	CreateDt int64 `json:"create_dt"`
+	AppID     int         `json:"app_id" query:"app_id"`
+	AppName   string      `json:"app_name"`
+	CompanyID int         `json:"company_id"`
+	Account   AccountInfo `json:"account_info"`
 }
 
 type RequestAppLoginInfo struct {
-	Account AccountInfo `json:"account_info" query:"account_info" validate:"required"`
+	Account AccountInfo `json:"account_info" validate:"required"`
 }
 
 type ResponseAppInfo struct {
-	Idx     int64  `json:"idx"`
-	CpIdx   int64  `json:"cp_idx"`
-	AppName string `json:"app_name"`
+	AppID     int    `json:"app_id"`
+	CompanyID int    `json:"company_id"`
+	AppName   string `json:"app_name"`
 }
 
 func NewAppInfo() *AppInfo {
 	return new(AppInfo)
-}
-
-func NewRequestAppLoginInfo() *RequestAppLoginInfo {
-	return new(RequestAppLoginInfo)
-}
-
-func NewRespAppInfo() *ResponseAppInfo {
-	return new(ResponseAppInfo)
 }
 
 func (o *AppInfo) CheckValidate() *base.BaseResponse {

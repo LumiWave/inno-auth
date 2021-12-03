@@ -30,10 +30,10 @@ func PostAppRegister(c echo.Context, appInfo *context.AppInfo) error {
 		}
 	}
 
-	// cp_idx 존재 여부 확인
-	if value, err := model.GetDB().SelectGetCpInfoByIdx(appInfo.CpIdx); err == nil {
+	// companyID 존재 여부 확인
+	if value, err := model.GetDB().SelectGetCpInfoByIdx(appInfo.CompanyID); err == nil {
 		if len(value.CpName) == 0 {
-			log.Error("PostCPRegister Not Exists cp_idx=", appInfo.CpIdx, " errorCode:", resultcode.Result_Auth_NotFoundCpIdx)
+			log.Error("PostCPRegister Not Exists CompanyID=", appInfo.CompanyID, " errorCode:", resultcode.Result_Auth_NotFoundCpIdx)
 			resp.SetReturn(resultcode.Result_Auth_NotFoundCpName)
 			return c.JSON(http.StatusOK, resp)
 		}
@@ -96,8 +96,8 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 		}
 		return c.JSON(http.StatusOK, resp)
 	} else {
-		appInfo.Idx = appID
-		appInfo.CpIdx = CompanyID
+		appInfo.AppID = appID
+		appInfo.CompanyID = CompanyID
 	}
 
 	// 2. Access, Refresh 토큰 생성

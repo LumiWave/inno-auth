@@ -10,7 +10,7 @@ import (
 
 // App 로그인
 func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
-	reqAppLoginInfo := context.NewRequestAppLoginInfo()
+	reqAppLoginInfo := new(context.RequestAppLoginInfo)
 
 	if err := c.Bind(reqAppLoginInfo); err != nil {
 		log.Error(err)

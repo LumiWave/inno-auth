@@ -25,7 +25,7 @@ func (o *DB) InsertCP(cpInfo *context.CpInfo) error {
 	return nil
 }
 
-func (o *DB) SelectGetCpInfoByIdx(idx int64) (*context.ResponseCpInfo, error) {
+func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.ResponseCpInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE idx=%v", idx)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -37,7 +37,7 @@ func (o *DB) SelectGetCpInfoByIdx(idx int64) (*context.ResponseCpInfo, error) {
 
 	cp := new(context.ResponseCpInfo)
 
-	var createDt int64
+	var createDt int
 	for rows.Next() {
 		if err := rows.Scan(&cp.Idx, &cp.CpName, &createDt); err != nil {
 			log.Error(err)

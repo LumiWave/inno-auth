@@ -11,21 +11,21 @@ import (
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
 
-func (o *DB) GetApplications(accountInfo *context.AccountInfo) (int64, int64, int64, error) {
-	var appID, CompanyID int64
+func (o *DB) GetApplications(accountInfo *context.AccountInfo) (int, int, int, error) {
+	var appID, CompanyID int
 	var returnValue orginMssql.ReturnStatus
 	_, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[D-INNO-ACCOUNT01].[dbo].[USPAU_Get_Applications]",
-		sql.Named("AccessID", accountInfo.LoginId), sql.Named("AccessPW", accountInfo.LoginPwd),
+		sql.Named("AccessID", accountInfo.AccessID), sql.Named("AccessPW", accountInfo.AccessPW),
 		sql.Named("AppID", sql.Out{Dest: &appID}), sql.Named("CompanyID", sql.Out{Dest: &CompanyID}),
 		&returnValue)
 
-	return appID, CompanyID, int64(returnValue), err
+	return appID, CompanyID, int(returnValue), err
 }
 
 func (o *DB) InsertApp(appInfo *context.AppInfo) error {
-	sqlQuery := fmt.Sprintf("INSERT INTO onbuff_inno.dbo.auth_app(app_name, cp_idx, login_id, login_pwd, create_dt) output inserted.idx "+
+	sqlQuery := fmt.Sprintf("INSERT INTO onbuff_inno.dbo.auth_app(app_name, company_id, access_id, access_pw, create_dt) output inserted.idx "+
 		"VALUES('%v', %v, '%v', '%v', %v)",
-		appInfo.AppName, appInfo.CpIdx, appInfo.Account.LoginId, appInfo.Account.LoginPwd, appInfo.CreateDt)
+		appInfo.AppName, appInfo.CompanyID, appInfo.Account.AccessID, appInfo.Account.AccessPW, 0)
 
 	var lastInsertId int64
 	err := o.Mssql.QueryRow(sqlQuery, &lastInsertId)
@@ -53,7 +53,7 @@ func (o *DB) DeleteApp(appInfo *context.AppInfo) error {
 }
 
 func (o *DB) SelectGetExistsAppAccount(Account context.AccountInfo) (*context.ResponseAppInfo, error) {
-	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE login_id='%v' AND login_pwd='%v'", Account.LoginId, Account.LoginPwd)
+	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE login_id='%v' AND login_pwd='%v'", Account.AccessID, Account.AccessPW)
 	rows, err := o.Mssql.Query(sqlQuery)
 	if err != nil {
 		log.Error(err)
@@ -65,7 +65,7 @@ func (o *DB) SelectGetExistsAppAccount(Account context.AccountInfo) (*context.Re
 
 	var loginId, loginPwd, createDt string
 	for rows.Next() {
-		if err := rows.Scan(&app.Idx, &app.AppName, &app.CpIdx, &loginId, &loginPwd, &createDt); err != nil {
+		if err := rows.Scan(&app.AppID, &app.AppName, &app.CompanyID, &loginId, &loginPwd, &createDt); err != nil {
 			log.Error(err)
 			return nil, err
 		}
@@ -88,7 +88,7 @@ func (o *DB) SelectGetAppInfoByAppName(appName string) (*context.ResponseAppInfo
 
 	var loginId, loginPwd, createDt string
 	for rows.Next() {
-		if err := rows.Scan(&app.Idx, &app.AppName, &app.CpIdx, &loginId, &loginPwd, &createDt); err != nil {
+		if err := rows.Scan(&app.AppID, &app.AppName, &app.CompanyID, &loginId, &loginPwd, &createDt); err != nil {
 			log.Error(err)
 			return nil, err
 		}

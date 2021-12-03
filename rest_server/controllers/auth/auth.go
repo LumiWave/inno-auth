@@ -41,8 +41,8 @@ func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo)
 	atClaims := jwt.MapClaims{}
 	atClaims["access_uuid"] = jwtInfo.AccessUuid
 	atClaims["login_type"] = loginType
-	atClaims["cp_idx"] = appInfo.CpIdx
-	atClaims["app_idx"] = appInfo.Idx
+	atClaims["cp_id"] = appInfo.CompanyID
+	atClaims["app_id"] = appInfo.AppID
 	atClaims["exp"] = jwtInfo.AtExpireDt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -56,8 +56,8 @@ func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo)
 	rtClaims := jwt.MapClaims{}
 	rtClaims["refresh_uuid"] = jwtInfo.RefreshUuid
 	rtClaims["login_type"] = loginType
-	rtClaims["cp_idx"] = appInfo.CpIdx
-	rtClaims["app_idx"] = appInfo.Idx
+	rtClaims["cp_id"] = appInfo.CompanyID
+	rtClaims["app_id"] = appInfo.AppID
 	rtClaims["exp"] = jwtInfo.RtExpireDt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
@@ -68,7 +68,6 @@ func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo)
 
 	//redis save
 	jwtInfo.RefreshToken = refreshToken
-	appInfo.Token = *jwtInfo
 	if err := o.SetJwtInfo(jwtInfo, loginType, appInfo); err != nil {
 		return nil, err
 	}

@@ -15,7 +15,6 @@ func (o *InternalAPI) PostAppRegister(c echo.Context) error {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
-	context.MakeDt(&appInfo.CreateDt)
 
 	return commonapi.PostAppRegister(c, appInfo)
 }
