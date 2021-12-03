@@ -12,35 +12,35 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostAppRegister(c echo.Context, appInfo *context.AppInfo) error {
+func PostAppRegister(c echo.Context, app *context.Application) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
 	// App 이름 빈문자열 체크
-	if err := appInfo.CheckValidate(); err != nil {
+	if err := app.CheckValidate(); err != nil {
 		return c.JSON(http.StatusOK, err)
 	}
 
 	// App 이름 중복 체크
-	if respAppInfo, err := model.GetDB().SelectGetAppInfoByAppName(appInfo.AppName); err == nil {
+	if respAppInfo, err := model.GetDB().SelectGetAppInfoByAppName(app.AppName); err == nil {
 		if len(respAppInfo.AppName) > 0 {
-			log.Error("PostAppRegister exists app_name=", appInfo.AppName, " errorCode:", resultcode.Result_Auth_ExistsAppName)
+			log.Error("PostAppRegister exists app_name=", app.AppName, " errorCode:", resultcode.Result_Auth_ExistsAppName)
 			resp.SetReturn(resultcode.Result_Auth_ExistsAppName)
 			return c.JSON(http.StatusOK, resp)
 		}
 	}
 
 	// companyID 존재 여부 확인
-	if value, err := model.GetDB().SelectGetCpInfoByIdx(appInfo.CompanyID); err == nil {
+	if value, err := model.GetDB().SelectGetCpInfoByIdx(app.CompanyID); err == nil {
 		if len(value.CompanyName) == 0 {
-			log.Error("PostCPRegister Not Exists CompanyID=", appInfo.CompanyID, " errorCode:", resultcode.Result_Auth_NotFoundCpIdx)
+			log.Error("PostCPRegister Not Exists CompanyID=", app.CompanyID, " errorCode:", resultcode.Result_Auth_NotFoundCpIdx)
 			resp.SetReturn(resultcode.Result_Auth_NotFoundCpName)
 			return c.JSON(http.StatusOK, resp)
 		}
 	}
 
 	// 테이블에 신규 row 생성
-	if err := model.GetDB().InsertApp(appInfo); err != nil {
+	if err := model.GetDB().InsertApp(app); err != nil {
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_DBError)
 	}
@@ -48,28 +48,28 @@ func PostAppRegister(c echo.Context, appInfo *context.AppInfo) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func DelAppUnRegister(c echo.Context, appInfo *context.AppInfo) error {
+func DelAppUnRegister(c echo.Context, app *context.Application) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
 	// App 이름 빈문자열 체크
-	if err := appInfo.CheckValidate(); err != nil {
+	if err := app.CheckValidate(); err != nil {
 		return c.JSON(http.StatusOK, err)
 	}
 
 	// 테이블 row 삭제
-	if err := model.GetDB().DeleteApp(appInfo); err != nil {
+	if err := model.GetDB().DeleteApp(app); err != nil {
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_DBError)
 	}
 	return c.JSON(http.StatusOK, resp)
 }
 
-func GetAppExists(c echo.Context, appInfo *context.AppInfo) error {
+func GetAppExists(c echo.Context, app *context.Application) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if value, err := model.GetDB().SelectGetAppInfoByAppName(appInfo.AppName); err != nil {
+	if value, err := model.GetDB().SelectGetAppInfoByAppName(app.AppName); err != nil {
 		resp.SetReturn(resultcode.Result_DBError)
 	} else {
 		if len(value.AppName) != 0 {
@@ -85,7 +85,7 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	appInfo := new(context.AppInfo)
+	app := context.NewApplication()
 
 	// 1. 인증 서버 접근
 	if appID, CompanyID, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Account); err != nil || returnValue != 1 {
@@ -96,12 +96,12 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 		}
 		return c.JSON(http.StatusOK, resp)
 	} else {
-		appInfo.AppID = appID
-		appInfo.CompanyID = CompanyID
+		app.AppID = appID
+		app.CompanyID = CompanyID
 	}
 
 	// 2. Access, Refresh 토큰 생성
-	if jwtInfoValue, err := auth.GetIAuth().MakeToken(context.LoginType(context.AppLogin), appInfo); err != nil {
+	if jwtInfoValue, err := auth.GetIAuth().MakeToken(context.LoginType(context.AppLogin), app); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 		return c.JSON(http.StatusOK, resp)
 	} else {

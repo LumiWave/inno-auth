@@ -23,9 +23,9 @@ var LoginTypeText = map[LoginType]string{
 // InnoAuthServerContext API의 Request Context
 type InnoAuthContext struct {
 	*base.BaseContext
-	appInfo   *AppInfo
-	loginType LoginType
-	Uuid      string
+	application *Application
+	loginType   LoginType
+	Uuid        string
 }
 
 // NewInnoAuthServerContext 새로운 InnoAuthServer Context 생성
@@ -44,14 +44,14 @@ func NewInnoAuthServerContext(baseCtx *base.BaseContext) interface{} {
 func AppendRequestParameter() {
 }
 
-func (o *InnoAuthContext) SetAppInfo(appInfo *AppInfo, loginType LoginType, uuid string) {
-	o.appInfo = appInfo
+func (o *InnoAuthContext) SetApplication(app *Application, loginType LoginType, uuid string) {
+	o.application = app
 	o.loginType = loginType
 	o.Uuid = uuid
 }
 
-func (o *InnoAuthContext) AppInfo() *AppInfo {
-	return o.appInfo
+func (o *InnoAuthContext) Application() *Application {
+	return o.application
 }
 
 func MakeDt(data *int64) {

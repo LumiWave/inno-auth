@@ -28,7 +28,7 @@ func GetIAuth() *IAuth {
 	return gAuth
 }
 
-func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo) (*context.JwtInfo, error) {
+func (o *IAuth) MakeToken(loginType context.LoginType, app *context.Application) (*context.JwtInfo, error) {
 	jwtInfo := &context.JwtInfo{
 		AccessUuid:  uuid.NewV4().String(),
 		RefreshUuid: uuid.NewV4().String(),
@@ -41,8 +41,8 @@ func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo)
 	atClaims := jwt.MapClaims{}
 	atClaims["access_uuid"] = jwtInfo.AccessUuid
 	atClaims["login_type"] = loginType
-	atClaims["cp_id"] = appInfo.CompanyID
-	atClaims["app_id"] = appInfo.AppID
+	atClaims["cp_id"] = app.CompanyID
+	atClaims["app_id"] = app.AppID
 	atClaims["exp"] = jwtInfo.AtExpireDt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -56,8 +56,8 @@ func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo)
 	rtClaims := jwt.MapClaims{}
 	rtClaims["refresh_uuid"] = jwtInfo.RefreshUuid
 	rtClaims["login_type"] = loginType
-	rtClaims["cp_id"] = appInfo.CompanyID
-	rtClaims["app_id"] = appInfo.AppID
+	rtClaims["cp_id"] = app.CompanyID
+	rtClaims["app_id"] = app.AppID
 	rtClaims["exp"] = jwtInfo.RtExpireDt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
@@ -68,7 +68,7 @@ func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo)
 
 	//redis save
 	jwtInfo.RefreshToken = refreshToken
-	if err := o.SetJwtInfo(jwtInfo, loginType, appInfo); err != nil {
+	if err := o.SetJwtInfo(jwtInfo, loginType, app); err != nil {
 		return nil, err
 	}
 
@@ -76,7 +76,7 @@ func (o *IAuth) MakeToken(loginType context.LoginType, appInfo *context.AppInfo)
 }
 
 // jwt verify check
-func (o *IAuth) VerifyAccessToken(accessToken string) (*context.AppInfo, context.LoginType, string, error) {
+func (o *IAuth) VerifyAccessToken(accessToken string) (*context.Application, context.LoginType, string, error) {
 	atClaims := jwt.MapClaims{}
 	jwtData, err := jwt.ParseWithClaims(accessToken, atClaims,
 		func(token *jwt.Token) (interface{}, error) {
@@ -97,15 +97,15 @@ func (o *IAuth) VerifyAccessToken(accessToken string) (*context.AppInfo, context
 	accessUuid := fmt.Sprintf("%v", atClaims["access_uuid"])
 	loginType := context.LoginType(int(atClaims["login_type"].(float64)))
 
-	appInfo, err := o.GetJwtInfo(loginType, accessUuid)
+	app, err := o.GetJwtInfo(loginType, accessUuid)
 	if err != nil {
 		return nil, context.LoginType(context.NoneLogin), "", err
 	}
 
-	return appInfo, loginType, accessUuid, nil
+	return app, loginType, accessUuid, nil
 }
 
-func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.AppInfo, context.LoginType, string, error) {
+func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.Application, context.LoginType, string, error) {
 	atClaims := jwt.MapClaims{}
 	jwtData, err := jwt.ParseWithClaims(refreshToken, atClaims,
 		func(token *jwt.Token) (interface{}, error) {
@@ -126,20 +126,20 @@ func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.AppInfo, conte
 	refreshUuid := fmt.Sprintf("%v", atClaims["refresh_uuid"])
 	loginType := context.LoginType(int(atClaims["login_type"].(float64)))
 
-	appInfo, err := o.GetJwtInfo(loginType, refreshUuid)
+	app, err := o.GetJwtInfo(loginType, refreshUuid)
 	if err != nil {
 		return nil, context.LoginType(context.NoneLogin), "", err
 	}
 
-	return appInfo, loginType, refreshUuid, nil
+	return app, loginType, refreshUuid, nil
 }
 
 // redis jwt info set
-func (o *IAuth) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType, appInfo *context.AppInfo) error {
-	return model.GetDB().SetJwtInfo(tokenInfo, loginType, appInfo)
+func (o *IAuth) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType, app *context.Application) error {
+	return model.GetDB().SetJwtInfo(tokenInfo, loginType, app)
 }
 
-func (o *IAuth) GetJwtInfo(loginType context.LoginType, uuid string) (*context.AppInfo, error) {
+func (o *IAuth) GetJwtInfo(loginType context.LoginType, uuid string) (*context.Application, error) {
 	return model.GetDB().GetJwtInfo(loginType, uuid)
 }
 

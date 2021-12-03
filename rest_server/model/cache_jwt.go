@@ -9,20 +9,20 @@ import (
 )
 
 // 로그인 성공시 정보 추가
-func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType, appInfo *context.AppInfo) error {
+func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType, app *context.Application) error {
 	if !o.Cache.Enable() {
 		log.Warnf("redis disable")
 	}
 	conf := config.GetInstance()
 
 	cKey := makeCacheKeyByAuth(loginType, tokenInfo.AccessUuid)
-	err := o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.AccessTokenExpiryPeriod*int64(time.Minute)))
+	err := o.Cache.Set(cKey, app, time.Duration(conf.Auth.AccessTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
 
 	cKey = makeCacheKeyByAuth(loginType, tokenInfo.RefreshUuid)
-	err = o.Cache.Set(cKey, appInfo, time.Duration(conf.Auth.RefreshTokenExpiryPeriod*int64(time.Minute)))
+	err = o.Cache.Set(cKey, app, time.Duration(conf.Auth.RefreshTokenExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
@@ -30,11 +30,11 @@ func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, loginType context.LoginType,
 	return nil
 }
 
-func (o *DB) GetJwtInfo(loginType context.LoginType, uuid string) (*context.AppInfo, error) {
+func (o *DB) GetJwtInfo(loginType context.LoginType, uuid string) (*context.Application, error) {
 	cKey := makeCacheKeyByAuth(loginType, uuid)
-	appInfo := new(context.AppInfo)
-	err := o.Cache.Get(cKey, appInfo)
-	return appInfo, err
+	app := context.NewApplication()
+	err := o.Cache.Get(cKey, app)
+	return app, err
 }
 
 func (o *DB) DeleteJwtInfo(loginType context.LoginType, uuid string) error {

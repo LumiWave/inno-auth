@@ -41,7 +41,7 @@ func PreCheck(c echo.Context) base.PreCheckResponse {
 				Response:  res,
 			}
 		}
-		appInfo, loginType, accessUuid, err := auth.GetIAuth().VerifyAccessToken(author[0][7:])
+		app, loginType, accessUuid, err := auth.GetIAuth().VerifyAccessToken(author[0][7:])
 		if err != nil {
 			// auth token 오류 리턴
 			res := base.MakeBaseResponse(resultcode.Result_Auth_InvalidJwt)
@@ -51,7 +51,7 @@ func PreCheck(c echo.Context) base.PreCheckResponse {
 				Response:  res,
 			}
 		}
-		base.GetContext(c).(*context.InnoAuthContext).SetAppInfo(appInfo, loginType, accessUuid)
+		base.GetContext(c).(*context.InnoAuthContext).SetApplication(app, loginType, accessUuid)
 	}
 
 	return base.PreCheckResponse{

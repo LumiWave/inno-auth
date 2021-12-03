@@ -27,12 +27,12 @@ func (o *ExternalAPI) DelAppLogout(c echo.Context) error {
 
 // App 존재 여부 확인
 func (o *ExternalAPI) GetAppExists(c echo.Context) error {
-	appInfo := context.NewAppInfo()
+	app := context.NewApplication()
 
-	if err := c.Bind(appInfo); err != nil {
+	if err := c.Bind(app); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.GetAppExists(c, appInfo)
+	return commonapi.GetAppExists(c, app)
 }

@@ -10,21 +10,21 @@ import (
 
 // App 신규 추가
 func (o *InternalAPI) PostAppRegister(c echo.Context) error {
-	appInfo := context.NewAppInfo()
-	if err := c.Bind(appInfo); err != nil {
+	app := context.NewApplication()
+	if err := c.Bind(app); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostAppRegister(c, appInfo)
+	return commonapi.PostAppRegister(c, app)
 }
 
 // App 삭제
 func (o *InternalAPI) DelAppUnRegister(c echo.Context) error {
-	appInfo := context.NewAppInfo()
-	if err := c.Bind(appInfo); err != nil {
+	app := context.NewApplication()
+	if err := c.Bind(app); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
-	return commonapi.DelAppUnRegister(c, appInfo)
+	return commonapi.DelAppUnRegister(c, app)
 }

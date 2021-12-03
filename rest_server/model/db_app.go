@@ -22,10 +22,10 @@ func (o *DB) GetApplications(accountInfo *context.AccountInfo) (int, int, int, e
 	return appID, CompanyID, int(returnValue), err
 }
 
-func (o *DB) InsertApp(appInfo *context.AppInfo) error {
+func (o *DB) InsertApp(app *context.Application) error {
 	sqlQuery := fmt.Sprintf("INSERT INTO onbuff_inno.dbo.auth_app(app_name, company_id, access_id, access_pw, create_dt) output inserted.idx "+
 		"VALUES('%v', %v, '%v', '%v', %v)",
-		appInfo.AppName, appInfo.CompanyID, appInfo.Account.AccessID, appInfo.Account.AccessPW, 0)
+		app.AppName, app.CompanyID, app.Account.AccessID, app.Account.AccessPW, 0)
 
 	var lastInsertId int64
 	err := o.Mssql.QueryRow(sqlQuery, &lastInsertId)
@@ -40,8 +40,8 @@ func (o *DB) InsertApp(appInfo *context.AppInfo) error {
 	return nil
 }
 
-func (o *DB) DeleteApp(appInfo *context.AppInfo) error {
-	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_app WHERE app_name='%v'", appInfo.AppName)
+func (o *DB) DeleteApp(app *context.Application) error {
+	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_app WHERE app_name='%v'", app.AppName)
 	rows, err := o.Mssql.Query(sqlQuery)
 	if err != nil {
 		log.Error(err)
