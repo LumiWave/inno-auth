@@ -10,7 +10,7 @@ import (
 func (o *DB) InsertCP(cpInfo *context.CpInfo) error {
 	sqlQuery := fmt.Sprintf("INSERT INTO onbuff_inno.dbo.auth_cp(cp_name, create_dt) output inserted.idx "+
 		"VALUES('%v', %v)",
-		cpInfo.CpName, cpInfo.CreateDt)
+		cpInfo.CompanyName, 0)
 
 	var lastInsertId int64
 	err := o.Mssql.QueryRow(sqlQuery, &lastInsertId)
@@ -25,7 +25,7 @@ func (o *DB) InsertCP(cpInfo *context.CpInfo) error {
 	return nil
 }
 
-func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.ResponseCpInfo, error) {
+func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.CpInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE idx=%v", idx)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -35,11 +35,11 @@ func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.ResponseCpInfo, error) {
 	}
 	defer rows.Close()
 
-	cp := new(context.ResponseCpInfo)
+	cp := context.NewCpInfo()
 
 	var createDt int
 	for rows.Next() {
-		if err := rows.Scan(&cp.Idx, &cp.CpName, &createDt); err != nil {
+		if err := rows.Scan(&cp.CompanyID, &cp.CompanyName, &createDt); err != nil {
 			log.Error(err)
 			return nil, err
 		}
@@ -47,7 +47,7 @@ func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.ResponseCpInfo, error) {
 	return cp, err
 }
 
-func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.ResponseCpInfo, error) {
+func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.CpInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", cpName)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -57,11 +57,11 @@ func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.ResponseCpInfo, er
 	}
 	defer rows.Close()
 
-	cp := new(context.ResponseCpInfo)
+	cp := context.NewCpInfo()
 	var create_dt int64
 
 	for rows.Next() {
-		if err := rows.Scan(&cp.Idx, &cp.CpName, &create_dt); err != nil {
+		if err := rows.Scan(&cp.CompanyID, &cp.CompanyName, &create_dt); err != nil {
 			log.Error(err)
 			return nil, err
 		}
@@ -71,7 +71,7 @@ func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.ResponseCpInfo, er
 }
 
 func (o *DB) DeleteCP(cpInfo *context.CpInfo) error {
-	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", cpInfo.CpName)
+	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", cpInfo.CompanyName)
 	rows, err := o.Mssql.Query(sqlQuery)
 	if err != nil {
 		log.Error(err)

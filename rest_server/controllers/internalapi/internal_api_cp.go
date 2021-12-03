@@ -15,7 +15,6 @@ func (o *InternalAPI) PostCPRegister(c echo.Context) error {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
-	context.MakeDt(&cpInfo.CreateDt)
 
 	return commonapi.PostCPRegister(c, cpInfo)
 }

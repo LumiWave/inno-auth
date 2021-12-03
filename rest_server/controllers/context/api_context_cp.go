@@ -6,27 +6,16 @@ import (
 )
 
 type CpInfo struct {
-	Idx      int64  `json:"idx" query:"idx"`
-	CpName   string `json:"cp_name" query:"cp_name" validate:"required"`
-	Token    JwtInfo
-	CreateDt int64 `json:"create_dt"`
-}
-
-type ResponseCpInfo struct {
-	Idx    int64  `json:"idx"`
-	CpName string `json:"cp_name"`
+	CompanyID   int    `json:"company_id"`
+	CompanyName string `json:"company_name"`
 }
 
 func NewCpInfo() *CpInfo {
 	return new(CpInfo)
 }
 
-func NewRespCpInfo() *ResponseCpInfo {
-	return new(ResponseCpInfo)
-}
-
 func (o *CpInfo) CheckValidate() *base.BaseResponse {
-	if len(o.CpName) == 0 {
+	if len(o.CompanyName) == 0 {
 		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyCpName)
 	}
 	return nil
