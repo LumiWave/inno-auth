@@ -11,6 +11,13 @@ type Account struct {
 	SocialType int    `json:"social_type"`
 }
 
+type AccountCoin struct {
+	AUID          int    `json:"au_id"`
+	CoinID        int    `json:"coin_id"`
+	WalletAddress string `json:"wallet_address"`
+	Quantity      string `json:"quantity"`
+}
+
 func NewAccount() *Account {
 	return new(Account)
 }
