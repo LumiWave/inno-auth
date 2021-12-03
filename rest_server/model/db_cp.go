@@ -7,10 +7,10 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 )
 
-func (o *DB) InsertCP(cpInfo *context.CpInfo) error {
+func (o *DB) InsertCP(company *context.Company) error {
 	sqlQuery := fmt.Sprintf("INSERT INTO onbuff_inno.dbo.auth_cp(cp_name, create_dt) output inserted.idx "+
 		"VALUES('%v', %v)",
-		cpInfo.CompanyName, 0)
+		company.CompanyName, 0)
 
 	var lastInsertId int64
 	err := o.Mssql.QueryRow(sqlQuery, &lastInsertId)
@@ -25,7 +25,7 @@ func (o *DB) InsertCP(cpInfo *context.CpInfo) error {
 	return nil
 }
 
-func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.CpInfo, error) {
+func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.Company, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE idx=%v", idx)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -35,7 +35,7 @@ func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.CpInfo, error) {
 	}
 	defer rows.Close()
 
-	cp := context.NewCpInfo()
+	cp := context.NewCompany()
 
 	var createDt int
 	for rows.Next() {
@@ -47,7 +47,7 @@ func (o *DB) SelectGetCpInfoByIdx(idx int) (*context.CpInfo, error) {
 	return cp, err
 }
 
-func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.CpInfo, error) {
+func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.Company, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", cpName)
 	rows, err := o.Mssql.Query(sqlQuery)
 
@@ -57,7 +57,7 @@ func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.CpInfo, error) {
 	}
 	defer rows.Close()
 
-	cp := context.NewCpInfo()
+	cp := context.NewCompany()
 	var create_dt int64
 
 	for rows.Next() {
@@ -70,8 +70,8 @@ func (o *DB) SelectGetCpInfoByCpName(cpName string) (*context.CpInfo, error) {
 	return cp, err
 }
 
-func (o *DB) DeleteCP(cpInfo *context.CpInfo) error {
-	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", cpInfo.CompanyName)
+func (o *DB) DeleteCP(company *context.Company) error {
+	sqlQuery := fmt.Sprintf("DELETE FROM onbuff_inno.dbo.auth_cp WHERE cp_name='%v'", company.CompanyName)
 	rows, err := o.Mssql.Query(sqlQuery)
 	if err != nil {
 		log.Error(err)

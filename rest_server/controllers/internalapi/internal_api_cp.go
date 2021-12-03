@@ -10,21 +10,21 @@ import (
 
 // CP사 신규 가입
 func (o *InternalAPI) PostCPRegister(c echo.Context) error {
-	cpInfo := context.NewCpInfo()
-	if err := c.Bind(cpInfo); err != nil {
+	company := context.NewCompany()
+	if err := c.Bind(company); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.PostCPRegister(c, cpInfo)
+	return commonapi.PostCPRegister(c, company)
 }
 
 // CP사 탈퇴
 func (o *InternalAPI) DelCPUnRegister(c echo.Context) error {
-	cpInfo := context.NewCpInfo()
-	if err := c.Bind(cpInfo); err != nil {
+	company := context.NewCompany()
+	if err := c.Bind(company); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
-	return commonapi.DelCPUnRegister(c, cpInfo)
+	return commonapi.DelCPUnRegister(c, company)
 }

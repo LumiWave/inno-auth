@@ -10,12 +10,12 @@ import (
 
 // CP사 가입 여부 확인
 func (o *ExternalAPI) GetCPExists(c echo.Context) error {
-	cpInfo := context.NewCpInfo()
+	company := context.NewCompany()
 
-	if err := c.Bind(cpInfo); err != nil {
+	if err := c.Bind(company); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	return commonapi.GetCPExists(c, cpInfo)
+	return commonapi.GetCPExists(c, company)
 }
