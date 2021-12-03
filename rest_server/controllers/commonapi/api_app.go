@@ -85,28 +85,21 @@ func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) 
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	payload := new(context.Payload)
-
 	// 1. 인증 서버 접근
-	if appID, CompanyID, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Access); err != nil || returnValue != 1 {
+	if payload, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Access); err != nil || returnValue != 1 {
 		if err != nil {
 			resp.SetReturn(resultcode.Result_DBError)
 		} else {
 			resp.SetReturn(resultcode.Result_Auth_NotMatchAppAccount)
 		}
-		return c.JSON(http.StatusOK, resp)
 	} else {
-		payload.CompanyID = CompanyID
-		payload.AppID = appID
-		payload.LoginType = context.AppLogin
-	}
-
-	// 2. Access, Refresh 토큰 생성
-	if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
-		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
-		return c.JSON(http.StatusOK, resp)
-	} else {
-		resp.Value = jwtInfoValue
+		// 2. Access, Refresh 토큰 생성
+		if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
+			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+			return c.JSON(http.StatusOK, resp)
+		} else {
+			resp.Value = jwtInfoValue
+		}
 	}
 
 	return c.JSON(http.StatusOK, resp)

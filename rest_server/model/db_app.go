@@ -11,15 +11,16 @@ import (
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
 
-func (o *DB) GetApplications(accountInfo *context.AccessInfo) (int, int, int, error) {
-	var appID, CompanyID int
+func (o *DB) GetApplications(accountInfo *context.AccessInfo) (*context.Payload, int, error) {
+	payload := new(context.Payload)
 	var returnValue orginMssql.ReturnStatus
 	_, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[D-INNO-ACCOUNT01].[dbo].[USPAU_Get_Applications]",
 		sql.Named("AccessID", accountInfo.AccessID), sql.Named("AccessPW", accountInfo.AccessPW),
-		sql.Named("AppID", sql.Out{Dest: &appID}), sql.Named("CompanyID", sql.Out{Dest: &CompanyID}),
+		sql.Named("AppID", sql.Out{Dest: &payload.AppID}), sql.Named("CompanyID", sql.Out{Dest: &payload.CompanyID}),
 		&returnValue)
+	payload.LoginType = context.AppLogin
 
-	return appID, CompanyID, int(returnValue), err
+	return payload, int(returnValue), err
 }
 
 func (o *DB) InsertApp(app *context.Application) error {

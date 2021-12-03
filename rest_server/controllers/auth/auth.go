@@ -71,7 +71,7 @@ func (o *IAuth) MakeToken(payload *context.Payload) (*context.JwtInfo, error) {
 		return nil, err
 	}
 
-	return jwtInfo, nil
+	return jwtInfo, err
 }
 
 // jwt verify check
