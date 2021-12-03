@@ -111,8 +111,10 @@ func DelAppLogout(c echo.Context) error {
 	resp.Success()
 
 	payload := new(context.Payload)
-	payload.LoginType = context.AppLogin
-	payload.Uuid = ctx.Payload.Uuid
+	{
+		payload.LoginType = context.AppLogin
+		payload.Uuid = ctx.Payload.Uuid
+	}
 
 	if err := auth.GetIAuth().DeleteJwtInfo(payload); err != nil {
 		resp.SetReturn(resultcode.Result_RedisError)

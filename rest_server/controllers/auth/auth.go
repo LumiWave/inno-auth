@@ -94,10 +94,12 @@ func (o *IAuth) VerifyAccessToken(accessToken string) (*context.Payload, error) 
 	}
 
 	payload := new(context.Payload)
-	payload.CompanyID = int(atClaims["company_id"].(float64))
-	payload.AppID = int(atClaims["app_id"].(float64))
-	payload.LoginType = context.LoginType(int(atClaims["login_type"].(float64)))
-	payload.Uuid = fmt.Sprintf("%v", atClaims["access_uuid"])
+	{
+		payload.CompanyID = int(atClaims["company_id"].(float64))
+		payload.AppID = int(atClaims["app_id"].(float64))
+		payload.LoginType = context.LoginType(int(atClaims["login_type"].(float64)))
+		payload.Uuid = fmt.Sprintf("%v", atClaims["access_uuid"])
+	}
 
 	return payload, nil
 }
@@ -121,10 +123,12 @@ func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.Payload, error
 	}
 
 	payload := new(context.Payload)
-	payload.CompanyID = int(atClaims["company_id"].(float64))
-	payload.AppID = int(atClaims["app_id"].(float64))
-	payload.LoginType = context.LoginType(int(atClaims["login_type"].(float64)))
-	payload.Uuid = fmt.Sprintf("%v", atClaims["refresh_uuid"])
+	{
+		payload.CompanyID = int(atClaims["company_id"].(float64))
+		payload.AppID = int(atClaims["app_id"].(float64))
+		payload.LoginType = context.LoginType(int(atClaims["login_type"].(float64)))
+		payload.Uuid = fmt.Sprintf("%v", atClaims["refresh_uuid"])
+	}
 
 	return payload, nil
 }
