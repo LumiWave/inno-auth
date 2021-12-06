@@ -30,8 +30,8 @@ type Payload struct {
 // InnoAuthServerContext API의 Request Context
 type InnoAuthContext struct {
 	*base.BaseContext
-	Payload Payload
-	JwtInfo JwtInfo
+	Payload *Payload
+	JwtInfo *JwtInfo
 }
 
 // NewInnoAuthServerContext 새로운 InnoAuthServer Context 생성
@@ -51,7 +51,7 @@ func AppendRequestParameter() {
 }
 
 func (o *InnoAuthContext) SetAuthContext(payload *Payload) {
-	o.Payload = *payload
+	o.Payload = payload
 }
 
 func MakeDt(data *int64) {
