@@ -6,14 +6,14 @@ import (
 )
 
 type Application struct {
-	AppID     int        `json:"app_id" query:"app_id"`
-	AppName   string     `json:"app_name"`
-	CompanyID int        `json:"company_id"`
-	Access    AccessInfo `json:"access_info"`
+	AppID     int    `json:"app_id" query:"app_id"`
+	AppName   string `json:"app_name"`
+	CompanyID int    `json:"company_id"`
+	Access    Access `json:"access"`
 }
 
 type RequestAppLoginInfo struct {
-	Access AccessInfo `json:"access_info" validate:"required"`
+	Access Access `json:"access" validate:"required"`
 }
 
 type ResponseAppInfo struct {

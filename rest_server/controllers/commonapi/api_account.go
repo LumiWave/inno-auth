@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
+	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
 )
 
@@ -31,15 +33,17 @@ func GetAccountExists(c echo.Context, account *context.Account) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PostAccountLogin(c echo.Context, account *context.RequestAccountAuth) error {
+func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountApplication) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// 1. 가입 정보 확인
+	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
+	ctx := base.GetContext(c).(*context.InnoAuthContext)
+	if _, err := model.GetDB().AccountAuthApplication(reqAuthAccountApp, ctx.Payload); err != nil {
+		log.Error(err)
+	} else {
 
-	// 2. redis duplicate check
-	// redis에 기존 정보가 있다면 기존에 발급된 토큰으로 응답한다.
+	}
 
-	// 3. create Auth Token
 	return c.JSON(http.StatusOK, resp)
 }

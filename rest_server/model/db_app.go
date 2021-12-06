@@ -11,7 +11,7 @@ import (
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
 
-func (o *DB) GetApplications(accountInfo *context.AccessInfo) (*context.Payload, int, error) {
+func (o *DB) GetApplications(accountInfo *context.Access) (*context.Payload, int, error) {
 	payload := new(context.Payload)
 	var returnValue orginMssql.ReturnStatus
 	_, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[D-INNO-ACCOUNT01].[dbo].[USPAU_Get_Applications]",
@@ -53,7 +53,7 @@ func (o *DB) DeleteApp(app *context.Application) error {
 	return nil
 }
 
-func (o *DB) SelectGetExistsAppAccount(Account context.AccessInfo) (*context.ResponseAppInfo, error) {
+func (o *DB) SelectGetExistsAppAccount(Account context.Access) (*context.ResponseAppInfo, error) {
 	sqlQuery := fmt.Sprintf("SELECT * FROM onbuff_inno.dbo.auth_app WHERE login_id='%v' AND login_pwd='%v'", Account.AccessID, Account.AccessPW)
 	rows, err := o.Mssql.Query(sqlQuery)
 	if err != nil {

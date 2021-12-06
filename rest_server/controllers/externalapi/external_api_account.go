@@ -12,20 +12,21 @@ import (
 
 // 회원 로그인
 func (o *ExternalAPI) PostAccountLogin(c echo.Context) error {
-	//ctx := base.GetContext(c).
-	reqAccountAuth := new(context.RequestAccountAuth)
+	reqAuthAccountApp := new(context.ReqAuthAccountApplication)
 
-	if err := c.Bind(reqAccountAuth); err != nil {
+	// Request json 파싱
+	if err := c.Bind(reqAuthAccountApp); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	if err := reqAccountAuth.CheckValidate(); err != nil {
+	// Request 유효성 체크
+	if err := reqAuthAccountApp.CheckValidate(); err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusOK, err)
 	}
 
-	return commonapi.PostAccountLogin(c, reqAccountAuth)
+	return commonapi.PostAccountLogin(c, reqAuthAccountApp)
 }
 
 // App 존재 여부 확인
