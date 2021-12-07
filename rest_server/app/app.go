@@ -76,7 +76,7 @@ func (o *ServerApp) NewDB(conf *config.ServerConfig) error {
 		log.Errorf("db port error : %v", port)
 		return err
 	}
-	mssqlDB, err := basedb.GetMssql("", " ", auth.ID, auth.Password, auth.Host, int(port))
+	mssqlDB, err := basedb.GetMssql("D-INNO-ACCOUNT01", " ", auth.ID, auth.Password, auth.Host, int(port))
 	if err != nil {
 		log.Errorf("err: %v, val: %v, %v, %v, %v, %v, %v",
 			err, auth.Host, auth.ID, auth.Password, auth.Database, auth.PoolSize, auth.IdleSize)
