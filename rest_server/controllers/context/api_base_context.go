@@ -3,7 +3,7 @@ package context
 type api_kind int
 
 const (
-	Api_create_NewWallet = 0
+	Api_token_address_new = iota
 )
 
 type ApiInfo struct {
@@ -11,5 +11,5 @@ type ApiInfo struct {
 }
 
 var ApiList = map[api_kind]ApiInfo{
-	Api_create_NewWallet: {Uri: "%s/m1.0/token/address/new"}, // token-manager
+	Api_token_address_new:     {Uri: "%s/m1.0/token/address/new"},     // token-manager
 }
