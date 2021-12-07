@@ -28,6 +28,10 @@ type TokenManagerServer struct {
 	Uri string `yaml:"uri"`
 }
 
+type PointManagerServer struct {
+	Uri string `yaml:"uri"`
+}
+
 type ServerConfig struct {
 	baseconf.Config `yaml:",inline"`
 
@@ -36,6 +40,7 @@ type ServerConfig struct {
 	MssqlDBAuth  baseconf.DBAuth    `yaml:"mssql_db_auth"`
 	Auth         ApiAuth            `yaml:"api_auth"`
 	TokenManager TokenManagerServer `yaml:"token_manager"`
+	PointManager PointManagerServer `yaml:"point_manager"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {
