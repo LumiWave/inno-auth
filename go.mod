@@ -18,6 +18,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 	github.com/golang/snappy v0.0.3 // indirect
+	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/googollee/go-engine.io v1.0.1 // indirect
 	github.com/googollee/go-socket.io v1.0.1 // indirect
