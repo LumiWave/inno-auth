@@ -30,15 +30,3 @@ func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
 func (o *ExternalAPI) DelAppLogout(c echo.Context) error {
 	return commonapi.DelAppLogout(c)
 }
-
-// App 존재 여부 확인
-func (o *ExternalAPI) GetAppExists(c echo.Context) error {
-	app := context.NewApplication()
-
-	if err := c.Bind(app); err != nil {
-		log.Error(err)
-		return base.BaseJSONInternalServerError(c, err)
-	}
-
-	return commonapi.GetAppExists(c, app)
-}
