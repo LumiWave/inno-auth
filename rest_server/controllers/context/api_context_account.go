@@ -29,6 +29,15 @@ type RespAuthAccountApplication struct {
 	CoinID     int
 	CoinName   string
 }
+
+type ReqNewWallet struct {
+	Symbol   string `json:"symbol" url:"symbol"`
+	NickName string `json:"nickname" url:"nickname"`
+}
+
+type RespNewWallet struct {
+	Symbol  string `json:"symbol"`
+	Address string `json:"address"`
 }
 
 func NewAccount() *Account {
