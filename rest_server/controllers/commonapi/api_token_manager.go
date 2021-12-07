@@ -12,7 +12,7 @@ import (
 
 // [INT] 새 지갑 주소 생성 요청
 func GetTokenAddressNew(reqNewWallet *context.ReqNewWallet) (*context.RespNewWallet, error) {
-	apiInfo := context.ApiList[context.Api_token_address_new]
+	apiInfo := context.ApiList[context.Api_get_token_address_new]
 	apiInfo.Uri = fmt.Sprintf(apiInfo.Uri, config.GetInstance().TokenManager.Uri)
 
 	apiResp, err := baseapi.HttpCall(apiInfo.Uri, "", "GET", bytes.NewBuffer(nil), reqNewWallet)
@@ -27,8 +27,9 @@ func GetTokenAddressNew(reqNewWallet *context.ReqNewWallet) (*context.RespNewWal
 	}
 
 	respValue := apiResp.Value.(map[string]interface{})
-	resp := new(context.RespNewWallet)
-	resp.Symbol = respValue["symbol"].(string)
-	resp.Address = respValue["address"].(string)
+	resp := &context.RespNewWallet{
+		Symbol:  respValue["symbol"].(string),
+		Address: respValue["address"].(string),
+	}
 	return resp, nil
 }

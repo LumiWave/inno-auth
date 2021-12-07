@@ -17,26 +17,41 @@ func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountA
 
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
-	if respAuth, err := model.GetDB().AccountAuthApplication(reqAuthAccountApp, ctx.Payload); err != nil {
+	if respAuth, err := model.GetDB().AccountAuthApplication(reqAuthAccountApp, ctx.Payload); err != nil || respAuth == nil {
 		// 에러
 		log.Error(err)
+		resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
+		return c.JSON(http.StatusOK, resp)
 	} else {
 		reqAuthAccountApp.Account.AUID = respAuth.AUID
 
 		// 2. 신규/기존 유저에 따른 분기 처리
 		// 신규 유저
 		if respAuth.IsJoined == 1 {
-			// 1. token-manager에 새 지갑 주소 생성 요청
-			reqNewWallet := new(context.ReqNewWallet)
-			reqNewWallet.Symbol = "ETH"
-			reqNewWallet.NickName = reqAuthAccountApp.Account.SocialID
+			// 1. point-manager 멤버 등록
+			reqPointMemberRegister := &context.ReqPointMemberRegister{
+				AUID:       respAuth.AUID,
+				CUID:       reqAuthAccountApp.Account.SocialID,
+				AppID:      ctx.Payload.AppID,
+				DataBaseID: respAuth.DataBaseID,
+			}
+			if err := PostPointMemberRegister(reqPointMemberRegister); err != nil {
+				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
+				return c.JSON(http.StatusOK, resp)
+			}
+
+			// 2. token-manager에 새 지갑 주소 생성 요청
+			reqNewWallet := &context.ReqNewWallet{
+				Symbol:   "ETH",
+				NickName: reqAuthAccountApp.Account.SocialID,
+			}
 			if tokenInfo, err := GetTokenAddressNew(reqNewWallet); err != nil {
-				resp.SetReturn(resultcode.Result_TokenManager_AddressNew)
+				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 			} else {
 				resp.Value = tokenInfo
 			}
 
-			// 2. [DB] 지갑 생성 프로시저 호출
+			// 3. [DB] 지갑 생성 프로시저 호출
 
 		} else { // 기존 유저
 			// 1. token-manager 호출X -> point-manager에 포인트 수량 정보 요청

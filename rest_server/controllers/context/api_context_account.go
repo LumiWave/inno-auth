@@ -40,6 +40,13 @@ type RespNewWallet struct {
 	Address string `json:"address"`
 }
 
+type ReqPointMemberRegister struct {
+	AUID       int    `json:"au_id"`
+	CUID       string `json:"cu_id"`
+	AppID      int    `json:"app_id"`
+	DataBaseID int    `json:"database_id"`
+}
+
 func NewAccount() *Account {
 	return new(Account)
 }
