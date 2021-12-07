@@ -11,5 +11,5 @@ type ApiInfo struct {
 }
 
 var ApiList = map[api_kind]ApiInfo{
-	Api_create_NewWallet: {Uri: "%s/m1.0/token/address/new"},
+	Api_create_NewWallet: {Uri: "%s/m1.0/token/address/new"}, // token-manager
 }
