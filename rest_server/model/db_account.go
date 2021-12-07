@@ -35,12 +35,3 @@ func (o *DB) AccountAuthApplication(reqAuthAccountApp *context.ReqAuthAccountApp
 
 	return resp, err
 }
-
-func (o *DB) AddAccountCoin(reqAuthAccountApp *context.ReqAuthAccountApplication) error {
-	var returnValue orginMssql.ReturnStatus
-	_, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[D-INNO-ACCOUNT01].[dbo].[USPAU_Add_AccountCoins]",
-		sql.Named("AUID", reqAuthAccountApp.Account.AUID), sql.Named("SocialType", reqAuthAccountApp.Account.SocialType),
-		&returnValue)
-
-	return err
-}

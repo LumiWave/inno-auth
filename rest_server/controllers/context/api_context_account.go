@@ -6,7 +6,6 @@ import (
 )
 
 type Account struct {
-	AUID       int    `json:"au_id"`
 	SocialID   string `json:"social_id" validate:"required"`
 	SocialType int    `json:"social_type" validate:"required"`
 }

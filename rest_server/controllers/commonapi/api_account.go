@@ -23,8 +23,6 @@ func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountA
 		resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 		return c.JSON(http.StatusOK, resp)
 	} else {
-		reqAuthAccountApp.Account.AUID = respAuth.AUID
-
 		// 2. 신규/기존 유저에 따른 분기 처리
 		// 신규 유저
 		if respAuth.IsJoined == 1 {
