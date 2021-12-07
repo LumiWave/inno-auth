@@ -19,6 +19,5 @@ func (o *ExternalAPI) PostTokenRenew(c echo.Context) error {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
-
 	return commonapi.PostTokenRenew(c, renewTokenRequest)
 }
