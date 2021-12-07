@@ -10,29 +10,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostAccountRegister(c echo.Context, account *context.Account) error {
-	resp := new(base.BaseResponse)
-	resp.Success()
-
-	return c.JSON(http.StatusOK, resp)
-}
-
-func GetAccountExists(c echo.Context, account *context.Account) error {
-	resp := new(base.BaseResponse)
-	resp.Success()
-
-	// if value, err := model.GetDB().SelectGetAccountInfoByASocialUID(account.SocialID); err != nil {
-	// 	resp.SetReturn(resultcode.Result_DBError)
-	// } else {
-	// 	if len(value.SocialID) != 0 {
-	// 		resp.Value = value
-	// 	} else {
-	// 		resp.SetReturn(resultcode.Result_Auth_EmptyAccountSocialInfo)
-	// 	}
-	// }
-	return c.JSON(http.StatusOK, resp)
-}
-
 func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountApplication) error {
 	resp := new(base.BaseResponse)
 	resp.Success()

@@ -28,15 +28,3 @@ func (o *ExternalAPI) PostAccountLogin(c echo.Context) error {
 
 	return commonapi.PostAccountLogin(c, reqAuthAccountApp)
 }
-
-// App 존재 여부 확인
-func (o *ExternalAPI) GetAccountExists(c echo.Context) error {
-	account := context.NewAccount()
-
-	if err := c.Bind(account); err != nil {
-		log.Error(err)
-		return base.BaseJSONInternalServerError(c, err)
-	}
-
-	return commonapi.GetAccountExists(c, account)
-}
