@@ -26,6 +26,9 @@ type RespAuthAccountApplication struct {
 	IsJoined   int
 	AUID       int
 	DataBaseID int
+	CoinID     int
+	CoinName   string
+}
 }
 
 func NewAccount() *Account {
