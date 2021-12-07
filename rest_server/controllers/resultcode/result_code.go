@@ -23,6 +23,7 @@ const (
 	Result_Auth_EmptyAccountSocialID     = 22001
 	Result_Auth_EmptyAccountSocialType   = 22002
 	Result_Auth_EmptysAccountAccessToken = 22003
+	Result_TokenManager_AddressNew       = 22004
 
 	Result_Auth_MakeTokenError = 23001
 )
@@ -50,6 +51,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_EmptyAccountSocialID:     "Empty Account SocialID",
 	Result_Auth_EmptyAccountSocialType:   "Empty Account SocialType",
 	Result_Auth_EmptysAccountAccessToken: "Empty Account AccessToken",
+	Result_TokenManager_AddressNew:       "Token Manager Get Address New Error",
 
 	Result_Auth_MakeTokenError: "Make Token Error.",
 }
