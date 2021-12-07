@@ -24,13 +24,18 @@ type ApiAuth struct {
 	AesKey                   string `yaml:"aes_key"`
 }
 
+type TokenManagerServer struct {
+	Uri string `yaml:"uri"`
+}
+
 type ServerConfig struct {
 	baseconf.Config `yaml:",inline"`
 
-	InnoAuth    InnoAuthServer  `yaml:"inno_auth_server"`
-	MysqlDBAuth baseconf.DBAuth `yaml:"mysql_db_auth"`
-	MssqlDBAuth baseconf.DBAuth `yaml:"mssql_db_auth"`
-	Auth        ApiAuth         `yaml:"api_auth"`
+	InnoAuth     InnoAuthServer     `yaml:"inno_auth_server"`
+	MysqlDBAuth  baseconf.DBAuth    `yaml:"mysql_db_auth"`
+	MssqlDBAuth  baseconf.DBAuth    `yaml:"mssql_db_auth"`
+	Auth         ApiAuth            `yaml:"api_auth"`
+	TokenManager TokenManagerServer `yaml:"token_manager"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {
