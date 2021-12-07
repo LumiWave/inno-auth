@@ -12,10 +12,11 @@ import (
 func (o *DB) AccountAuthApplication(reqAuthAccountApp *context.ReqAuthAccountApplication, payload *context.Payload) (*context.RespAuthAccountApplication, error) {
 	resp := new(context.RespAuthAccountApplication)
 	var returnValue orginMssql.ReturnStatus
-	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[D-INNO-ACCOUNT01].[dbo].[USPAU_Auth_AccountApplications]",
+	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[dbo].[USPAU_Auth_Members]",
 		sql.Named("SocialID", reqAuthAccountApp.Account.SocialID), sql.Named("SocialType", reqAuthAccountApp.Account.SocialType),
 		sql.Named("AppID", payload.AppID), sql.Named("CompanyID", payload.CompanyID),
-		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}), sql.Named("AUID", sql.Out{Dest: &resp.AUID}), sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),
+		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}), sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
+		sql.Named("MUID", sql.Out{Dest: &resp.MUID}), sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),
 		&returnValue)
 	payload.LoginType = context.AccountLogin
 

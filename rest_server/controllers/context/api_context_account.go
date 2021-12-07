@@ -24,6 +24,7 @@ type ReqAuthAccountApplication struct {
 type RespAuthAccountApplication struct {
 	IsJoined   int
 	AUID       int
+	MUID       int
 	DataBaseID int
 	CoinID     int
 	CoinName   string
@@ -40,10 +41,10 @@ type RespNewWallet struct {
 }
 
 type ReqPointMemberRegister struct {
-	AUID       int    `json:"au_id"`
-	CUID       string `json:"cu_id"`
-	AppID      int    `json:"app_id"`
-	DataBaseID int    `json:"database_id"`
+	AUID       int `json:"au_id"`
+	MUID       int `json:"mu_id"`
+	AppID      int `json:"app_id"`
+	DataBaseID int `json:"database_id"`
 }
 
 func NewAccount() *Account {

@@ -24,34 +24,31 @@ func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountA
 		return c.JSON(http.StatusOK, resp)
 	} else {
 		// 2. 신규/기존 유저에 따른 분기 처리
-		// 신규 유저
 		if respAuth.IsJoined == 1 {
+			// 신규 유저
 			// 1. point-manager 멤버 등록
-			reqPointMemberRegister := &context.ReqPointMemberRegister{
-				AUID:       respAuth.AUID,
-				CUID:       reqAuthAccountApp.Account.SocialID,
-				AppID:      ctx.Payload.AppID,
-				DataBaseID: respAuth.DataBaseID,
-			}
-			if err := PostPointMemberRegister(reqPointMemberRegister); err != nil {
+			if err := PointMemberRegister(respAuth.AUID, respAuth.MUID, ctx.Payload.AppID, respAuth.DataBaseID); err != nil {
 				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 				return c.JSON(http.StatusOK, resp)
 			}
-
 			// 2. token-manager에 새 지갑 주소 생성 요청
-			reqNewWallet := &context.ReqNewWallet{
-				Symbol:   "ETH",
-				NickName: reqAuthAccountApp.Account.SocialID,
+			symbolArray := []string{"ETH", respAuth.CoinName}
+			var addressNewData []*context.RespNewWallet
+			for _, symbol := range symbolArray {
+				respAddressNew, err := TokenAddressNew(symbol, reqAuthAccountApp.Account.SocialID)
+				if err != nil {
+					resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+					return c.JSON(http.StatusOK, resp)
+				}
+				addressNewData = append(addressNewData, respAddressNew)
 			}
-			if tokenInfo, err := GetTokenAddressNew(reqNewWallet); err != nil {
-				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
-			} else {
-				resp.Value = tokenInfo
-			}
+
+			resp.Value = addressNewData
 
 			// 3. [DB] 지갑 생성 프로시저 호출
 
-		} else { // 기존 유저
+		} else {
+			// 기존 유저
 			// 1. token-manager 호출X -> point-manager에 포인트 수량 정보 요청
 		}
 
@@ -61,4 +58,22 @@ func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountA
 	}
 
 	return c.JSON(http.StatusOK, resp)
+}
+
+func PointMemberRegister(AUID int, MUID int, AppID int, DataBaseID int) error {
+	reqPointMemberRegister := &context.ReqPointMemberRegister{
+		AUID:       AUID,
+		MUID:       MUID,
+		AppID:      AppID,
+		DataBaseID: DataBaseID,
+	}
+	return PostPointMemberRegister(reqPointMemberRegister)
+}
+
+func TokenAddressNew(CoinName string, NickName string) (*context.RespNewWallet, error) {
+	reqNewWallet := &context.ReqNewWallet{
+		Symbol:   CoinName,
+		NickName: NickName,
+	}
+	return GetTokenAddressNew(reqNewWallet)
 }

@@ -12,7 +12,7 @@ import (
 func (o *DB) GetApplications(accountInfo *context.Access) (*context.Payload, int, error) {
 	payload := new(context.Payload)
 	var returnValue orginMssql.ReturnStatus
-	_, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[D-INNO-ACCOUNT01].[dbo].[USPAU_Get_Applications]",
+	_, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[dbo].[USPAU_Get_Applications]",
 		sql.Named("AccessID", accountInfo.AccessID), sql.Named("AccessPW", accountInfo.AccessPW),
 		sql.Named("AppID", sql.Out{Dest: &payload.AppID}), sql.Named("CompanyID", sql.Out{Dest: &payload.CompanyID}),
 		&returnValue)
