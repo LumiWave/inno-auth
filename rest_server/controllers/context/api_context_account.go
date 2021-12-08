@@ -13,7 +13,6 @@ type Account struct {
 
 // 계정 코인량
 type AccountCoin struct {
-	AUID          int    `json:"au_id"`
 	CoinID        int    `json:"coin_id"`
 	WalletAddress string `json:"wallet_address"`
 	Quantity      string `json:"quantity"`
@@ -26,8 +25,14 @@ type ReqAccountLogin struct {
 
 // 계정 로그인 Response
 type RespAccountLogin struct {
-	WalletAddress []RespAddressNew `json:"wallet_address,omitempty"`
-	JwtInfo       JwtInfo          `json:"jwt_info"`
+	MUID       int     `json:"mu_id"`
+	DatabaseID int     `json:"database_id"`
+	Points     []Point `json:"points"`
+}
+
+type CoinInfo struct {
+	CoinID   int
+	CoinName string
 }
 
 // USPAU_Auth_Members 프로시저 Response
@@ -36,8 +41,7 @@ type RespAuthMember struct {
 	AUID       int
 	MUID       int
 	DataBaseID int
-	CoinID     int
-	CoinName   string
+	CoinList   []CoinInfo
 }
 
 // token-manager 새 지갑 주소 생성 Request
@@ -47,7 +51,8 @@ type ReqAddressNew struct {
 }
 
 // token-manager 새 지갑 주소 생성 Response
-type RespAddressNew struct {
+type WalletInfo struct {
+	CoinID  int    `json:"coin_id"`
 	Symbol  string `json:"symbol"`
 	Address string `json:"address"`
 }
@@ -58,6 +63,14 @@ type ReqPointMemberRegister struct {
 	MUID       int `json:"mu_id"`
 	AppID      int `json:"app_id"`
 	DataBaseID int `json:"database_id"`
+}
+
+type Point struct {
+	PointID  int `json:"point_id"`
+	Quantity int `json:"quantity"`
+}
+type RespPointMemberRegister struct {
+	Points []Point `json:"points"`
 }
 
 func NewAccount() *Account {

@@ -18,6 +18,7 @@ const (
 	Result_Procedure_Auth_Members         = 22003
 	Result_Api_Post_Point_Member_Register = 22004
 	Result_Api_Get_Token_Address_New      = 22005
+	Result_Procedure_Add_Account_Coins    = 22006
 
 	Result_Auth_MakeTokenError = 23001
 )
@@ -40,6 +41,7 @@ var ResultCodeText = map[int]string{
 	Result_Procedure_Auth_Members:         "Error Procedure Auth Members",
 	Result_Api_Post_Point_Member_Register: "Error API Post Point Member Register",
 	Result_Api_Get_Token_Address_New:      "Error API Get Token Address New",
+	Result_Procedure_Add_Account_Coins:    "Error Procedure Add Accounts Coins",
 
 	Result_Auth_MakeTokenError: "Make Token Error.",
 }

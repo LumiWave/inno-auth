@@ -22,17 +22,52 @@ func (o *DB) AuthMembers(reqAccountLogin *context.ReqAccountLogin, payload *cont
 
 	// 신규 유저(IsJoined==1)일 경우 CoinID, CoinName을 추가로 전달 받는다.
 	if resp.IsJoined == 1 {
+		var coinID int
+		var coinName string
 		for rows.Next() {
-			if err := rows.Scan(&resp.CoinID, &resp.CoinName); err != nil {
+			if err := rows.Scan(&coinID, &coinName); err != nil {
 				log.Error(err)
 				return nil, err
+			} else {
+				coinInfo := &context.CoinInfo{
+					CoinID:   coinID,
+					CoinName: coinName,
+				}
+				resp.CoinList = append(resp.CoinList, *coinInfo)
 			}
 		}
 	}
+	defer rows.Close()
 
 	if returnValue != 1 {
 		return nil, err
 	}
 
 	return resp, err
+}
+
+func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo []context.WalletInfo) error {
+	execTvp := "exec [dbo].[USPAU_Add_AccountCoins] @AUID, @TVP;"
+
+	var tableData []context.AccountCoin
+
+	for _, wallet := range walletInfo {
+		data := &context.AccountCoin{
+			CoinID:        wallet.CoinID,
+			WalletAddress: wallet.Address,
+			Quantity:      "",
+		}
+		tableData = append(tableData, *data)
+	}
+
+	tvpType := orginMssql.TVP{
+		TypeName: "dbo.TVP_AccountCoins",
+		Value:    tableData,
+	}
+	_, err := o.Mssql.GetDB().Exec(execTvp, sql.Named("AUID", respAuthMember.AUID), sql.Named("TVP", tvpType))
+	if err != nil {
+		log.Error(err)
+	}
+
+	return nil
 }

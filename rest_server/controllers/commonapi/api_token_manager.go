@@ -11,7 +11,7 @@ import (
 )
 
 // [INT] 새 지갑 주소 생성 요청
-func GetTokenAddressNew(reqAddressNew *context.ReqAddressNew) (*context.RespAddressNew, error) {
+func GetTokenAddressNew(reqAddressNew *context.ReqAddressNew) (*context.WalletInfo, error) {
 	apiInfo := context.ApiList[context.Api_get_token_address_new]
 	apiInfo.Uri = fmt.Sprintf(apiInfo.Uri, config.GetInstance().TokenManager.Uri)
 
@@ -27,7 +27,8 @@ func GetTokenAddressNew(reqAddressNew *context.ReqAddressNew) (*context.RespAddr
 	}
 
 	respValue := apiResp.Value.(map[string]interface{})
-	resp := &context.RespAddressNew{
+	resp := &context.WalletInfo{
+		CoinID:  0,
 		Symbol:  respValue["symbol"].(string),
 		Address: respValue["address"].(string),
 	}
