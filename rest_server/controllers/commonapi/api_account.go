@@ -52,9 +52,17 @@ func PostAccountLogin(c echo.Context, reqAccountLogin *context.ReqAccountLogin) 
 			// 1. token-manager 호출X -> point-manager에 포인트 수량 정보 요청
 		}
 
-		// 3. 액세스/리프레시 토큰 생성
+		// 3. Access/Refresh 토큰 생성
+		jwtInfoValue, err := auth.GetIAuth().MakeToken(ctx.Payload)
+		if err != nil {
+			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+			return c.JSON(http.StatusOK, resp)
+		} else {
+			respAccountLogin.JwtInfo = *jwtInfoValue
+		}
 
 		// 4. 같이 데이터를 담아서 액세스토큰과 함께 게임서버로 전달해줌.
+		resp.Value = respAccountLogin
 	}
 
 	return c.JSON(http.StatusOK, resp)
