@@ -14,6 +14,9 @@ func GetTokenVerify(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
+	ctx := base.GetContext(c).(*context.InnoAuthContext)
+	resp.Value = ctx.Payload
+
 	return c.JSON(http.StatusOK, resp)
 }
 
