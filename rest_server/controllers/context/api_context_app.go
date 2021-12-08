@@ -1,10 +1,5 @@
 package context
 
-import (
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
-)
-
 type Application struct {
 	AppID     int    `json:"app_id" query:"app_id"`
 	AppName   string `json:"app_name"`
@@ -24,11 +19,4 @@ type ResponseAppInfo struct {
 
 func NewApplication() *Application {
 	return new(Application)
-}
-
-func (o *Application) CheckValidate() *base.BaseResponse {
-	if len(o.AppName) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAppName)
-	}
-	return nil
 }

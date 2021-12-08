@@ -22,7 +22,7 @@ func PostAccountLogin(c echo.Context, reqAccountLogin *context.ReqAccountLogin) 
 	if respAuth, err := model.GetDB().AuthMembers(reqAccountLogin, ctx.Payload); err != nil || respAuth == nil {
 		// 에러
 		log.Error(err)
-		resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
+		resp.SetReturn(resultcode.Result_Procedure_Auth_Members)
 		return c.JSON(http.StatusOK, resp)
 	} else {
 		// 2. 신규/기존 유저에 따른 분기 처리
