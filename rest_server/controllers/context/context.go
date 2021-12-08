@@ -21,10 +21,10 @@ var LoginTypeText = map[LoginType]string{
 }
 
 type Payload struct {
-	CompanyID int
-	AppID     int
-	LoginType LoginType
-	Uuid      string
+	CompanyID int       `json:"company_id"`
+	AppID     int       `json:"app_id"`
+	LoginType LoginType `json:"login_type"`
+	Uuid      string    `json:"uuid"`
 }
 
 // InnoAuthServerContext API의 Request Context
