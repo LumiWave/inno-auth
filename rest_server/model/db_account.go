@@ -21,20 +21,18 @@ func (o *DB) AuthMembers(reqAccountLogin *context.ReqAccountLogin, payload *cont
 	payload.LoginType = context.AccountLogin
 
 	// 신규 유저(IsJoined==1)일 경우 CoinID, CoinName을 추가로 전달 받는다.
-	if resp.IsJoined == 1 {
-		var coinID int
-		var coinName string
-		for rows.Next() {
-			if err := rows.Scan(&coinID, &coinName); err != nil {
-				log.Error(err)
-				return nil, err
-			} else {
-				coinInfo := &context.CoinInfo{
-					CoinID:   coinID,
-					CoinName: coinName,
-				}
-				resp.CoinList = append(resp.CoinList, *coinInfo)
+	var coinID int
+	var coinName string
+	for rows.Next() {
+		if err := rows.Scan(&coinID, &coinName); err != nil {
+			log.Error(err)
+			return nil, err
+		} else {
+			coinInfo := &context.CoinInfo{
+				CoinID:   coinID,
+				CoinName: coinName,
 			}
+			resp.CoinList = append(resp.CoinList, *coinInfo)
 		}
 	}
 	defer rows.Close()

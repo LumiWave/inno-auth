@@ -25,9 +25,15 @@ type ReqAccountLogin struct {
 
 // 계정 로그인 Response
 type RespAccountLogin struct {
-	MUID       int     `json:"mu_id"`
-	DatabaseID int     `json:"database_id"`
-	Points     []Point `json:"points"`
+	MemberInfo MemberInfo `json:"member_info"`
+	PointList  []Point    `json:"points"`
+}
+
+// 멤버 정보 (로그인 완료 시 리턴)
+type MemberInfo struct {
+	MUID       int `json:"mu_id" url:"mu_id"`
+	DataBaseID int `json:"database_id" url:"database_id"`
+	IsJoined   int `json:"is_joined"`
 }
 
 type CoinInfo struct {
@@ -68,9 +74,6 @@ type ReqPointMemberRegister struct {
 type Point struct {
 	PointID  int `json:"point_id"`
 	Quantity int `json:"quantity"`
-}
-type RespPointMemberRegister struct {
-	Points []Point `json:"points"`
 }
 
 func NewAccount() *Account {

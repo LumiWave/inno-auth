@@ -27,12 +27,12 @@ func PostAccountLogin(c echo.Context, reqAccountLogin *context.ReqAccountLogin) 
 		if respAuthMember.IsJoined == 1 {
 			// 신규 유저
 			// 1. point-manager 멤버 등록
-			if respPointMemberRegister, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
+			if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
 				log.Error(err)
 				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 				return c.JSON(http.StatusOK, resp)
 			} else {
-				respAccountLogin.Points = respPointMemberRegister.Points
+				respAccountLogin.PointList = pointList
 			}
 
 			// 2. token-manager에 새 지갑 주소 생성 요청
@@ -53,18 +53,26 @@ func PostAccountLogin(c echo.Context, reqAccountLogin *context.ReqAccountLogin) 
 		} else {
 			// 기존 유저
 			// 1. token-manager 호출X -> point-manager에 포인트 수량 정보 요청
+			if pointList, err := GetPointApp(respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
+				log.Error(err)
+				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+				return c.JSON(http.StatusOK, resp)
+			} else {
+				respAccountLogin.PointList = pointList
+			}
 		}
 
 		// 3. 같이 데이터를 담아서 게임서버로 전달해줌.
-		respAccountLogin.MUID = respAuthMember.MUID
-		respAccountLogin.DatabaseID = respAuthMember.DataBaseID
+		respAccountLogin.MemberInfo.IsJoined = respAuthMember.IsJoined
+		respAccountLogin.MemberInfo.MUID = respAuthMember.MUID
+		respAccountLogin.MemberInfo.DataBaseID = respAuthMember.DataBaseID
 		resp.Value = respAccountLogin
 	}
 
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PointMemberRegister(AUID int, MUID int, AppID int, DataBaseID int) (*context.RespPointMemberRegister, error) {
+func PointMemberRegister(AUID int, MUID int, AppID int, DataBaseID int) ([]context.Point, error) {
 	reqPointMemberRegister := &context.ReqPointMemberRegister{
 		AUID:       AUID,
 		MUID:       MUID,
