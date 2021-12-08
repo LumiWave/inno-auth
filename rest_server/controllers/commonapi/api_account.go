@@ -5,19 +5,21 @@ import (
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
 )
 
-func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountApplication) error {
+func PostAccountLogin(c echo.Context, reqAccountLogin *context.ReqAccountLogin) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
+	respAccountLogin := new(context.RespAccountLogin)
 
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
-	if respAuth, err := model.GetDB().AccountAuthApplication(reqAuthAccountApp, ctx.Payload); err != nil || respAuth == nil {
+	if respAuth, err := model.GetDB().AuthMembers(reqAccountLogin, ctx.Payload); err != nil || respAuth == nil {
 		// 에러
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
@@ -33,17 +35,15 @@ func PostAccountLogin(c echo.Context, reqAuthAccountApp *context.ReqAuthAccountA
 			}
 			// 2. token-manager에 새 지갑 주소 생성 요청
 			symbolArray := []string{"ETH", respAuth.CoinName}
-			var addressNewData []*context.RespNewWallet
+			//var addressNewData []*context.RespAddressNew
 			for _, symbol := range symbolArray {
-				respAddressNew, err := TokenAddressNew(symbol, reqAuthAccountApp.Account.SocialID)
+				respAddressNew, err := TokenAddressNew(symbol, reqAccountLogin.Account.SocialID)
 				if err != nil {
 					resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 					return c.JSON(http.StatusOK, resp)
 				}
-				addressNewData = append(addressNewData, respAddressNew)
+				respAccountLogin.WalletAddress = append(respAccountLogin.WalletAddress, *respAddressNew)
 			}
-
-			resp.Value = addressNewData
 
 			// 3. [DB] 지갑 생성 프로시저 호출
 
@@ -70,10 +70,10 @@ func PointMemberRegister(AUID int, MUID int, AppID int, DataBaseID int) error {
 	return PostPointMemberRegister(reqPointMemberRegister)
 }
 
-func TokenAddressNew(CoinName string, NickName string) (*context.RespNewWallet, error) {
-	reqNewWallet := &context.ReqNewWallet{
+func TokenAddressNew(CoinName string, NickName string) (*context.RespAddressNew, error) {
+	reqAddressNew := &context.ReqAddressNew{
 		Symbol:   CoinName,
 		NickName: NickName,
 	}
-	return GetTokenAddressNew(reqNewWallet)
+	return GetTokenAddressNew(reqAddressNew)
 }
