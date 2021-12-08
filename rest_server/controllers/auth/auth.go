@@ -92,13 +92,11 @@ func (o *IAuth) VerifyAccessToken(accessToken string) (*context.Payload, error) 
 	if _, ok := jwtData.Claims.(jwt.MapClaims); !ok && !jwtData.Valid {
 		return nil, errors.New("invalid access jwt")
 	}
-
-	payload := new(context.Payload)
-	{
-		payload.CompanyID = int(atClaims["company_id"].(float64))
-		payload.AppID = int(atClaims["app_id"].(float64))
-		payload.LoginType = context.LoginType(int(atClaims["login_type"].(float64)))
-		payload.Uuid = fmt.Sprintf("%v", atClaims["access_uuid"])
+	payload := &context.Payload{
+		CompanyID: int(atClaims["company_id"].(float64)),
+		AppID:     int(atClaims["app_id"].(float64)),
+		LoginType: context.LoginType(int(atClaims["login_type"].(float64))),
+		Uuid:      fmt.Sprintf("%v", atClaims["access_uuid"]),
 	}
 
 	return payload, nil
@@ -122,12 +120,11 @@ func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.Payload, error
 		return nil, errors.New("invalid refresh jwt")
 	}
 
-	payload := new(context.Payload)
-	{
-		payload.CompanyID = int(atClaims["company_id"].(float64))
-		payload.AppID = int(atClaims["app_id"].(float64))
-		payload.LoginType = context.LoginType(int(atClaims["login_type"].(float64)))
-		payload.Uuid = fmt.Sprintf("%v", atClaims["refresh_uuid"])
+	payload := &context.Payload{
+		CompanyID: int(atClaims["company_id"].(float64)),
+		AppID:     int(atClaims["app_id"].(float64)),
+		LoginType: context.LoginType(int(atClaims["login_type"].(float64))),
+		Uuid:      fmt.Sprintf("%v", atClaims["refresh_uuid"]),
 	}
 
 	return payload, nil
