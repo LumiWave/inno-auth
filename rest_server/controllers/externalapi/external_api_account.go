@@ -11,20 +11,20 @@ import (
 )
 
 // 회원 로그인
-func (o *ExternalAPI) PostAccountLogin(c echo.Context) error {
-	reqAccountLogin := new(context.ReqAccountLogin)
+func (o *ExternalAPI) PostAccountVerify(c echo.Context) error {
+	account := new(context.Account)
 
 	// Request json 파싱
-	if err := c.Bind(reqAccountLogin); err != nil {
+	if err := c.Bind(account); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
 	// Request 유효성 체크
-	if err := reqAccountLogin.CheckValidate(); err != nil {
+	if err := account.CheckValidate(); err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusOK, err)
 	}
 
-	return commonapi.PostAccountLogin(c, reqAccountLogin)
+	return commonapi.PostAccountVerify(c, account)
 }

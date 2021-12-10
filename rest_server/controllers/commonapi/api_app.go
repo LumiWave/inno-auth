@@ -11,12 +11,12 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostAppLogin(c echo.Context, reqAppLoginInfo *context.RequestAppLoginInfo) error {
+func PostAppLogin(c echo.Context, access *context.Access) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
 	// 1. 인증 서버 접근
-	if payload, returnValue, err := model.GetDB().GetApplications(&reqAppLoginInfo.Access); err != nil || returnValue != 1 {
+	if payload, returnValue, err := model.GetDB().GetApplications(access); err != nil || returnValue != 1 {
 		if err != nil {
 			resp.SetReturn(resultcode.Result_DBError)
 		} else {

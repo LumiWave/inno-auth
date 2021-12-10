@@ -11,14 +11,14 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostAccountLogin(c echo.Context, reqAccountLogin *context.ReqAccountLogin) error {
+func PostAccountVerify(c echo.Context, account *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 	respAccountLogin := new(context.RespAccountLogin)
 
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
-	if respAuthMember, err := model.GetDB().AuthMembers(reqAccountLogin, ctx.Payload); err != nil || respAuthMember == nil {
+	if respAuthMember, err := model.GetDB().AuthMembers(account, ctx.Payload); err != nil || respAuthMember == nil {
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_Procedure_Auth_Members)
 		return c.JSON(http.StatusOK, resp)
@@ -36,7 +36,7 @@ func PostAccountLogin(c echo.Context, reqAccountLogin *context.ReqAccountLogin) 
 			}
 
 			// 2. token-manager에 새 지갑 주소 생성 요청
-			addressList, err := TokenAddressNew(respAuthMember.CoinList, reqAccountLogin.Account.SocialID)
+			addressList, err := TokenAddressNew(respAuthMember.CoinList, account.SocialID)
 			if err != nil {
 				log.Error(err)
 				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)

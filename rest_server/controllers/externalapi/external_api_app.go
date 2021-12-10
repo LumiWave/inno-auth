@@ -12,18 +12,18 @@ import (
 
 // App 로그인
 func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
-	reqAppLoginInfo := new(context.RequestAppLoginInfo)
+	access := new(context.Access)
 
-	if err := c.Bind(reqAppLoginInfo); err != nil {
+	if err := c.Bind(access); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
-	if err := reqAppLoginInfo.Access.CheckValidate(); err != nil {
+	if err := access.CheckValidate(); err != nil {
 		return c.JSON(http.StatusOK, err)
 	}
 
-	return commonapi.PostAppLogin(c, reqAppLoginInfo)
+	return commonapi.PostAppLogin(c, access)
 }
 
 // App 로그아웃

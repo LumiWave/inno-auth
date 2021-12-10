@@ -9,11 +9,11 @@ import (
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
 
-func (o *DB) AuthMembers(reqAccountLogin *context.ReqAccountLogin, payload *context.Payload) (*context.RespAuthMember, error) {
+func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*context.RespAuthMember, error) {
 	resp := new(context.RespAuthMember)
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[dbo].[USPAU_Auth_Members]",
-		sql.Named("SocialID", reqAccountLogin.Account.SocialID), sql.Named("SocialType", reqAccountLogin.Account.SocialType),
+		sql.Named("SocialID", account.SocialID), sql.Named("SocialType", account.SocialType),
 		sql.Named("AppID", payload.AppID), sql.Named("CompanyID", payload.CompanyID),
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}), sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
 		sql.Named("MUID", sql.Out{Dest: &resp.MUID}), sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),

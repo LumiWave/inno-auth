@@ -18,11 +18,6 @@ type AccountCoin struct {
 	Quantity      string `json:"quantity"`
 }
 
-// 계정 로그인 Request
-type ReqAccountLogin struct {
-	Account Account `json:"account" validate:"required"`
-}
-
 // 계정 로그인 Response
 type RespAccountLogin struct {
 	MemberInfo MemberInfo `json:"member_info"`
@@ -36,6 +31,7 @@ type MemberInfo struct {
 	IsJoined   int `json:"is_joined"`
 }
 
+// 코인 정보
 type CoinInfo struct {
 	CoinID   int
 	CoinName string
@@ -71,6 +67,7 @@ type ReqPointMemberRegister struct {
 	DataBaseID int `json:"database_id"`
 }
 
+// 포인트 수량
 type Point struct {
 	PointID  int `json:"point_id"`
 	Quantity int `json:"quantity"`
@@ -80,10 +77,10 @@ func NewAccount() *Account {
 	return new(Account)
 }
 
-func (o *ReqAccountLogin) CheckValidate() *base.BaseResponse {
-	if len(o.Account.SocialID) == 0 {
+func (o *Account) CheckValidate() *base.BaseResponse {
+	if len(o.SocialID) == 0 {
 		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialID)
-	} else if o.Account.SocialType == 0 {
+	} else if o.SocialType == 0 {
 		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialType)
 	}
 	return nil
