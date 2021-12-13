@@ -1,3 +1,6 @@
+echo "git inno-auth up-to-date"
+git pull
+
 echo "remove directory bin"
 rm -rf bin/*
 
