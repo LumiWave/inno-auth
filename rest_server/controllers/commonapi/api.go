@@ -9,6 +9,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/schedule"
 
 	"github.com/labstack/echo"
 )
@@ -64,4 +65,14 @@ func PreCheck(c echo.Context) base.PreCheckResponse {
 	return base.PreCheckResponse{
 		IsSucceed: true,
 	}
+}
+
+func GetNodeMetric(c echo.Context) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	node := schedule.GetSystemMonitor().GetMetricInfo()
+	resp.Value = node
+
+	return c.JSON(http.StatusOK, resp)
 }
