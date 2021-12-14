@@ -25,6 +25,7 @@ type Payload struct {
 	AppID     int       `json:"app_id"`
 	LoginType LoginType `json:"login_type"`
 	Uuid      string    `json:"uuid"`
+	IsEnabled bool      `json:"is_enabled"`
 }
 
 // InnoAuthServerContext API의 Request Context

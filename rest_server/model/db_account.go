@@ -9,10 +9,17 @@ import (
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
 
+const (
+	USPAU_Auth_Members     = "[dbo].[USPAU_Auth_Members]"
+	USPAU_Add_AccountCoins = "[dbo].[USPAU_Add_AccountCoins]"
+
+	TVP_AccountCoins = "dbo.TVP_AccountCoins"
+)
+
 func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*context.RespAuthMember, error) {
 	resp := new(context.RespAuthMember)
 	var returnValue orginMssql.ReturnStatus
-	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), "[dbo].[USPAU_Auth_Members]",
+	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Members,
 		sql.Named("SocialID", account.SocialID), sql.Named("SocialType", account.SocialType),
 		sql.Named("AppID", payload.AppID), sql.Named("CompanyID", payload.CompanyID),
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}), sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
@@ -45,7 +52,7 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 }
 
 func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo []context.WalletInfo) error {
-	execTvp := "exec [dbo].[USPAU_Add_AccountCoins] @AUID, @TVP;"
+	execTvp := "exec " + USPAU_Add_AccountCoins + " @AUID, @TVP;"
 
 	var tableData []context.AccountCoin
 
@@ -59,7 +66,7 @@ func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo 
 	}
 
 	tvpType := orginMssql.TVP{
-		TypeName: "dbo.TVP_AccountCoins",
+		TypeName: TVP_AccountCoins,
 		Value:    tableData,
 	}
 	_, err := o.Mssql.GetDB().Exec(execTvp, sql.Named("AUID", respAuthMember.AUID), sql.Named("TVP", tvpType))

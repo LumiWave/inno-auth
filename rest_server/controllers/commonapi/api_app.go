@@ -23,12 +23,16 @@ func PostAppLogin(c echo.Context, access *context.Access) error {
 			resp.SetReturn(resultcode.Result_Auth_NotMatchAppAccount)
 		}
 	} else {
-		// 2. Access, Refresh 토큰 생성
-		if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
-			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
-			return c.JSON(http.StatusOK, resp)
+		if !payload.IsEnabled {
+			resp.SetReturn(resultcode.Result_Auth_DeactivatedAccount)
 		} else {
-			resp.Value = jwtInfoValue
+			// 2. Access, Refresh 토큰 생성
+			if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
+				resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+				return c.JSON(http.StatusOK, resp)
+			} else {
+				resp.Value = jwtInfoValue
+			}
 		}
 	}
 

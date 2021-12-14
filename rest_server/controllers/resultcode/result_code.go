@@ -12,6 +12,7 @@ const (
 	Result_Auth_NotMatchAppAccount = 21001
 	Result_Auth_EmptyAccessID      = 21002
 	Result_Auth_EmptyAccessPW      = 21003
+	Result_Auth_DeactivatedAccount = 21004
 
 	Result_Auth_EmptyAccountSocialID      = 22001
 	Result_Auth_EmptyAccountSocialType    = 22002
@@ -36,6 +37,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_NotMatchAppAccount: "Account information does not match",
 	Result_Auth_EmptyAccessID:      "Empty Access ID",
 	Result_Auth_EmptyAccessPW:      "Empty Access PW",
+	Result_Auth_DeactivatedAccount: "Deactivated account",
 
 	Result_Auth_EmptyAccountSocialID:      "Empty Account SocialID",
 	Result_Auth_EmptyAccountSocialType:    "Empty Account SocialType",
