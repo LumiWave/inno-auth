@@ -20,10 +20,12 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	resp := new(context.RespAuthMember)
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Members,
-		sql.Named("SocialID", account.SocialID), sql.Named("SocialType", account.SocialType),
-		sql.Named("AppID", payload.AppID), sql.Named("CompanyID", payload.CompanyID),
-		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}), sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
-		sql.Named("MUID", sql.Out{Dest: &resp.MUID}), sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),
+		sql.Named("InnoUID", account.InnoUID),
+		sql.Named("AppID", payload.AppID),
+		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
+		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
+		sql.Named("MUID", sql.Out{Dest: &resp.MUID}),
+		sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),
 		&returnValue)
 	payload.LoginType = context.AccountLogin
 
@@ -69,7 +71,9 @@ func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo 
 		TypeName: TVP_AccountCoins,
 		Value:    tableData,
 	}
-	_, err := o.Mssql.GetDB().Exec(execTvp, sql.Named("AUID", respAuthMember.AUID), sql.Named("TVP", tvpType))
+	_, err := o.Mssql.GetDB().Exec(execTvp,
+		sql.Named("AUID", respAuthMember.AUID),
+		sql.Named("TVP", tvpType))
 	if err != nil {
 		log.Error(err)
 	}

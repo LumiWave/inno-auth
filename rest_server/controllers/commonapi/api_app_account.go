@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostAccountVerify(c echo.Context, account *context.Account) error {
+func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 	respAccountLogin := new(context.RespAccountLogin)
@@ -24,7 +24,7 @@ func PostAccountVerify(c echo.Context, account *context.Account) error {
 		return c.JSON(http.StatusOK, resp)
 	} else {
 		// 2. 신규/기존 유저에 따른 분기 처리
-		if respAuthMember.IsJoined == 1 {
+		if respAuthMember.IsJoined {
 			// 신규 유저
 			// 1. point-manager 멤버 등록
 			if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
@@ -36,7 +36,7 @@ func PostAccountVerify(c echo.Context, account *context.Account) error {
 			}
 
 			// 2. token-manager에 새 지갑 주소 생성 요청
-			addressList, err := TokenAddressNew(respAuthMember.CoinList, account.SocialID)
+			addressList, err := TokenAddressNew(respAuthMember.CoinList, account.InnoUID)
 			if err != nil {
 				log.Error(err)
 				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
@@ -63,6 +63,7 @@ func PostAccountVerify(c echo.Context, account *context.Account) error {
 		}
 
 		// 3. 같이 데이터를 담아서 게임서버로 전달해줌.
+		respAccountLogin.MemberInfo.AUID = respAuthMember.AUID
 		respAccountLogin.MemberInfo.IsJoined = respAuthMember.IsJoined
 		respAccountLogin.MemberInfo.MUID = respAuthMember.MUID
 		respAccountLogin.MemberInfo.DataBaseID = respAuthMember.DataBaseID
@@ -72,7 +73,7 @@ func PostAccountVerify(c echo.Context, account *context.Account) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PointMemberRegister(AUID int, MUID int, AppID int, DataBaseID int) ([]context.Point, error) {
+func PointMemberRegister(AUID int64, MUID int64, AppID int, DataBaseID int) ([]context.Point, error) {
 	reqPointMemberRegister := &context.ReqPointMemberRegister{
 		AUID:       AUID,
 		MUID:       MUID,

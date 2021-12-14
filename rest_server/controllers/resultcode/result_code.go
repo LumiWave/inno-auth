@@ -14,6 +14,7 @@ const (
 	Result_Auth_EmptyAccessPW      = 21003
 	Result_Auth_DeactivatedAccount = 21004
 
+	Result_Auth_EmptyInnoID               = 22000
 	Result_Auth_EmptyAccountSocialID      = 22001
 	Result_Auth_EmptyAccountSocialType    = 22002
 	Result_Procedure_Auth_Members         = 22003
@@ -39,6 +40,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_EmptyAccessPW:      "Empty Access PW",
 	Result_Auth_DeactivatedAccount: "Deactivated account",
 
+	Result_Auth_EmptyInnoID:               "Empty Account InnoID",
 	Result_Auth_EmptyAccountSocialID:      "Empty Account SocialID",
 	Result_Auth_EmptyAccountSocialType:    "Empty Account SocialType",
 	Result_Procedure_Auth_Members:         "Error Procedure Auth Members",

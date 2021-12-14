@@ -7,8 +7,7 @@ import (
 
 // 계정 정보
 type Account struct {
-	SocialID   string `json:"social_id" validate:"required"`
-	SocialType int    `json:"social_type" validate:"required"`
+	InnoUID string `json:"inno_uid" validate:"required"`
 }
 
 // 계정 코인량
@@ -26,9 +25,10 @@ type RespAccountLogin struct {
 
 // 멤버 정보 (로그인 완료 시 리턴)
 type MemberInfo struct {
-	MUID       int `json:"mu_id" url:"mu_id"`
-	DataBaseID int `json:"database_id" url:"database_id"`
-	IsJoined   int `json:"is_joined"`
+	AUID       int64 `json:"au_id" url:"au_id"`
+	MUID       int64 `json:"mu_id" url:"mu_id"`
+	DataBaseID int   `json:"database_id" url:"database_id"`
+	IsJoined   bool  `json:"is_joined"`
 }
 
 // 코인 정보
@@ -39,9 +39,9 @@ type CoinInfo struct {
 
 // USPAU_Auth_Members 프로시저 Response
 type RespAuthMember struct {
-	IsJoined   int
-	AUID       int
-	MUID       int
+	IsJoined   bool
+	AUID       int64
+	MUID       int64
 	DataBaseID int
 	CoinList   []CoinInfo
 }
@@ -61,10 +61,10 @@ type WalletInfo struct {
 
 // point-manager 멤버 등록 Request
 type ReqPointMemberRegister struct {
-	AUID       int `json:"au_id"`
-	MUID       int `json:"mu_id"`
-	AppID      int `json:"app_id"`
-	DataBaseID int `json:"database_id"`
+	AUID       int64 `json:"au_id"`
+	MUID       int64 `json:"mu_id"`
+	AppID      int   `json:"app_id"`
+	DataBaseID int   `json:"database_id"`
 }
 
 // 포인트 수량
@@ -78,10 +78,8 @@ func NewAccount() *Account {
 }
 
 func (o *Account) CheckValidate() *base.BaseResponse {
-	if len(o.SocialID) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialID)
-	} else if o.SocialType == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialType)
+	if len(o.InnoUID) == 0 {
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyInnoID)
 	}
 	return nil
 }

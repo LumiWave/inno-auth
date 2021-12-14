@@ -33,7 +33,7 @@ func PostPointMemberRegister(req *context.ReqPointMemberRegister) ([]context.Poi
 	return GetParsePoints(apiResp.Value), nil
 }
 
-func GetPointApp(MUID int, DatabaseID int) ([]context.Point, error) {
+func GetPointApp(MUID int64, DatabaseID int) ([]context.Point, error) {
 	apiInfo := context.ApiList[context.Api_get_point_app]
 	apiInfo.Uri = fmt.Sprintf(apiInfo.Uri, config.GetInstance().PointManager.Uri)
 

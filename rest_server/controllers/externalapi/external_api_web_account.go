@@ -1,3 +1,4 @@
+// 회원 web account 로그인
 package externalapi
 
 import (
@@ -10,21 +11,20 @@ import (
 	"github.com/labstack/echo"
 )
 
-// 회원 로그인
-func (o *ExternalAPI) PostAccountVerify(c echo.Context) error {
-	account := new(context.Account)
+func (o *ExternalAPI) PostWebAccountLogin(c echo.Context) error {
+	accountWeb := new(context.AccountWeb)
 
 	// Request json 파싱
-	if err := c.Bind(account); err != nil {
+	if err := c.Bind(accountWeb); err != nil {
 		log.Error(err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
 	// Request 유효성 체크
-	if err := account.CheckValidate(); err != nil {
+	if err := accountWeb.CheckValidate(); err != nil {
 		log.Error(err)
 		return c.JSON(http.StatusOK, err)
 	}
 
-	return commonapi.PostAccountVerify(c, account)
+	return commonapi.PostWebAccountLogin(c, accountWeb)
 }
