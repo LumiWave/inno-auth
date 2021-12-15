@@ -29,4 +29,10 @@ func (o *AccountWeb) CheckValidate() *base.BaseResponse {
 	return nil
 }
 
+type ResAccountWeb struct {
+	AccountWeb
+	IsJoined bool  `json:"is_joined" validate:"required"`
+	AUID     int64 `json:"au_id" validate:"required"`
+}
+
 ////////////////////////////////////////////
