@@ -31,6 +31,10 @@ type TokenManagerServer struct {
 type PointManagerServer struct {
 	Uri string `yaml:"uri"`
 }
+type SecretInfo struct {
+	Key string `yaml:"key"`
+	Iv  string `yaml:"iv"`
+}
 
 type ServerConfig struct {
 	baseconf.Config `yaml:",inline"`
@@ -41,6 +45,7 @@ type ServerConfig struct {
 	Auth         ApiAuth            `yaml:"api_auth"`
 	TokenManager TokenManagerServer `yaml:"token_manager"`
 	PointManager PointManagerServer `yaml:"point_manager"`
+	Secret       SecretInfo         `yaml:"secret"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {
