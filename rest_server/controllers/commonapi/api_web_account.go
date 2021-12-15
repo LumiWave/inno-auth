@@ -56,3 +56,21 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+func DelWebAccountLogout(c echo.Context) error {
+	ctx := base.GetContext(c).(*context.InnoAuthContext)
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	payload := new(context.Payload)
+	{
+		payload.LoginType = ctx.Payload.LoginType
+		payload.Uuid = ctx.Payload.Uuid
+	}
+
+	if err := auth.GetIAuth().DeleteJwtInfo(payload); err != nil {
+		resp.SetReturn(resultcode.Result_RedisError)
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}

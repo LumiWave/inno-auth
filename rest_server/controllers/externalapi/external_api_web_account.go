@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Web 로그인/가입
 func (o *ExternalAPI) PostWebAccountLogin(c echo.Context) error {
 	accountWeb := new(context.AccountWeb)
 
@@ -27,4 +28,9 @@ func (o *ExternalAPI) PostWebAccountLogin(c echo.Context) error {
 	}
 
 	return commonapi.PostWebAccountLogin(c, accountWeb)
+}
+
+// Web 로그아웃
+func (o *ExternalAPI) DelWebAccountLogout(c echo.Context) error {
+	return commonapi.DelWebAccountLogout(c)
 }
