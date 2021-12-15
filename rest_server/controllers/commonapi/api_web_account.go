@@ -20,7 +20,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 
 	// 1. 소셜 정보 검증
 	userID, email, err := auth.GetIAuth().SocialAuths[auth.SocialType_Google].VerifySocialKey(accountWeb.SocialKey)
-	if err != nil {
+	if err != nil || len(userID) == 0 || len(email) == 0 {
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
 		return c.JSON(http.StatusOK, resp)
