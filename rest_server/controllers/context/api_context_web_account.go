@@ -7,9 +7,8 @@ import (
 
 ////////// web 계정 정보
 type AccountWeb struct {
-	InnoUID    string `json:"inno_uid" validate:"required"`
-	SocialID   string `json:"social_id" validate:"required"`
-	SocialType string `json:"social_type" validate:"required"`
+	SocialKey  string `json:"social_key" validate:"required"`
+	SocialType int    `json:"social_type" validate:"required"`
 }
 
 func NewAccountWeb() *AccountWeb {
@@ -17,22 +16,26 @@ func NewAccountWeb() *AccountWeb {
 }
 
 func (o *AccountWeb) CheckValidate() *base.BaseResponse {
-	if len(o.InnoUID) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyInnoID)
+	if len(o.SocialKey) == 0 {
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialKey)
 	}
-	if len(o.SocialID) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialID)
-	}
-	if len(o.SocialType) == 0 {
+	if o.SocialType == 0 {
 		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialType)
 	}
 	return nil
 }
 
+type ReqAccountWeb struct {
+	InnoUID    string `json:"inno_uid" validate:"required"`
+	SocialID   string `json:"social_id" validate:"required"`
+	SocialType int    `json:"social_type" validate:"required"`
+}
+
 type ResAccountWeb struct {
-	AccountWeb
-	IsJoined bool  `json:"is_joined" validate:"required"`
-	AUID     int64 `json:"au_id" validate:"required"`
+	JwtInfo
+	InnoUID  string `json:"inno_uid" validate:"required"`
+	IsJoined bool   `json:"is_joined" validate:"required"`
+	AUID     int64  `json:"au_id" validate:"required"`
 }
 
 ////////////////////////////////////////////

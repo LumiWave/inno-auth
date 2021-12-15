@@ -11,21 +11,23 @@ const (
 	NoneLogin LoginType = iota
 	CpLogin
 	AppLogin
-	AccountLogin
+	AppAccountLogin
+	WebAccountLogin
 )
 
 var LoginTypeText = map[LoginType]string{
-	CpLogin:      "CP",
-	AppLogin:     "APP",
-	AccountLogin: "ACCOUNT",
+	CpLogin:         "CP",
+	AppLogin:        "APP",
+	AppAccountLogin: "APPACCOUNT",
+	WebAccountLogin: "WEBACCOUNT",
 }
 
 type Payload struct {
-	CompanyID int       `json:"company_id"`
-	AppID     int       `json:"app_id"`
-	LoginType LoginType `json:"login_type"`
-	Uuid      string    `json:"uuid"`
-	IsEnabled bool      `json:"is_enabled"`
+	CompanyID int       `json:"company_id,omitempty"`
+	AppID     int       `json:"app_id,omitempty"`
+	LoginType LoginType `json:"login_type,omitempty"`
+	Uuid      string    `json:"uuid,omitempty"`
+	IsEnabled bool      `json:"is_enabled,omitempty"`
 }
 
 // InnoAuthServerContext API의 Request Context

@@ -27,7 +27,7 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 		sql.Named("MUID", sql.Out{Dest: &resp.MUID}),
 		sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),
 		&returnValue)
-	payload.LoginType = context.AccountLogin
+	payload.LoginType = context.AppAccountLogin
 
 	// 신규 유저(IsJoined==1)일 경우 CoinID, CoinName을 추가로 전달 받는다.
 	var coinID int
