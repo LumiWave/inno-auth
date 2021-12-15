@@ -46,7 +46,7 @@ func DelAppLogout(c echo.Context) error {
 
 	payload := new(context.Payload)
 	{
-		payload.LoginType = context.AppLogin
+		payload.LoginType = ctx.Payload.LoginType
 		payload.Uuid = ctx.Payload.Uuid
 	}
 
