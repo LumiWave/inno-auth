@@ -8,15 +8,15 @@ func NewOauthFacebook() *OauthFacebook {
 	return new(OauthFacebook)
 }
 
-func (o OauthFacebook) GetSocialType() int64 {
+func (o *OauthFacebook) GetSocialType() int64 {
 	return o.SocialType
 }
 
-func (o OauthFacebook) VerifySocialKey(socialKey string) error {
+func (o *OauthFacebook) VerifySocialKey(socialKey string) error {
 
 	return nil
 }
 
-func (o OauthFacebook) MakeInnoId() (string, error) {
+func (o *OauthFacebook) MakeInnoId() (string, error) {
 	return "", nil
 }

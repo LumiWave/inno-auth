@@ -17,18 +17,17 @@ func MakeSocialAuths(iAuth *IAuth) {
 	socialAuths := make(map[int64]SocialAuth)
 
 	for _, social := range model.GetDB().Socials {
-		var isocial SocialAuth
 		switch {
 		case social.SocialType == SocialType_Google:
-			isocial = OauthGoogle{
+			isocial := OauthGoogle{
 				SocialType: social.SocialType,
 			}
-			socialAuths[social.SocialType] = isocial
+			socialAuths[social.SocialType] = &isocial
 		case social.SocialType == SocialType_Facebook:
-			isocial = OauthFacebook{
+			isocial := OauthFacebook{
 				SocialType: social.SocialType,
 			}
-			socialAuths[social.SocialType] = isocial
+			socialAuths[social.SocialType] = &isocial
 		}
 	}
 
