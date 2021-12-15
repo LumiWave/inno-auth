@@ -14,13 +14,18 @@ import (
 
 type IAuth struct {
 	conf *config.ApiAuth
+
+	SocialAuths map[int64]SocialAuth
 }
 
 func NewIAuth(conf *config.ApiAuth) (*IAuth, error) {
 	if gAuth == nil {
 		gAuth = new(IAuth)
 		gAuth.conf = conf
+		gAuth.SocialAuths = make(map[int64]SocialAuth)
+		MakeSocialAuths(gAuth)
 	}
+
 	return gAuth, nil
 }
 
