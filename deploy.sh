@@ -1,7 +1,17 @@
+echo "git inno-auth up-to-date"
+git pull
+
+echo "remove directory bin"
 rm -rf bin/*
 
+echo "make directory bin"
+cd ../config
+sh cp_inno_auth.sh
+
+cd ../inno-auth
 mkdir -p bin
 
+echo "copy to config yml"
 cp ./etc/conf/config.local.yml ./bin/config.yml
 cp ./etc/conf/external_api.yml ./bin
 cp ./etc/conf/internal_api.yml ./bin

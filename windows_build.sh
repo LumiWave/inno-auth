@@ -1,6 +1,6 @@
 # set -x
 
-sh prebuild.sh
+sh deploy.sh
 
 go build -o bin/inno-auth.exe rest_server/main.go
 
