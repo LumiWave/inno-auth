@@ -12,9 +12,9 @@ func (o *OauthFacebook) GetSocialType() int64 {
 	return o.SocialType
 }
 
-func (o *OauthFacebook) VerifySocialKey(socialKey string) error {
+func (o *OauthFacebook) VerifySocialKey(socialKey string) (string, string, error) {
 
-	return nil
+	return "", "", nil
 }
 
 func (o *OauthFacebook) MakeInnoId() (string, error) {
