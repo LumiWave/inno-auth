@@ -79,7 +79,7 @@ func NewAccount() *Account {
 
 func (o *Account) CheckValidate() *base.BaseResponse {
 	if len(o.InnoUID) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyInnoID)
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyInnoUID)
 	}
 	return nil
 }
