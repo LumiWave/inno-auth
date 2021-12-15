@@ -3,7 +3,7 @@ module github.com/ONBUFF-IP-TOKEN/inno-auth
 go 1.17
 
 require (
-	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.9
+	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.10
 	github.com/ONBUFF-IP-TOKEN/basedb v1.1.2
 	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.1
 	github.com/denisenkom/go-mssqldb v0.11.0
@@ -23,7 +23,6 @@ require (
 	github.com/googollee/go-engine.io v1.0.1 // indirect
 	github.com/googollee/go-socket.io v1.0.1 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f // indirect
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
@@ -43,7 +42,6 @@ require (
 	golang.org/x/sys v0.0.0-20210816183151-1e6c022a8912 // indirect
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/couchbase/gocbcore.v7 v7.1.18 // indirect
 	gopkg.in/couchbaselabs/gocbconnstr.v1 v1.0.4 // indirect
 	gopkg.in/couchbaselabs/jsonx.v1 v1.0.0 // indirect
@@ -55,4 +53,12 @@ require (
 require (
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
+	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
+)
+
+require (
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/tklauser/go-sysconf v0.3.6 // indirect
+	github.com/tklauser/numcpus v0.2.2 // indirect
+	google.golang.org/protobuf v1.26.0 // indirect
 )
