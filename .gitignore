@@ -19,8 +19,4 @@
 bin/
 etc/onbuffcerti.crt
 etc/onbuffcerti.key
-etc/conf/config.dev.yml
-etc/conf/config.live.yml
-etc/conf/config.local.yml
-etc/conf/external_api.yml
-etc/conf/internal_api.yml
+etc/conf/
