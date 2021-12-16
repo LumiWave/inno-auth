@@ -7,7 +7,7 @@ import (
 
 type DBMeta struct {
 	// 소셜 정보
-	Socials  map[int64]*context.SocialInfo
+	Socials  map[int]*context.SocialInfo
 	SocialsS []*context.SocialInfo
 }
 
@@ -34,7 +34,7 @@ func GetDB() *DB {
 }
 
 func (o *DB) InitMeta() {
-	o.Socials = make(map[int64]*context.SocialInfo)
+	o.Socials = make(map[int]*context.SocialInfo)
 
 	o.GetSocials()
 }

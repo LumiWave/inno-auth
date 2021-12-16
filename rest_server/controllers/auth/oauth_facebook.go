@@ -1,14 +1,14 @@
 package auth
 
 type OauthFacebook struct {
-	SocialType int64
+	SocialType int
 }
 
 func NewOauthFacebook() *OauthFacebook {
 	return new(OauthFacebook)
 }
 
-func (o *OauthFacebook) GetSocialType() int64 {
+func (o *OauthFacebook) GetSocialType() int {
 	return o.SocialType
 }
 

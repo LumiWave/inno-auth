@@ -19,7 +19,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	resp.Success()
 
 	// 1. 소셜 정보 검증
-	userID, email, err := auth.GetIAuth().SocialAuths[auth.SocialType_Google].VerifySocialKey(accountWeb.SocialKey)
+	userID, email, err := auth.GetIAuth().SocialAuths[accountWeb.SocialType].VerifySocialKey(accountWeb.SocialKey)
 	if err != nil || len(userID) == 0 || len(email) == 0 {
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
@@ -32,7 +32,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	reqAccountWeb := &context.ReqAccountWeb{
 		InnoUID:    innoUID,
 		SocialID:   userID,
-		SocialType: auth.SocialType_Google,
+		SocialType: accountWeb.SocialType,
 	}
 
 	// 2. 웹 로그인/가입
