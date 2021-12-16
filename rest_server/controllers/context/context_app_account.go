@@ -69,8 +69,8 @@ type ReqPointMemberRegister struct {
 
 // 포인트 수량
 type Point struct {
-	PointID  int `json:"point_id"`
-	Quantity int `json:"quantity"`
+	PointID  int64 `json:"point_id"`
+	Quantity int64 `json:"quantity"`
 }
 
 func NewAccount() *Account {

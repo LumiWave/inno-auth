@@ -62,8 +62,8 @@ func GetParsePoints(value interface{}) []context.Point {
 	for _, point := range points {
 		data := point.(map[string]interface{})
 		p := &context.Point{
-			PointID:  int(data["point_id"].(float64)),
-			Quantity: int(data["quantity"].(float64)),
+			PointID:  int64(data["point_id"].(float64)),
+			Quantity: int64(data["quantity"].(float64)),
 		}
 		pointList = append(pointList, *p)
 	}
