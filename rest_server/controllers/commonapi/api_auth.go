@@ -32,7 +32,9 @@ func PostTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenReque
 			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 		} else {
 			// Delete the uuid in Redis.
-			auth.GetIAuth().DeleteJwtInfo(payload)
+			if err := auth.GetIAuth().DeleteJwtInfo(payload); err != nil {
+				resp.SetReturn(resultcode.Result_RedisError)
+			}
 			resp.Value = jwtInfoValue
 		}
 	}
