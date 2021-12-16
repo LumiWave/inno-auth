@@ -34,8 +34,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.4/go.mod h1:ljBhQrS+jf17h0WGGHs0h6cuq6t6KPfl3ouzWXRMBMo=
-github.com/ONBUFF-IP-TOKEN/baseapp v1.0.10 h1:daS2igrN3qi4GY7ycmxJRq1kfBio3veCggciO0gImQI=
-github.com/ONBUFF-IP-TOKEN/baseapp v1.0.10/go.mod h1:ljBhQrS+jf17h0WGGHs0h6cuq6t6KPfl3ouzWXRMBMo=
+github.com/ONBUFF-IP-TOKEN/baseapp v1.0.11 h1:gVGbSLgVnt1lkGyfntZTyi2CPqA2CsMuVjptbGdyqpM=
+github.com/ONBUFF-IP-TOKEN/baseapp v1.0.11/go.mod h1:ljBhQrS+jf17h0WGGHs0h6cuq6t6KPfl3ouzWXRMBMo=
 github.com/ONBUFF-IP-TOKEN/basedb v1.0.4/go.mod h1:m4FIn+aAgmpbo/2OmoTlFkpwlRKYB6QVFfAzSs0T4IA=
 github.com/ONBUFF-IP-TOKEN/basedb v1.1.2 h1:dBapxArCBFMg8kqDFP3wewDBNjnGwp8PBGw1a6+RQ6w=
 github.com/ONBUFF-IP-TOKEN/basedb v1.1.2/go.mod h1:ZxPxgaYHKXzakgt8WIVug4LWZfZDt4oLYkE5CUscOeI=
