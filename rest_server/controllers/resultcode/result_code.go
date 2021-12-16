@@ -23,6 +23,7 @@ const (
 	Result_Procedure_Add_Account_Coins    = 22006
 	Result_Api_Get_Point_App              = 22007
 	Result_Auth_VerifySocial_Key          = 22008
+	Result_Auth_Invalid_InnoUID           = 22009
 
 	Result_Auth_MakeTokenError = 23001
 )
@@ -50,6 +51,7 @@ var ResultCodeText = map[int]string{
 	Result_Procedure_Add_Account_Coins:    "Error Procedure Add Accounts Coins",
 	Result_Api_Get_Point_App:              "Error API Get Point App",
 	Result_Auth_VerifySocial_Key:          "Error Verify Social Key",
+	Result_Auth_Invalid_InnoUID:           "Invalid InnoUID",
 
 	Result_Auth_MakeTokenError: "Make Token Error.",
 }

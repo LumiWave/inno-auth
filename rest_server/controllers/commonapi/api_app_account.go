@@ -1,10 +1,14 @@
 package commonapi
 
 import (
+	"errors"
 	"net/http"
+	"unicode/utf8"
 
+	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -16,6 +20,11 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	resp.Success()
 	respAccountLogin := new(context.RespAccountLogin)
 
+	// 0. InnoUID 검증
+	if err := ValidInnoUID(account.InnoUID); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+		return c.JSON(http.StatusOK, resp)
+	}
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
 	if respAuthMember, err := model.GetDB().AuthMembers(account, ctx.Payload); err != nil || respAuthMember == nil {
@@ -105,4 +114,17 @@ func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.Wa
 	}
 
 	return addressList, nil
+}
+
+func ValidInnoUID(innoUID string) error {
+	// Check InnoUID Length
+	if len(innoUID) > 64 {
+		return errors.New("invalid inno_uid")
+	}
+	// Verify InnoUID
+	decStr := inno.AESDecrypt(innoUID, []byte(config.GetInstance().Secret.Key), []byte(config.GetInstance().Secret.Iv))
+	if len(decStr) == 0 || utf8.ValidString(decStr) != true {
+		return errors.New("invalid inno_uid")
+	}
+	return nil
 }
