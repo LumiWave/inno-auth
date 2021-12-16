@@ -51,7 +51,3 @@ func (o *OauthGoogle) VerifySocialKey(socialKey string) (string, string, error) 
 
 	return googleUser.UserID, googleUser.Email, nil
 }
-
-func (o *OauthGoogle) MakeInnoId() (string, error) {
-	return "", nil
-}

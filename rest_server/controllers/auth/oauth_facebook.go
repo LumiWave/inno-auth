@@ -16,7 +16,3 @@ func (o *OauthFacebook) VerifySocialKey(socialKey string) (string, string, error
 
 	return "", "", nil
 }
-
-func (o *OauthFacebook) MakeInnoId() (string, error) {
-	return "", nil
-}

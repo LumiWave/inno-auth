@@ -10,7 +10,6 @@ const (
 type SocialAuth interface {
 	GetSocialType() int64
 	VerifySocialKey(string) (string, string, error)
-	MakeInnoId() (string, error)
 }
 
 func MakeSocialAuths(iAuth *IAuth) {
