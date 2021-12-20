@@ -2,6 +2,6 @@ package context
 
 // social 리스트 정보 요청
 type SocialInfo struct {
-	SocialType int
-	SocialName string
+	SocialType int    `json:"social_type" validate:"required"`
+	SocialName string `json:"social_name" validate:"required"`
 }
