@@ -13,16 +13,17 @@ func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, payload *context.Payload) er
 	if !o.Cache.Enable() {
 		log.Warnf("redis disable")
 	}
-	conf := config.GetInstance()
+	// Select ExpiryPeriod (App or Web)
+	accessExpiryPeriod, refreshExpiryPeriod := context.GetTokenExpiryperiod(payload.LoginType)
 
 	cKey := makeCacheKeyByAuth(payload.LoginType, tokenInfo.AccessUuid)
-	err := o.Cache.Set(cKey, tokenInfo, time.Duration(conf.Auth.AccessTokenExpiryPeriod*int64(time.Minute)))
+	err := o.Cache.Set(cKey, tokenInfo, time.Duration(accessExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}
 
 	cKey = makeCacheKeyByAuth(payload.LoginType, tokenInfo.RefreshUuid)
-	err = o.Cache.Set(cKey, tokenInfo, time.Duration(conf.Auth.RefreshTokenExpiryPeriod*int64(time.Minute)))
+	err = o.Cache.Set(cKey, tokenInfo, time.Duration(refreshExpiryPeriod*int64(time.Minute)))
 	if err != nil {
 		return err
 	}

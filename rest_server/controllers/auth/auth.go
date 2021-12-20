@@ -34,12 +34,15 @@ func GetIAuth() *IAuth {
 }
 
 func (o *IAuth) MakeToken(payload *context.Payload) (*context.JwtInfo, error) {
+	// Select ExpiryPeriod (App or Web)
+	accessExpiryPeriod, refreshExpiryPeriod := context.GetTokenExpiryperiod(payload.LoginType)
+
 	jwtInfo := &context.JwtInfo{
 		AccessUuid:  uuid.NewV4().String(),
 		RefreshUuid: uuid.NewV4().String(),
 
-		AtExpireDt: time.Now().Add(time.Minute * time.Duration(o.conf.AccessTokenExpiryPeriod)).UnixMilli(),
-		RtExpireDt: time.Now().Add(time.Minute * time.Duration(o.conf.RefreshTokenExpiryPeriod)).UnixMilli(),
+		AtExpireDt: time.Now().Add(time.Minute * time.Duration(accessExpiryPeriod)).UnixMilli(),
+		RtExpireDt: time.Now().Add(time.Minute * time.Duration(refreshExpiryPeriod)).UnixMilli(),
 	}
 	//create access token
 	atClaims := jwt.MapClaims{}
