@@ -123,7 +123,7 @@ func ValidInnoUID(innoUID string) error {
 	}
 	// Verify InnoUID
 	decStr := inno.AESDecrypt(innoUID, []byte(config.GetInstance().Secret.Key), []byte(config.GetInstance().Secret.Iv))
-	if len(decStr) == 0 || utf8.ValidString(decStr) != true {
+	if len(decStr) == 0 || !utf8.ValidString(decStr) {
 		return errors.New("invalid inno_uid")
 	}
 	return nil
