@@ -12,7 +12,7 @@ cd ../inno-auth
 mkdir -p bin
 
 echo "copy to config yml"
-cp ./etc/conf/config.stage.yml ./bin/config.yml
+cp ./etc/conf/config.local.yml ./bin/config.yml
 cp ./etc/conf/external_api.yml ./bin
 cp ./etc/conf/internal_api.yml ./bin
 cp ./etc/onbuffcerti.crt ./bin
