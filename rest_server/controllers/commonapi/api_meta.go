@@ -12,7 +12,7 @@ func GetSocialList(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	resp.Value = model.GetDB().SocialsS
+	resp.Value = model.GetDB().SocialList
 
 	return c.JSON(http.StatusOK, resp)
 }

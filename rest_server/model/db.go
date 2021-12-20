@@ -7,8 +7,8 @@ import (
 
 type DBMeta struct {
 	// 소셜 정보
-	Socials  map[int]*context.SocialInfo
-	SocialsS []*context.SocialInfo
+	Socials    map[int]*context.SocialInfo
+	SocialList []*context.SocialInfo
 }
 
 type DB struct {

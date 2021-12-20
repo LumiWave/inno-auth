@@ -24,7 +24,7 @@ func (o *DB) GetSocials() error {
 			log.Errorf("USPAU_Scan_Socials scan error:%v", err)
 		} else {
 			o.Socials[social.SocialType] = social
-			o.SocialsS = append(o.SocialsS, social)
+			o.SocialList = append(o.SocialList, social)
 		}
 	}
 
