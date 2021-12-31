@@ -1,6 +1,9 @@
 package config
 
 import (
+	"fmt"
+	"os"
+	"strconv"
 	"sync"
 
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
@@ -58,6 +61,13 @@ func GetInstance(filepath ...string) *ServerConfig {
 		currentConfig = &ServerConfig{}
 		if err := baseconf.Load(filepath[0], currentConfig); err != nil {
 			currentConfig = nil
+		} else {
+			if os.Getenv("ASPNETCORE_PORT") != "" {
+				port, _ := strconv.ParseInt(os.Getenv("ASPNETCORE_PORT"), 10, 32)
+				currentConfig.APIServers[0].Port = int(port)
+				currentConfig.APIServers[1].Port = int(port)
+				fmt.Println(port)
+			}
 		}
 	})
 
