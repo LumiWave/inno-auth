@@ -31,15 +31,15 @@ func (o *DB) SetJwtInfo(tokenInfo *context.JwtInfo, payload *context.Payload) er
 	return nil
 }
 
-func (o *DB) GetJwtInfo(payload *context.Payload) (*context.JwtInfo, error) {
-	cKey := makeCacheKeyByAuth(payload.LoginType, payload.Uuid)
+func (o *DB) GetJwtInfo(loginType context.LoginType, uuid string) (*context.JwtInfo, error) {
+	cKey := makeCacheKeyByAuth(loginType, uuid)
 	jwtInfo := new(context.JwtInfo)
 	err := o.Cache.Get(cKey, jwtInfo)
 	return jwtInfo, err
 }
 
-func (o *DB) DeleteJwtInfo(payload *context.Payload) error {
-	cKey := makeCacheKeyByAuth(payload.LoginType, payload.Uuid)
+func (o *DB) DeleteJwtInfo(loginType context.LoginType, uuid string) error {
+	cKey := makeCacheKeyByAuth(loginType, uuid)
 	err := o.Cache.Del(cKey)
 	return err
 }

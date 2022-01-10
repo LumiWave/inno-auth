@@ -142,15 +142,32 @@ func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.Payload, error
 	return payload, nil
 }
 
+func (o *IAuth) DeleteUuidRedis(loginType context.LoginType, uuid string) error {
+	if jwtInfo, err := o.GetJwtInfo(loginType, uuid); err != nil {
+		return err
+	} else {
+		// Delete AccessToken
+		if err := o.DeleteJwtInfo(loginType, jwtInfo.AccessUuid); err != nil {
+			return err
+		}
+
+		// Delete RefreshToken
+		if err := o.DeleteJwtInfo(loginType, jwtInfo.RefreshUuid); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // redis jwt info set
 func (o *IAuth) SetJwtInfo(tokenInfo *context.JwtInfo, payload *context.Payload) error {
 	return model.GetDB().SetJwtInfo(tokenInfo, payload)
 }
 
-func (o *IAuth) GetJwtInfo(payload *context.Payload) (*context.JwtInfo, error) {
-	return model.GetDB().GetJwtInfo(payload)
+func (o *IAuth) GetJwtInfo(loginType context.LoginType, uuid string) (*context.JwtInfo, error) {
+	return model.GetDB().GetJwtInfo(loginType, uuid)
 }
 
-func (o *IAuth) DeleteJwtInfo(payload *context.Payload) error {
-	return model.GetDB().DeleteJwtInfo(payload)
+func (o *IAuth) DeleteJwtInfo(loginType context.LoginType, uuid string) error {
+	return model.GetDB().DeleteJwtInfo(loginType, uuid)
 }

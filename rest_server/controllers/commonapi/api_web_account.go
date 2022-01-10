@@ -66,13 +66,7 @@ func DelWebAccountLogout(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	payload := new(context.Payload)
-	{
-		payload.LoginType = ctx.Payload.LoginType
-		payload.Uuid = ctx.Payload.Uuid
-	}
-
-	if err := auth.GetIAuth().DeleteJwtInfo(payload); err != nil {
+	if err := auth.GetIAuth().DeleteUuidRedis(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
 		resp.SetReturn(resultcode.Result_RedisError)
 	}
 
