@@ -41,8 +41,8 @@ func (o *IAuth) MakeToken(payload *context.Payload) (*context.JwtInfo, error) {
 		AccessUuid:  uuid.NewV4().String(),
 		RefreshUuid: uuid.NewV4().String(),
 
-		AtExpireDt: time.Now().Add(time.Minute * time.Duration(accessExpiryPeriod)).UnixMilli(),
-		RtExpireDt: time.Now().Add(time.Minute * time.Duration(refreshExpiryPeriod)).UnixMilli(),
+		AtExpireDt: time.Now().Add(time.Duration(accessExpiryPeriod)).UnixMilli(),
+		RtExpireDt: time.Now().Add(time.Duration(refreshExpiryPeriod)).UnixMilli(),
 	}
 	//create access token
 	atClaims := jwt.MapClaims{}
