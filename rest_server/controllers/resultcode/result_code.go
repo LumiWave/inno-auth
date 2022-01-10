@@ -8,6 +8,7 @@ const (
 	Result_RedisError     = 13002
 
 	Result_Auth_InvalidJwt = 20000
+	Result_Auth_ExpiredJwt = 20001
 
 	Result_Auth_NotMatchAppAccount = 21001
 	Result_Auth_EmptyAccessID      = 21002
@@ -36,6 +37,7 @@ var ResultCodeText = map[int]string{
 	Result_RedisError:     "Redis Error",
 
 	Result_Auth_InvalidJwt: "Invalid jwt token",
+	Result_Auth_ExpiredJwt: "Expired jwt token",
 
 	Result_Auth_NotMatchAppAccount: "Account information does not match",
 	Result_Auth_EmptyAccessID:      "Empty Access ID",
@@ -53,5 +55,5 @@ var ResultCodeText = map[int]string{
 	Result_Auth_VerifySocial_Key:          "Error Verify Social Key",
 	Result_Auth_Invalid_InnoUID:           "Invalid InnoUID",
 
-	Result_Auth_MakeTokenError: "Make Token Error.",
+	Result_Auth_MakeTokenError: "Make Token Error",
 }
