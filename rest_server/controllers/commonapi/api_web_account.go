@@ -66,6 +66,7 @@ func DelWebAccountLogout(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
+	// Delete the uuid in Redis.
 	if err := auth.GetIAuth().DeleteUuidRedis(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
 		resp.SetReturn(resultcode.Result_RedisError)
 	}
