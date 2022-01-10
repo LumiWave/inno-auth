@@ -66,9 +66,14 @@ func DelWebAccountLogout(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// Delete the uuid in Redis.
-	if err := auth.GetIAuth().DeleteUuidRedis(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
-		resp.SetReturn(resultcode.Result_RedisError)
+	// Check if the token has expired
+	if _, err := auth.GetIAuth().GetJwtInfo(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+	} else {
+		// Delete the uuid in Redis.
+		if err := auth.GetIAuth().DeleteUuidRedis(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
+			resp.SetReturn(resultcode.Result_RedisError)
+		}
 	}
 
 	return c.JSON(http.StatusOK, resp)
