@@ -38,7 +38,6 @@ type Payload struct {
 type InnoAuthContext struct {
 	*base.BaseContext
 	Payload *Payload
-	JwtInfo *JwtInfo
 }
 
 // NewInnoAuthServerContext 새로운 InnoAuthServer Context 생성
