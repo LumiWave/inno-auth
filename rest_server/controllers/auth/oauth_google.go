@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	UserInfoAPIEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
+	GoogleUserInfoAPIEndpoint = "https://www.googleapis.com/oauth2/v3/userinfo"
 )
 
 type GoogleUser struct {
@@ -37,7 +37,7 @@ func (o *OauthGoogle) VerifySocialKey(socialKey string) (string, string, error) 
 	}
 	var OAuthConf *oauth2.Config
 	client := OAuthConf.Client(contextR.Background(), token)
-	userInfoResp, err := client.Get(UserInfoAPIEndpoint)
+	userInfoResp, err := client.Get(GoogleUserInfoAPIEndpoint)
 	if err != nil || userInfoResp.StatusCode != 200 {
 		return "", "", err
 	}
