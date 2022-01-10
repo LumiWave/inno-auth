@@ -31,6 +31,7 @@ type Payload struct {
 	LoginType LoginType `json:"login_type,omitempty"`
 	Uuid      string    `json:"uuid,omitempty"`
 	IsEnabled bool      `json:"is_enabled,omitempty"`
+	InnoUID   string    `json:"inno_uid,omitempty"`
 }
 
 // InnoAuthServerContext API의 Request Context

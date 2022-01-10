@@ -12,8 +12,7 @@ const (
 	USPAU_Auth_Accounts = "[dbo].[USPAU_Auth_Accounts]"
 )
 
-func (o *DB) AuthWebAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, *context.Payload, error) {
-	payload := new(context.Payload)
+func (o *DB) AuthWebAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, error) {
 	resp := new(context.ResAccountWeb)
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Accounts,
@@ -23,14 +22,12 @@ func (o *DB) AuthWebAccounts(account *context.ReqAccountWeb) (*context.ResAccoun
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
 		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
 		&returnValue)
-	resp.InnoUID = account.InnoUID
-	payload.LoginType = context.WebAccountLogin
 
 	defer rows.Close()
 
 	if returnValue != 1 {
-		return nil, payload, err
+		return nil, err
 	}
 
-	return resp, payload, err
+	return resp, err
 }

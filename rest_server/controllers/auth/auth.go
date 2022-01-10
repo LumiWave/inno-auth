@@ -50,6 +50,7 @@ func (o *IAuth) MakeToken(payload *context.Payload) (*context.JwtInfo, error) {
 	atClaims["login_type"] = payload.LoginType
 	atClaims["company_id"] = payload.CompanyID
 	atClaims["app_id"] = payload.AppID
+	atClaims["inno_uid"] = payload.InnoUID
 	atClaims["exp"] = jwtInfo.AtExpireDt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -65,6 +66,7 @@ func (o *IAuth) MakeToken(payload *context.Payload) (*context.JwtInfo, error) {
 	rtClaims["login_type"] = payload.LoginType
 	rtClaims["company_id"] = payload.CompanyID
 	rtClaims["app_id"] = payload.AppID
+	rtClaims["inno_uid"] = payload.InnoUID
 	rtClaims["exp"] = jwtInfo.RtExpireDt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
@@ -104,6 +106,7 @@ func (o *IAuth) VerifyAccessToken(accessToken string) (*context.Payload, error) 
 		CompanyID: int(atClaims["company_id"].(float64)),
 		AppID:     int(atClaims["app_id"].(float64)),
 		LoginType: context.LoginType(int(atClaims["login_type"].(float64))),
+		InnoUID:   fmt.Sprintf("%v", atClaims["inno_uid"]),
 		Uuid:      fmt.Sprintf("%v", atClaims["access_uuid"]),
 	}
 
@@ -132,6 +135,7 @@ func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.Payload, error
 		CompanyID: int(atClaims["company_id"].(float64)),
 		AppID:     int(atClaims["app_id"].(float64)),
 		LoginType: context.LoginType(int(atClaims["login_type"].(float64))),
+		InnoUID:   fmt.Sprintf("%v", atClaims["inno_uid"]),
 		Uuid:      fmt.Sprintf("%v", atClaims["refresh_uuid"]),
 	}
 

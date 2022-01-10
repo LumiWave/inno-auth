@@ -25,18 +25,22 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
 		return c.JSON(http.StatusOK, resp)
 	}
-	innoUID := inno.AESEncrypt(inno.MakeInnoID(userID, email),
-		[]byte(config.GetInstance().Secret.Key),
-		[]byte(config.GetInstance().Secret.Iv))
+
+	payload := &context.Payload{
+		LoginType: context.WebAccountLogin,
+		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, email),
+			[]byte(config.GetInstance().Secret.Key),
+			[]byte(config.GetInstance().Secret.Iv)),
+	}
 
 	reqAccountWeb := &context.ReqAccountWeb{
-		InnoUID:    innoUID,
+		InnoUID:    payload.InnoUID,
 		SocialID:   userID,
 		SocialType: accountWeb.SocialType,
 	}
 
 	// 2. 웹 로그인/가입
-	resAccountWeb, payload, err := model.GetDB().AuthWebAccounts(reqAccountWeb)
+	resAccountWeb, err := model.GetDB().AuthWebAccounts(reqAccountWeb)
 	if err != nil {
 		log.Error(err)
 		resp.SetReturn(resultcode.Result_DBError)
