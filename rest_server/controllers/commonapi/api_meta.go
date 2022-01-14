@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func GetSocialList(c echo.Context) error {
+func GetMeta(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 

@@ -5,6 +5,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-func (o *ExternalAPI) GetSocialList(c echo.Context) error {
-	return commonapi.GetSocialList(c)
+func (o *ExternalAPI) GetMeta(c echo.Context) error {
+	return commonapi.GetMeta(c)
 }
