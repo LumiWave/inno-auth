@@ -9,7 +9,7 @@
             "windows": {
                 "command": "cmd",
                 "args": [
-                    "/C", ".\\prebuild.sh"
+                    "/C", ".\\prebuild.sh local"
                 ]
             },
             "problemMatcher": [],

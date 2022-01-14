@@ -1,8 +1,10 @@
-# set -x
+set -x
 
-sh deploy.sh
+sh ./prebuild.sh $1
 
-go build -o bin/inno-auth.exe rest_server/main.go
+rm -rf bin/inno-auth
+
+go build -o bin/inno-auth.exe main.go
 
 cd bin
 ./inno-auth.exe -c=config.yml
