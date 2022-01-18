@@ -16,14 +16,14 @@ type FacebookUser struct {
 	UserID string `json:"id"`
 }
 type OauthFacebook struct {
-	SocialType int
+	SocialType int64
 }
 
 func NewOauthFacebook() *OauthFacebook {
 	return new(OauthFacebook)
 }
 
-func (o *OauthFacebook) GetSocialType() int {
+func (o *OauthFacebook) GetSocialType() int64 {
 	return o.SocialType
 }
 

@@ -19,14 +19,14 @@ type GoogleUser struct {
 }
 
 type OauthGoogle struct {
-	SocialType int
+	SocialType int64
 }
 
 func NewOauthGoogle() *OauthGoogle {
 	return new(OauthGoogle)
 }
 
-func (o *OauthGoogle) GetSocialType() int {
+func (o *OauthGoogle) GetSocialType() int64 {
 	return o.SocialType
 }
 

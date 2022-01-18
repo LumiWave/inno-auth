@@ -82,7 +82,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func PointMemberRegister(AUID int64, MUID int64, AppID int, DataBaseID int) ([]context.Point, error) {
+func PointMemberRegister(AUID int64, MUID int64, AppID int64, DataBaseID int64) ([]context.Point, error) {
 	reqPointMemberRegister := &context.ReqPointMemberRegister{
 		AUID:       AUID,
 		MUID:       MUID,

@@ -6,9 +6,9 @@ import (
 )
 
 type Application struct {
-	AppID     int    `json:"app_id" query:"app_id"`
+	AppID     int64  `json:"app_id" query:"app_id"`
 	AppName   string `json:"app_name"`
-	CompanyID int    `json:"company_id"`
+	CompanyID int64  `json:"company_id"`
 	Access    Access `json:"access"`
 }
 
@@ -18,8 +18,8 @@ type Access struct {
 }
 
 type ResponseAppInfo struct {
-	AppID     int    `json:"app_id"`
-	CompanyID int    `json:"company_id"`
+	AppID     int64  `json:"app_id"`
+	CompanyID int64  `json:"company_id"`
 	AppName   string `json:"app_name"`
 }
 

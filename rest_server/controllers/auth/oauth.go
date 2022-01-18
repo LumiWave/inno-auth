@@ -8,12 +8,12 @@ const (
 )
 
 type SocialAuth interface {
-	GetSocialType() int
+	GetSocialType() int64
 	VerifySocialKey(string) (string, string, error)
 }
 
 func MakeSocialAuths(iAuth *IAuth) {
-	socialAuths := make(map[int]SocialAuth)
+	socialAuths := make(map[int64]SocialAuth)
 
 	for _, social := range model.GetDB().Socials {
 		switch {

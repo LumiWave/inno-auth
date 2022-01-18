@@ -15,14 +15,14 @@ import (
 type IAuth struct {
 	conf *config.ApiAuth
 
-	SocialAuths map[int]SocialAuth
+	SocialAuths map[int64]SocialAuth
 }
 
 func NewIAuth(conf *config.ApiAuth) (*IAuth, error) {
 	if gAuth == nil {
 		gAuth = new(IAuth)
 		gAuth.conf = conf
-		gAuth.SocialAuths = make(map[int]SocialAuth)
+		gAuth.SocialAuths = make(map[int64]SocialAuth)
 		MakeSocialAuths(gAuth)
 	}
 
@@ -51,6 +51,7 @@ func (o *IAuth) MakeToken(payload *context.Payload) (*context.JwtInfo, error) {
 	atClaims["company_id"] = payload.CompanyID
 	atClaims["app_id"] = payload.AppID
 	atClaims["inno_uid"] = payload.InnoUID
+	atClaims["au_id"] = payload.AUID
 	atClaims["exp"] = jwtInfo.AtExpireDt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -67,6 +68,7 @@ func (o *IAuth) MakeToken(payload *context.Payload) (*context.JwtInfo, error) {
 	rtClaims["company_id"] = payload.CompanyID
 	rtClaims["app_id"] = payload.AppID
 	rtClaims["inno_uid"] = payload.InnoUID
+	rtClaims["au_id"] = payload.AUID
 	rtClaims["exp"] = jwtInfo.RtExpireDt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
@@ -103,10 +105,11 @@ func (o *IAuth) VerifyAccessToken(accessToken string) (*context.Payload, error) 
 		return nil, errors.New("invalid access jwt")
 	}
 	payload := &context.Payload{
-		CompanyID: int(atClaims["company_id"].(float64)),
-		AppID:     int(atClaims["app_id"].(float64)),
+		CompanyID: int64(atClaims["company_id"].(float64)),
+		AppID:     int64(atClaims["app_id"].(float64)),
 		LoginType: context.LoginType(int(atClaims["login_type"].(float64))),
 		InnoUID:   fmt.Sprintf("%v", atClaims["inno_uid"]),
+		AUID:      int64(atClaims["au_id"].(float64)),
 		Uuid:      fmt.Sprintf("%v", atClaims["access_uuid"]),
 	}
 
@@ -132,10 +135,11 @@ func (o *IAuth) VerifyRefreshToken(refreshToken string) (*context.Payload, error
 	}
 
 	payload := &context.Payload{
-		CompanyID: int(atClaims["company_id"].(float64)),
-		AppID:     int(atClaims["app_id"].(float64)),
+		CompanyID: int64(atClaims["company_id"].(float64)),
+		AppID:     int64(atClaims["app_id"].(float64)),
 		LoginType: context.LoginType(int(atClaims["login_type"].(float64))),
 		InnoUID:   fmt.Sprintf("%v", atClaims["inno_uid"]),
+		AUID:      int64(atClaims["au_id"].(float64)),
 		Uuid:      fmt.Sprintf("%v", atClaims["refresh_uuid"]),
 	}
 

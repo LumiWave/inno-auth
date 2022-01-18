@@ -30,7 +30,7 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	payload.LoginType = context.AppAccountLogin
 
 	// 신규 유저(IsJoined==1)일 경우 CoinID, CoinName을 추가로 전달 받는다.
-	var coinID int
+	var coinID int64
 	var coinName string
 	for rows.Next() {
 		if err := rows.Scan(&coinID, &coinName); err != nil {

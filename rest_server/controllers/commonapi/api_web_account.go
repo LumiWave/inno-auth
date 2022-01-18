@@ -46,6 +46,8 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 		resp.SetReturn(resultcode.Result_DBError)
 		return c.JSON(http.StatusOK, resp)
 	}
+	payload.AUID = resAccountWeb.AUID
+	resAccountWeb.InnoUID = payload.InnoUID
 
 	// 3. Access, Refresh 토큰 생성
 	if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {

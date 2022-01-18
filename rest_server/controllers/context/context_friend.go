@@ -1,6 +1,6 @@
 package context
 
-type api_kind int
+type api_kind int64
 
 const (
 	Api_get_token_address_new = iota

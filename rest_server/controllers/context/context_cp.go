@@ -1,7 +1,7 @@
 package context
 
 type Company struct {
-	CompanyID   int    `json:"company_id"`
+	CompanyID   int64  `json:"company_id"`
 	CompanyName string `json:"company_name"`
 }
 

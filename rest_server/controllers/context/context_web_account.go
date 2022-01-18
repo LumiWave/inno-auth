@@ -8,7 +8,7 @@ import (
 ////////// web 계정 정보
 type AccountWeb struct {
 	SocialKey  string `json:"social_key" validate:"required"`
-	SocialType int    `json:"social_type" validate:"required"`
+	SocialType int64  `json:"social_type" validate:"required"`
 }
 
 func NewAccountWeb() *AccountWeb {
@@ -28,7 +28,7 @@ func (o *AccountWeb) CheckValidate() *base.BaseResponse {
 type ReqAccountWeb struct {
 	InnoUID    string `json:"inno_uid" validate:"required"`
 	SocialID   string `json:"social_id" validate:"required"`
-	SocialType int    `json:"social_type" validate:"required"`
+	SocialType int64  `json:"social_type" validate:"required"`
 }
 
 type ResAccountWeb struct {
