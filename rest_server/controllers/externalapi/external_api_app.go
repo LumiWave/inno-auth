@@ -15,7 +15,7 @@ func (o *ExternalAPI) PostAppLogin(c echo.Context) error {
 	access := new(context.Access)
 
 	if err := c.Bind(access); err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 

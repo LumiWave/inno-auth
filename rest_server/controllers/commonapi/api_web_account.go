@@ -21,7 +21,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	// 1. 소셜 정보 검증
 	userID, email, err := auth.GetIAuth().SocialAuths[accountWeb.SocialType].VerifySocialKey(accountWeb.SocialKey)
 	if err != nil || len(userID) == 0 || len(email) == 0 {
-		log.Error(err)
+		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
 		return c.JSON(http.StatusOK, resp)
 	}
@@ -42,14 +42,14 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	// 2. 웹 로그인/가입
 	resAccountWeb, err := model.GetDB().AuthWebAccounts(reqAccountWeb)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
 		return c.JSON(http.StatusOK, resp)
 	}
 
 	// 3. Access, Refresh 토큰 생성
 	if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 		return c.JSON(http.StatusOK, resp)
 	} else {

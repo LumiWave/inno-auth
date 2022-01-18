@@ -17,13 +17,13 @@ func (o *ExternalAPI) PostWebAccountLogin(c echo.Context) error {
 
 	// Request json 파싱
 	if err := c.Bind(accountWeb); err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 
 	// Request 유효성 체크
 	if err := accountWeb.CheckValidate(); err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return c.JSON(http.StatusOK, err)
 	}
 

@@ -17,7 +17,7 @@ func GetTokenAddressNew(reqAddressNew *context.ReqAddressNew) (*context.WalletIn
 
 	apiResp, err := baseapi.HttpCall(apiInfo.Uri, "", "GET", bytes.NewBuffer(nil), reqAddressNew)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 	if apiResp.Return != 0 {

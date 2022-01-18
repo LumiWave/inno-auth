@@ -31,7 +31,7 @@ func GetVersion(c echo.Context, maxVersion string) error {
 func PreCheck(c echo.Context) base.PreCheckResponse {
 	conf := config.GetInstance()
 	if err := base.SetContext(c, &conf.Config, context.NewInnoAuthServerContext); err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return base.PreCheckResponse{
 			IsSucceed: false,
 		}

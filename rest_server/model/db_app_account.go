@@ -34,7 +34,7 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	var coinName string
 	for rows.Next() {
 		if err := rows.Scan(&coinID, &coinName); err != nil {
-			log.Error(err)
+			log.Errorf("%v", err)
 			return nil, err
 		} else {
 			coinInfo := &context.CoinInfo{
@@ -75,7 +75,7 @@ func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo 
 		sql.Named("AUID", respAuthMember.AUID),
 		sql.Named("TVP", tvpType))
 	if err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 	}
 
 	return nil

@@ -28,7 +28,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
 	if respAuthMember, err := model.GetDB().AuthMembers(account, ctx.Payload); err != nil || respAuthMember == nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_Procedure_Auth_Members)
 		return c.JSON(http.StatusOK, resp)
 	} else {
@@ -37,7 +37,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			// 신규 유저
 			// 1. point-manager 멤버 등록
 			if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
-				log.Error(err)
+				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 				return c.JSON(http.StatusOK, resp)
 			} else {
@@ -47,14 +47,14 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			// 2. token-manager에 새 지갑 주소 생성 요청
 			addressList, err := TokenAddressNew(respAuthMember.CoinList, account.InnoUID)
 			if err != nil {
-				log.Error(err)
+				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 				return c.JSON(http.StatusOK, resp)
 			}
 
 			// 3. [DB] 지갑 생성 프로시저 호출
 			if err := model.GetDB().AddAccountCoins(respAuthMember, addressList); err != nil {
-				log.Error(err)
+				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 				return c.JSON(http.StatusOK, resp)
 			}
@@ -63,7 +63,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			// 기존 유저
 			// 1. token-manager 호출X -> point-manager에 포인트 수량 정보 요청
 			if pointList, err := GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
-				log.Error(err)
+				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Get_Point_App)
 				return c.JSON(http.StatusOK, resp)
 			} else {
@@ -101,7 +101,7 @@ func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.Wa
 			NickName: nickName,
 		}
 		if resp, err := GetTokenAddressNew(reqAddressNew); err != nil {
-			log.Error(err)
+			log.Errorf("%v", err)
 			return nil, err
 		} else {
 			respAddressNew := &context.WalletInfo{

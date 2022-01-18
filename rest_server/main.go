@@ -8,12 +8,12 @@ import (
 func main() {
 	app, err := app.NewApp()
 	if err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return
 	}
 
 	if err := app.Start(); err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return
 	}
 }

@@ -16,7 +16,7 @@ func (o *ExternalAPI) PostTokenRenew(c echo.Context) error {
 	renewTokenRequest := new(context.RenewTokenRequest)
 
 	if err := c.Bind(renewTokenRequest); err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return base.BaseJSONInternalServerError(c, err)
 	}
 	return commonapi.PostTokenRenew(c, renewTokenRequest)

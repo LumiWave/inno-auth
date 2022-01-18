@@ -21,12 +21,12 @@ func PostPointMemberRegister(req *context.ReqPointMemberRegister) ([]context.Poi
 
 	apiResp, err := baseapi.HttpCall(apiInfo.Uri, "", "POST", buff, nil)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 
 	if apiResp.Return != 0 {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 
@@ -45,7 +45,7 @@ func GetPointApp(AppId int, MUID int64, DatabaseID int) ([]context.Point, error)
 
 	apiResp, err := baseapi.HttpCall(apiInfo.Uri, "", "GET", bytes.NewBuffer(nil), reqPointApp)
 	if err != nil {
-		log.Error(err)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 	if apiResp.Return != 0 {
