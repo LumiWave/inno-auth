@@ -62,7 +62,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 		} else {
 			// 기존 유저
 			// 1. token-manager 호출X -> point-manager에 포인트 수량 정보 요청
-			if pointList, err := GetPointApp(respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
+			if pointList, err := GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
 				log.Error(err)
 				resp.SetReturn(resultcode.Result_Api_Get_Point_App)
 				return c.JSON(http.StatusOK, resp)

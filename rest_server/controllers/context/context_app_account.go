@@ -31,6 +31,13 @@ type MemberInfo struct {
 	IsJoined   bool  `json:"is_joined"`
 }
 
+// 포인트 매니저 PointApp API 호출 Request
+type ReqPointApp struct {
+	AppID      int   `json:"app_id" url:"app_id"`
+	MUID       int64 `json:"mu_id" url:"mu_id"`
+	DataBaseID int   `json:"database_id" url:"database_id"`
+}
+
 // 코인 정보
 type CoinInfo struct {
 	CoinID   int
