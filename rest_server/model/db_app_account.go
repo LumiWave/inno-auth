@@ -76,6 +76,7 @@ func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo 
 		sql.Named("TVP", tvpType))
 	if err != nil {
 		log.Errorf("%v", err)
+		return err
 	}
 
 	return nil
