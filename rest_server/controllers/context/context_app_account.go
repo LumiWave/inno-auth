@@ -12,9 +12,9 @@ type Account struct {
 
 // 계정 코인량
 type AccountCoin struct {
-	CoinID        int64  `json:"coin_id"`
-	WalletAddress string `json:"wallet_address"`
-	Quantity      string `json:"quantity"`
+	CoinID        int64   `json:"coin_id"`
+	WalletAddress string  `json:"wallet_address"`
+	Quantity      float64 `json:"quantity"`
 }
 
 // 계정 로그인 Response

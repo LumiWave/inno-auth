@@ -62,7 +62,7 @@ func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo 
 		data := &context.AccountCoin{
 			CoinID:        wallet.CoinID,
 			WalletAddress: wallet.Address,
-			Quantity:      "",
+			Quantity:      0,
 		}
 		tableData = append(tableData, *data)
 	}
