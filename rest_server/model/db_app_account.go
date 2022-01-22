@@ -19,7 +19,7 @@ const (
 func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*context.RespAuthMember, error) {
 	resp := new(context.RespAuthMember)
 	var returnValue orginMssql.ReturnStatus
-	rows, err := o.Mssql.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Members,
+	rows, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Members,
 		sql.Named("InnoUID", account.InnoUID),
 		sql.Named("AppID", payload.AppID),
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
@@ -71,7 +71,7 @@ func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo 
 		TypeName: TVP_AccountCoins,
 		Value:    tableData,
 	}
-	_, err := o.Mssql.GetDB().Exec(execTvp,
+	_, err := o.MssqlAccountAll.GetDB().Exec(execTvp,
 		sql.Named("AUID", respAuthMember.AUID),
 		sql.Named("TVP", tvpType))
 	if err != nil {

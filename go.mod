@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.11
-	github.com/ONBUFF-IP-TOKEN/basedb v1.1.2
+	github.com/ONBUFF-IP-TOKEN/basedb v1.1.3
 	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.1
 	github.com/denisenkom/go-mssqldb v0.11.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

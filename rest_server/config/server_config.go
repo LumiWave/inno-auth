@@ -44,9 +44,10 @@ type SecretInfo struct {
 type ServerConfig struct {
 	baseconf.Config `yaml:",inline"`
 
-	InnoAuth     InnoAuthServer     `yaml:"inno_auth_server"`
-	MysqlDBAuth  baseconf.DBAuth    `yaml:"mysql_db_auth"`
-	MssqlDBAuth  baseconf.DBAuth    `yaml:"mssql_db_auth"`
+	InnoAuth           InnoAuthServer  `yaml:"inno_auth_server"`
+	MssqlDBAccountAll  baseconf.DBAuth `yaml:"mssql_db_account"`
+	MssqlDBAccountRead baseconf.DBAuth `yaml:"mssql_db_account_read"`
+
 	Auth         ApiAuth            `yaml:"api_auth"`
 	TokenManager TokenManagerServer `yaml:"token_manager"`
 	PointManager PointManagerServer `yaml:"point_manager"`

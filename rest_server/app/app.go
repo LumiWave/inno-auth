@@ -2,13 +2,10 @@ package app
 
 import (
 	"fmt"
-	"strconv"
 	"sync"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
-	"github.com/ONBUFF-IP-TOKEN/basedb"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
@@ -70,22 +67,5 @@ func NewApp() (*ServerApp, error) {
 }
 
 func (o *ServerApp) NewDB(conf *config.ServerConfig) error {
-	auth := conf.MssqlDBAuth
-	port, err := strconv.ParseInt(auth.Port, 10, 32)
-	if err != nil {
-		log.Errorf("db port error : %v", port)
-		return err
-	}
-	mssqlDB, err := basedb.GetMssql("D-INNO-ACCOUNT01", " ", auth.ID, auth.Password, auth.Host, int(port))
-	if err != nil {
-		log.Errorf("err: %v, val: %v, %v, %v, %v, %v, %v",
-			err, auth.Host, auth.ID, auth.Password, auth.Database, auth.PoolSize, auth.IdleSize)
-		return err
-	}
-
-	gCache := basedb.GetCache(&conf.Cache)
-
-	model.SetDB(mssqlDB, gCache)
-
-	return nil
+	return model.InitDB(conf)
 }

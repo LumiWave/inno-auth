@@ -1,7 +1,12 @@
 package model
 
 import (
+	"strconv"
+
+	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
 	"github.com/ONBUFF-IP-TOKEN/basedb"
+	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 )
 
@@ -12,29 +17,54 @@ type DBMeta struct {
 }
 
 type DB struct {
-	Mysql *basedb.Mysql
-	Mssql *basedb.Mssql
-	Cache *basedb.Cache
+	MssqlAccountAll  *basedb.Mssql
+	MssqlAccountRead *basedb.Mssql
+	Cache            *basedb.Cache
 
 	DBMeta
 }
 
 var gDB *DB
 
-func SetDB(db *basedb.Mssql, cache *basedb.Cache) {
-	gDB = &DB{
-		Mssql: db,
-		Cache: cache,
-	}
-	gDB.InitMeta()
-}
-
 func GetDB() *DB {
 	return gDB
+}
+
+func InitDB(conf *config.ServerConfig) (err error) {
+	cache := basedb.GetCache(&conf.Cache)
+	gDB = &DB{
+		Cache: cache,
+	}
+
+	gDB.MssqlAccountAll, err = gDB.ConnectDB(&conf.MssqlDBAccountAll)
+	if err != nil {
+		return err
+	}
+
+	gDB.MssqlAccountRead, err = gDB.ConnectDB(&conf.MssqlDBAccountRead)
+	if err != nil {
+		return err
+	}
+
+	gDB.InitMeta()
+
+	return nil
 }
 
 func (o *DB) InitMeta() {
 	o.Socials = make(map[int64]*context.SocialInfo)
 
 	o.GetSocials()
+}
+
+func (o *DB) ConnectDB(conf *baseconf.DBAuth) (*basedb.Mssql, error) {
+	port, _ := strconv.ParseInt(conf.Port, 10, 32)
+	mssqlDB, err := basedb.NewMssql(conf.Database, "", conf.ID, conf.Password, conf.Host, int(port))
+	if err != nil {
+		log.Errorf("err: %v, val: %v, %v, %v, %v, %v, %v",
+			err, conf.Host, conf.ID, conf.Password, conf.Database, conf.PoolSize, conf.IdleSize)
+		return nil, err
+	}
+
+	return mssqlDB, nil
 }
