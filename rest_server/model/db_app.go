@@ -13,6 +13,7 @@ const (
 	USPAU_Get_Applications = "[dbo].[USPAU_Get_Applications]"
 )
 
+// 인증 서버 접근 (앱 로그인/가입)
 func (o *DB) GetApplications(access *context.Access) (*context.Payload, int, error) {
 	payload := new(context.Payload)
 	var returnValue orginMssql.ReturnStatus

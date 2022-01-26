@@ -1,7 +1,8 @@
-package commonapi
+package inner
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
@@ -10,7 +11,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 )
 
-// [INT] 새 지갑 주소 생성 요청
+// [INT-token-manager] 새 지갑 주소 생성 요청
 func GetTokenAddressNew(reqAddressNew *context.ReqAddressNew) (*context.WalletInfo, error) {
 	apiInfo := context.ApiList[context.Api_get_token_address_new]
 	apiInfo.Uri = fmt.Sprintf(apiInfo.Uri, config.GetInstance().TokenManager.Uri)
@@ -21,8 +22,8 @@ func GetTokenAddressNew(reqAddressNew *context.ReqAddressNew) (*context.WalletIn
 		return nil, err
 	}
 	if apiResp.Return != 0 {
-		// token-manager api error
-
+		err = errors.New(apiResp.Message)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

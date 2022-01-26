@@ -10,12 +10,11 @@ import (
 )
 
 const (
-	USPAU_Auth_Members     = "[dbo].[USPAU_Auth_Members]"
-	USPAU_Add_AccountCoins = "[dbo].[USPAU_Add_AccountCoins]"
-
-	TVP_AccountCoins = "dbo.TVP_AccountCoins"
+	USPAU_Auth_Members = "[dbo].[USPAU_Auth_Members]"
+	TVP_AccountCoins   = "dbo.TVP_AccountCoins"
 )
 
+// 앱을 통한 인증 (앱 로그인)
 func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*context.RespAuthMember, error) {
 	resp := new(context.RespAuthMember)
 	var returnValue orginMssql.ReturnStatus
@@ -51,33 +50,4 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	}
 
 	return resp, err
-}
-
-func (o *DB) AddAccountCoins(respAuthMember *context.RespAuthMember, walletInfo []context.WalletInfo) error {
-	execTvp := "exec " + USPAU_Add_AccountCoins + " @AUID, @TVP;"
-
-	var tableData []context.AccountCoin
-
-	for _, wallet := range walletInfo {
-		data := &context.AccountCoin{
-			CoinID:        wallet.CoinID,
-			WalletAddress: wallet.Address,
-			Quantity:      0,
-		}
-		tableData = append(tableData, *data)
-	}
-
-	tvpType := orginMssql.TVP{
-		TypeName: TVP_AccountCoins,
-		Value:    tableData,
-	}
-	_, err := o.MssqlAccountAll.GetDB().Exec(execTvp,
-		sql.Named("AUID", respAuthMember.AUID),
-		sql.Named("TVP", tvpType))
-	if err != nil {
-		log.Errorf("%v", err)
-		return err
-	}
-
-	return nil
 }

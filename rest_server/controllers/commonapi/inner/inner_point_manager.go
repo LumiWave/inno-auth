@@ -1,8 +1,9 @@
-package commonapi
+package inner
 
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
@@ -26,6 +27,7 @@ func PostPointMemberRegister(req *context.ReqPointMemberRegister) ([]context.Poi
 	}
 
 	if apiResp.Return != 0 {
+		err = errors.New(apiResp.Message)
 		log.Errorf("%v", err)
 		return nil, err
 	}
@@ -49,7 +51,8 @@ func GetPointApp(AppId int64, MUID int64, DatabaseID int64) ([]context.Point, er
 		return nil, err
 	}
 	if apiResp.Return != 0 {
-		// point-manager api error
+		err = errors.New(apiResp.Message)
+		log.Errorf("%v", err)
 		return nil, err
 	}
 

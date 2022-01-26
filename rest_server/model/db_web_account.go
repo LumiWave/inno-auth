@@ -12,7 +12,8 @@ const (
 	USPAU_Auth_Accounts = "[dbo].[USPAU_Auth_Accounts]"
 )
 
-func (o *DB) AuthWebAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, error) {
+// Web 가입/로그인
+func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, error) {
 	resp := new(context.ResAccountWeb)
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Accounts,

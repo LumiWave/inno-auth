@@ -36,9 +36,15 @@ type TokenManagerServer struct {
 type PointManagerServer struct {
 	Uri string `yaml:"uri"`
 }
+
 type SecretInfo struct {
 	Key string `yaml:"key"`
 	Iv  string `yaml:"iv"`
+}
+
+type ONITInfo struct {
+	ID     int64  `yaml:"id"`
+	Symbol string `yaml:"symbol"`
 }
 
 type ServerConfig struct {
@@ -52,6 +58,7 @@ type ServerConfig struct {
 	TokenManager TokenManagerServer `yaml:"token_manager"`
 	PointManager PointManagerServer `yaml:"point_manager"`
 	Secret       SecretInfo         `yaml:"secret"`
+	ONIT         ONITInfo           `yaml:"onit"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {

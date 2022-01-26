@@ -8,6 +8,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -17,6 +18,7 @@ import (
 func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
+	conf := config.GetInstance()
 
 	// 1. 소셜 정보 검증
 	userID, email, err := auth.GetIAuth().SocialAuths[accountWeb.SocialType].VerifySocialKey(accountWeb.SocialKey)
@@ -29,8 +31,8 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	payload := &context.Payload{
 		LoginType: context.WebAccountLogin,
 		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, email),
-			[]byte(config.GetInstance().Secret.Key),
-			[]byte(config.GetInstance().Secret.Iv)),
+			[]byte(conf.Secret.Key),
+			[]byte(conf.Secret.Iv)),
 	}
 
 	reqAccountWeb := &context.ReqAccountWeb{
@@ -40,7 +42,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	}
 
 	// 2. 웹 로그인/가입
-	resAccountWeb, err := model.GetDB().AuthWebAccounts(reqAccountWeb)
+	resAccountWeb, err := model.GetDB().AuthAccounts(reqAccountWeb)
 	if err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
@@ -48,6 +50,29 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	}
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
+
+	// 신규 가입자는 ONIT 지갑을 생성
+	if resAccountWeb.IsJoined {
+		// 2-1. token-manager에 새 지갑 주소 생성 요청
+		coinList := []context.CoinInfo{{
+			CoinID:   conf.ONIT.ID,
+			CoinName: conf.ONIT.Symbol,
+		}}
+
+		addressList, err := inner.TokenAddressNew(coinList, payload.InnoUID)
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+			return c.JSON(http.StatusOK, resp)
+		}
+
+		// 2-2. [DB] 지갑 생성 프로시저 호출
+		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, addressList); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
+	}
 
 	// 3. Access, Refresh 토큰 생성
 	if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {

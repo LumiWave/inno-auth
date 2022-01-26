@@ -9,6 +9,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -45,7 +46,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			}
 
 			// 2. token-manager에 새 지갑 주소 생성 요청
-			addressList, err := TokenAddressNew(respAuthMember.CoinList, account.InnoUID)
+			addressList, err := inner.TokenAddressNew(respAuthMember.CoinList, account.InnoUID)
 			if err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
@@ -53,7 +54,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			}
 
 			// 3. [DB] 지갑 생성 프로시저 호출
-			if err := model.GetDB().AddAccountCoins(respAuthMember, addressList); err != nil {
+			if err := model.GetDB().AddAccountCoins(respAuthMember.AUID, addressList); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 				return c.JSON(http.StatusOK, resp)
@@ -62,7 +63,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 		} else {
 			// 기존 유저
 			// 1. token-manager 호출X -> point-manager에 포인트 수량 정보 요청
-			if pointList, err := GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
+			if pointList, err := inner.GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Get_Point_App)
 				return c.JSON(http.StatusOK, resp)
@@ -89,31 +90,7 @@ func PointMemberRegister(AUID int64, MUID int64, AppID int64, DataBaseID int64) 
 		AppID:      AppID,
 		DataBaseID: DataBaseID,
 	}
-	return PostPointMemberRegister(reqPointMemberRegister)
-}
-
-func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.WalletInfo, error) {
-	var addressList []context.WalletInfo
-
-	for _, coin := range coinList {
-		reqAddressNew := &context.ReqAddressNew{
-			Symbol:   coin.CoinName,
-			NickName: nickName,
-		}
-		if resp, err := GetTokenAddressNew(reqAddressNew); err != nil {
-			log.Errorf("%v", err)
-			return nil, err
-		} else {
-			respAddressNew := &context.WalletInfo{
-				CoinID:  coin.CoinID,
-				Symbol:  coin.CoinName,
-				Address: resp.Address,
-			}
-			addressList = append(addressList, *respAddressNew)
-		}
-	}
-
-	return addressList, nil
+	return inner.PostPointMemberRegister(reqPointMemberRegister)
 }
 
 func ValidInnoUID(innoUID string) error {

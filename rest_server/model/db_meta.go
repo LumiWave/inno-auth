@@ -12,6 +12,7 @@ const (
 	USPAU_Scan_Socials = "[dbo].[USPAU_Scan_Socials]"
 )
 
+// 전체 소셜 정보 조회
 func (o *DB) GetSocials() error {
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.MssqlAccountRead.GetDB().QueryContext(contextR.Background(), USPAU_Scan_Socials, &returnValue)
