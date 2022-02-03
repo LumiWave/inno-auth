@@ -22,6 +22,7 @@ func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWe
 		sql.Named("SocialType", account.SocialType),
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
 		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
+		sql.Named("ExistsMainWallet", sql.Out{Dest: &resp.ExistsMainWallet}),
 		&returnValue)
 
 	defer rows.Close()

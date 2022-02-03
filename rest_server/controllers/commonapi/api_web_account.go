@@ -51,9 +51,9 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
 
-	// 신규 가입자는 ONIT 지갑을 생성
-	if resAccountWeb.IsJoined {
-		// 2-1. token-manager에 새 지갑 주소 생성 요청
+	// 3. ONIT 지갑이 없는 유저는 지갑을 생성
+	if !resAccountWeb.ExistsMainWallet {
+		// 3-1. token-manager에 새 지갑 주소 생성 요청
 		coinList := []context.CoinInfo{{
 			CoinID:   conf.ONIT.ID,
 			CoinName: conf.ONIT.Symbol,
@@ -66,7 +66,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 			return c.JSON(http.StatusOK, resp)
 		}
 
-		// 2-2. [DB] 지갑 생성 프로시저 호출
+		// 3-2. [DB] 지갑 생성 프로시저 호출
 		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, addressList); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
@@ -74,7 +74,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 		}
 	}
 
-	// 3. Access, Refresh 토큰 생성
+	// 4. Access, Refresh 토큰 생성
 	if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)

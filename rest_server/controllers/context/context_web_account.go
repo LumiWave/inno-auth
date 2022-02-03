@@ -33,9 +33,10 @@ type ReqAccountWeb struct {
 
 type ResAccountWeb struct {
 	JwtInfo
-	InnoUID  string `json:"inno_uid" validate:"required"`
-	IsJoined bool   `json:"is_joined" validate:"required"`
-	AUID     int64  `json:"au_id" validate:"required"`
+	InnoUID          string `json:"inno_uid" validate:"required"`
+	IsJoined         bool   `json:"is_joined" validate:"required"`
+	AUID             int64  `json:"au_id" validate:"required"`
+	ExistsMainWallet bool   `json:"exists_main_wallet" validate:"required"`
 }
 
 ////////////////////////////////////////////
