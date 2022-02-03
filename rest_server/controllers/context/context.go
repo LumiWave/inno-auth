@@ -53,6 +53,10 @@ func NewInnoAuthServerContext(baseCtx *base.BaseContext) interface{} {
 	return ctx
 }
 
+type ReqGetInnoUID struct {
+	InnoUID string `json:"inno_uid" query:"inno_uid"`
+}
+
 // AppendRequestParameter BaseContext 이미 정의되어 있는 ReqeustParameters 배열에 등록
 func AppendRequestParameter() {
 }

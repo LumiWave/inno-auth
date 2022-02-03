@@ -3,8 +3,10 @@ package internalapi
 import (
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
+	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/labstack/echo"
 )
 
@@ -47,4 +49,14 @@ func (o *InternalAPI) GetVersion(c echo.Context) error {
 
 func (o *InternalAPI) GetNodeMetric(c echo.Context) error {
 	return commonapi.GetNodeMetric(c)
+}
+
+func (o *InternalAPI) GetInnoUIDInfo(c echo.Context) error {
+	req := new(context.ReqGetInnoUID)
+
+	if err := c.Bind(req); err != nil {
+		log.Errorf("%v", err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+	return commonapi.GetInnoUIDInfo(c, req.InnoUID)
 }

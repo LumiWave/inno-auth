@@ -7,6 +7,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/schedule"
@@ -73,6 +74,15 @@ func GetNodeMetric(c echo.Context) error {
 
 	node := schedule.GetSystemMonitor().GetMetricInfo()
 	resp.Value = node
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+func GetInnoUIDInfo(c echo.Context, innoUID string) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	resp.Value = inner.DecryptInnoUID(innoUID)
 
 	return c.JSON(http.StatusOK, resp)
 }

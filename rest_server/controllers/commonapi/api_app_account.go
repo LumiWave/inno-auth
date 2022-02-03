@@ -1,14 +1,10 @@
 package commonapi
 
 import (
-	"errors"
 	"net/http"
-	"unicode/utf8"
 
-	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
@@ -22,7 +18,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	respAccountLogin := new(context.RespAccountLogin)
 
 	// 0. InnoUID 검증
-	if err := ValidInnoUID(account.InnoUID); err != nil {
+	if err := inner.ValidInnoUID(account.InnoUID); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
 		return c.JSON(http.StatusOK, resp)
 	}
@@ -91,17 +87,4 @@ func PointMemberRegister(AUID int64, MUID int64, AppID int64, DataBaseID int64) 
 		DataBaseID: DataBaseID,
 	}
 	return inner.PostPointMemberRegister(reqPointMemberRegister)
-}
-
-func ValidInnoUID(innoUID string) error {
-	// Check InnoUID Length
-	if len(innoUID) > 64 {
-		return errors.New("invalid inno_uid")
-	}
-	// Verify InnoUID
-	decStr := inno.AESDecrypt(innoUID, []byte(config.GetInstance().Secret.Key), []byte(config.GetInstance().Secret.Iv))
-	if len(decStr) == 0 || !utf8.ValidString(decStr) {
-		return errors.New("invalid inno_uid")
-	}
-	return nil
 }
