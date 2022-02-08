@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.11
 	github.com/ONBUFF-IP-TOKEN/basedb v1.1.3
-	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.1
+	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.4
 	github.com/denisenkom/go-mssqldb v0.11.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/labstack/echo v3.3.10+incompatible
@@ -58,6 +58,7 @@ require (
 
 require (
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/ip2location/ip2location-go/v9 v9.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.6 // indirect
 	github.com/tklauser/numcpus v0.2.2 // indirect
 	google.golang.org/protobuf v1.26.0 // indirect

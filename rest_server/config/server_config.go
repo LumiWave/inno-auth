@@ -29,6 +29,11 @@ type ApiAuth struct {
 	AesKey                      string `yaml:"aes_key"`
 }
 
+type AccessCountryInfo struct {
+	LocationFilePath    string   `yaml:"location_filepath"`
+	DisallowedCountries []string `yaml:"disallowed_country"`
+}
+
 type TokenManagerServer struct {
 	Uri string `yaml:"uri"`
 }
@@ -54,11 +59,12 @@ type ServerConfig struct {
 	MssqlDBAccountAll  baseconf.DBAuth `yaml:"mssql_db_account"`
 	MssqlDBAccountRead baseconf.DBAuth `yaml:"mssql_db_account_read"`
 
-	Auth         ApiAuth            `yaml:"api_auth"`
-	TokenManager TokenManagerServer `yaml:"token_manager"`
-	PointManager PointManagerServer `yaml:"point_manager"`
-	Secret       SecretInfo         `yaml:"secret"`
-	ONIT         ONITInfo           `yaml:"onit"`
+	Auth          ApiAuth            `yaml:"api_auth"`
+	AccessCountry AccessCountryInfo  `yaml:"access_country"`
+	TokenManager  TokenManagerServer `yaml:"token_manager"`
+	PointManager  PointManagerServer `yaml:"point_manager"`
+	Secret        SecretInfo         `yaml:"secret"`
+	ONIT          ONITInfo           `yaml:"onit"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {
