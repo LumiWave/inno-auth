@@ -25,7 +25,7 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 		req.URL.RawQuery = queryStr
 	}
 
-	client := &http.Client{Timeout: 5 * time.Second}
+	client := &http.Client{Timeout: 60 * time.Second}
 	return client, req
 }
 
