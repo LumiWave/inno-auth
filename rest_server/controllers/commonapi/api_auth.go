@@ -16,10 +16,19 @@ func GetTokenVerify(c echo.Context) error {
 
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
 
-	if _, err := auth.GetIAuth().GetJwtInfo(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
-		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
-	} else {
-		resp.Value = ctx.Payload
+	switch ctx.Payload.LoginType {
+	case context.AppLogin:
+		if _, err := auth.GetIAuth().GetJwtInfoByUUID(ctx.Payload.LoginType, context.AccessT, ctx.Payload.Uuid); err != nil {
+			resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+		} else {
+			resp.Value = ctx.Payload
+		}
+	case context.WebAccountLogin:
+		if _, err := auth.GetIAuth().GetJwtInfoByInnoUID(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
+			resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+		} else {
+			resp.Value = ctx.Payload
+		}
 	}
 
 	return c.JSON(http.StatusOK, resp)
@@ -29,25 +38,30 @@ func PostTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenReque
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if payload, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
+	// 1. Refresh 토큰 유효성 검증
+	if loginType, rtClaims, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
 	} else {
-		// Get Jwt Info
-		if _, err := auth.GetIAuth().GetJwtInfo(payload.LoginType, payload.Uuid); err != nil {
-			resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
-		} else {
-			// Make Renew Token.
-			if newJwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
-				resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+		// 2. Payload를 생성
+		payload := auth.GetIAuth().ParseClaimsToPayload(loginType, context.RefreshT, rtClaims)
+
+		switch loginType {
+		case context.AppLogin:
+			// 3. App 토큰 재발급/갱신
+			if newJwtInfo, resultCode := auth.GetIAuth().AppTokenRenew(payload); resultCode != 0 {
+				resp.SetReturn(resultCode)
 			} else {
-				// Delete the uuid in Redis.
-				if err := auth.GetIAuth().DeleteUuidRedis(payload.LoginType, payload.Uuid); err != nil {
-					resp.SetReturn(resultcode.Result_RedisError)
-				} else {
-					resp.Value = newJwtInfoValue
-				}
+				resp.Value = newJwtInfo
+			}
+		case context.WebAccountLogin:
+			// 3. Web 토큰 재발급/갱신
+			if newJwtInfo, resultCode := auth.GetIAuth().WebTokenRenew(payload); resultCode != 0 {
+				resp.SetReturn(resultCode)
+			} else {
+				resp.Value = newJwtInfo
 			}
 		}
+
 	}
 	return c.JSON(http.StatusOK, resp)
 }

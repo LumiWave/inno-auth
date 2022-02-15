@@ -1,11 +1,8 @@
 package context
 
 import (
-	"time"
-
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/datetime"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 )
 
 type LoginType int
@@ -67,15 +64,4 @@ func (o *InnoAuthContext) SetAuthContext(payload *Payload) {
 
 func MakeDt(data *int64) {
 	*data = datetime.GetTS2MilliSec()
-}
-
-func GetTokenExpiryperiod(loginType LoginType) (int64, int64) {
-	confAuth := config.GetInstance().Auth
-	switch loginType {
-	case AppLogin:
-		return confAuth.AppAccessTokenExpiryPeriod * int64(time.Hour), confAuth.AppRefreshTokenExpiryPeriod * int64(time.Hour)
-	case WebAccountLogin:
-		return confAuth.WebAccessTokenExpiryPeriod * int64(time.Hour), confAuth.WebRefreshTokenExpiryPeriod * int64(time.Hour)
-	}
-	return 0, 0
 }
