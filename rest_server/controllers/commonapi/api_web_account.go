@@ -75,12 +75,21 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	}
 
 	// 4. Access, Refresh 토큰 생성
-	if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
-		log.Errorf("%v", err)
-		resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
-		return c.JSON(http.StatusOK, resp)
+
+	// 4-1. 기존에 발급된 토큰이 있는지 확인
+	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
+		// 4-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
+		if jwtInfoValue, err := auth.GetIAuth().MakeWebToken(payload); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+			return c.JSON(http.StatusOK, resp)
+		} else {
+			// 4-3. 새로 발급된 토큰으로 응답
+			resAccountWeb.JwtInfo = *jwtInfoValue
+		}
 	} else {
-		resAccountWeb.JwtInfo = *jwtInfoValue
+		// 4-3. 기존 발급된 토큰으로 응답
+		resAccountWeb.JwtInfo = *oldJwtInfo
 	}
 
 	resp.Value = *resAccountWeb
@@ -94,11 +103,11 @@ func DelWebAccountLogout(c echo.Context) error {
 	resp.Success()
 
 	// Check if the token has expired
-	if _, err := auth.GetIAuth().GetJwtInfo(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
+	if _, err := auth.GetIAuth().GetJwtInfoByInnoUID(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
 	} else {
-		// Delete the uuid in Redis.
-		if err := auth.GetIAuth().DeleteUuidRedis(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
+		// Delete the innoUID in Redis.
+		if err := auth.GetIAuth().DeleteInnoUIDRedis(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
 			resp.SetReturn(resultcode.Result_RedisError)
 		}
 	}

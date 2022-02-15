@@ -27,7 +27,7 @@ func PostAppLogin(c echo.Context, access *context.Access) error {
 			resp.SetReturn(resultcode.Result_Auth_DeactivatedAccount)
 		} else {
 			// 2. Access, Refresh 토큰 생성
-			if jwtInfoValue, err := auth.GetIAuth().MakeToken(payload); err != nil {
+			if jwtInfoValue, err := auth.GetIAuth().MakeAppToken(payload); err != nil {
 				resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 				return c.JSON(http.StatusOK, resp)
 			} else {
@@ -44,12 +44,12 @@ func DelAppLogout(c echo.Context) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// Check if the token has expired
-	if _, err := auth.GetIAuth().GetJwtInfo(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
+	// 1. Access Token이 만료되었는지 확인
+	if jwtInfo, err := auth.GetIAuth().GetJwtInfoByUUID(ctx.Payload.LoginType, context.AccessT, ctx.Payload.Uuid); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
 	} else {
-		// Delete the uuid in Redis.
-		if err := auth.GetIAuth().DeleteUuidRedis(ctx.Payload.LoginType, ctx.Payload.Uuid); err != nil {
+		// 2. Redis에 Uuid를 조회해서 삭제 (로그아웃 처리)
+		if err := auth.GetIAuth().DeleteUuidRedis(jwtInfo, ctx.Payload.LoginType, context.AccessT, ctx.Payload.Uuid); err != nil {
 			resp.SetReturn(resultcode.Result_RedisError)
 		}
 	}
