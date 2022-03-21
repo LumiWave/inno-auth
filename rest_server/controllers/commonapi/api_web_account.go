@@ -15,6 +15,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Web 계정 로그인/가입
 func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
@@ -88,7 +89,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 			resAccountWeb.JwtInfo = *jwtInfoValue
 		}
 	} else {
-		// 4-3. 기존 발급된 토큰으로 응답
+		// 4-2. 기존 발급된 토큰으로 응답
 		resAccountWeb.JwtInfo = *oldJwtInfo
 	}
 
@@ -97,6 +98,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
+// Web 계정 로그아웃
 func DelWebAccountLogout(c echo.Context) error {
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
 	resp := new(base.BaseResponse)
@@ -109,6 +111,29 @@ func DelWebAccountLogout(c echo.Context) error {
 		// Delete the innoUID in Redis.
 		if err := auth.GetIAuth().DeleteInnoUIDRedis(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
 			resp.SetReturn(resultcode.Result_RedisError)
+		}
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+// Web 계정 로그인 정보 확인
+func PostWebAccountInfo(c echo.Context, reqAccountInfo *context.ReqAccountInfo) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	if jwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(context.WebAccountLogin, context.AccessT, reqAccountInfo.InnoUID); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+	} else {
+		if _, atClaims, err := auth.GetIAuth().VerifyAccessToken(jwtInfo.AccessToken); err != nil {
+			resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
+		} else {
+			resWebAccountInfo := &context.ResWebAccountInfo{
+				JwtInfo: *jwtInfo,
+				InnoUID: reqAccountInfo.InnoUID,
+				AUID:    int64(atClaims["au_id"].(float64)),
+			}
+			resp.Value = *resWebAccountInfo
 		}
 	}
 
