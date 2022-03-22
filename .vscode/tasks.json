@@ -6,6 +6,7 @@
         {
             "label": "prebuild",
             "type": "shell",
+            "command" : "./prebuild.sh local",
             "windows": {
                 "command": "cmd",
                 "args": [
