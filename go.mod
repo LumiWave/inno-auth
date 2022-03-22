@@ -3,9 +3,9 @@ module github.com/ONBUFF-IP-TOKEN/inno-auth
 go 1.17
 
 require (
-	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.11
-	github.com/ONBUFF-IP-TOKEN/basedb v1.1.3
-	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.4
+	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.12
+	github.com/ONBUFF-IP-TOKEN/basedb v1.1.7
+	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.7
 	github.com/denisenkom/go-mssqldb v0.11.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/labstack/echo v3.3.10+incompatible
@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	github.com/ONBUFF-IP-TOKEN/basenet v1.0.2 // indirect
+	github.com/ONBUFF-IP-TOKEN/basenet v1.0.3 // indirect
 	github.com/couchbase/gocb v1.6.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
@@ -57,7 +57,13 @@ require (
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/go-redis/redis/v8 v8.11.4 // indirect
+	github.com/go-redsync/redsync/v4 v4.4.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/ip2location/ip2location-go/v9 v9.2.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.6 // indirect
 	github.com/tklauser/numcpus v0.2.2 // indirect
