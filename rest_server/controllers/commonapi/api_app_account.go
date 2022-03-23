@@ -52,10 +52,10 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			}
 		}
 
-		// 3. Auth-Members 프로시저에서 내 App에서 사용할 CoinList가 존재하면 지갑 생성
-		if len(respAuthMember.CoinList) > 0 {
-			// 3-1. token-manager에 새 지갑 주소 생성 요청
-			addressList, err := inner.TokenAddressNew(respAuthMember.CoinList, account.InnoUID)
+		// 3. Base Coin의 지갑이 없으면 생성
+		if len(respAuthMember.BaseCoinList) > 0 {
+			// 3-1. [token-manager] 지갑 생성
+			walletInfo, err := inner.TokenAddressNew(respAuthMember.BaseCoinList, account.InnoUID)
 			if err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
@@ -63,14 +63,24 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			}
 
 			// 3-2. [DB] 지갑 생성 프로시저 호출
-			if err := model.GetDB().AddAccountCoins(respAuthMember.AUID, addressList); err != nil {
+			if err := model.GetDB().AddAccountBaseCoins(respAuthMember.AUID, walletInfo); err != nil {
+				log.Errorf("%v", err)
+				resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+				return c.JSON(http.StatusOK, resp)
+			}
+		}
+
+		// 4. Auth-Members 프로시저에서 내 App에서 사용할 CoinList가 존재하면 지갑 생성
+		if len(respAuthMember.AppCoinIDList) > 0 {
+			// 4-1. [DB] 사용자 코인 등록 프로시저 호출
+			if err := model.GetDB().AddAccountCoins(respAuthMember.AUID, respAuthMember.AppCoinIDList); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 				return c.JSON(http.StatusOK, resp)
 			}
 		}
 
-		// 4. 같이 데이터를 담아서 게임서버로 전달해줌.
+		// 5. 같이 데이터를 담아서 게임서버로 전달해줌.
 		respAccountLogin.MemberInfo.AUID = respAuthMember.AUID
 		respAccountLogin.MemberInfo.IsJoined = respAuthMember.IsJoined
 		respAccountLogin.MemberInfo.MUID = respAuthMember.MUID

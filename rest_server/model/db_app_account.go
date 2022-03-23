@@ -11,7 +11,6 @@ import (
 
 const (
 	USPAU_Auth_Members = "[dbo].[USPAU_Auth_Members]"
-	TVP_AccountCoins   = "dbo.TVP_AccountCoins"
 )
 
 // 앱을 통한 인증 (앱 로그인)
@@ -28,21 +27,35 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 		&returnValue)
 	payload.LoginType = context.AppAccountLogin
 
-	// 신규 유저(IsJoined==1)일 경우 CoinID, CoinName을 추가로 전달 받는다.
-	var coinID int64
-	var coinName string
+	// 지갑 생성이 안된 Base Coin List를 전달받는다.
 	for rows.Next() {
-		if err := rows.Scan(&coinID, &coinName); err != nil {
+		var baseCoinID int64
+		var baseCoinSymbol string
+		if err := rows.Scan(&baseCoinID, &baseCoinSymbol); err != nil {
 			log.Errorf("%v", err)
 			return nil, err
 		} else {
-			coinInfo := &context.CoinInfo{
-				CoinID:   coinID,
-				CoinName: coinName,
+			baseCoinInfo := &context.CoinInfo{
+				CoinID:     baseCoinID,
+				CoinSymbol: baseCoinSymbol,
 			}
-			resp.CoinList = append(resp.CoinList, *coinInfo)
+			resp.BaseCoinList = append(resp.BaseCoinList, *baseCoinInfo)
 		}
 	}
+	rows.NextResultSet()
+
+	// 사용자 코인 등록이 안된 Base Coin List를 전달받는다.
+	// App CoinList
+	for rows.Next() {
+		var coinID int64
+		if err := rows.Scan(&coinID); err != nil {
+			log.Errorf("%v", err)
+			return nil, err
+		} else {
+			resp.AppCoinIDList = append(resp.AppCoinIDList, coinID)
+		}
+	}
+
 	defer rows.Close()
 
 	if returnValue != 1 {

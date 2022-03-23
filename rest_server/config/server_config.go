@@ -47,9 +47,14 @@ type SecretInfo struct {
 	Iv  string `yaml:"iv"`
 }
 
-type ONITInfo struct {
-	ID     int64  `yaml:"id"`
-	Symbol string `yaml:"symbol"`
+type BaseCoinInfo struct {
+	Symbol []string `yaml:"symbol"`
+	ID     []int64  `yaml:"id"`
+}
+
+type OnitCoinInfo struct {
+	Symbol []string `yaml:"symbol"`
+	ID     []int64  `yaml:"id"`
 }
 
 type ServerConfig struct {
@@ -64,7 +69,8 @@ type ServerConfig struct {
 	TokenManager  TokenManagerServer `yaml:"token_manager"`
 	PointManager  PointManagerServer `yaml:"point_manager"`
 	Secret        SecretInfo         `yaml:"secret"`
-	ONIT          ONITInfo           `yaml:"onit"`
+	BaseCoin      BaseCoinInfo       `yaml:"base_coin"`
+	OnitCoin      OnitCoinInfo       `yaml:"onit_coin"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {

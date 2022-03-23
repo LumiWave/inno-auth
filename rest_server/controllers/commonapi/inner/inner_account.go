@@ -15,7 +15,7 @@ func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.Wa
 
 	for _, coin := range coinList {
 		reqAddressNew := &context.ReqAddressNew{
-			Symbol:   coin.CoinName,
+			Symbol:   coin.CoinSymbol,
 			NickName: nickName,
 		}
 		if resp, err := GetTokenAddressNew(reqAddressNew); err != nil {
@@ -23,9 +23,10 @@ func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.Wa
 			return nil, err
 		} else {
 			respAddressNew := &context.WalletInfo{
-				CoinID:  coin.CoinID,
-				Symbol:  coin.CoinName,
-				Address: resp.Address,
+				CoinID:     coin.CoinID,
+				Symbol:     coin.CoinSymbol,
+				Address:    resp.Address,
+				PrivateKey: resp.PrivateKey,
 			}
 			addressList = append(addressList, *respAddressNew)
 		}

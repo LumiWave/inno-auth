@@ -29,9 +29,9 @@ func GetTokenAddressNew(reqAddressNew *context.ReqAddressNew) (*context.WalletIn
 
 	respValue := apiResp.Value.(map[string]interface{})
 	resp := &context.WalletInfo{
-		CoinID:  0,
-		Symbol:  respValue["symbol"].(string),
-		Address: respValue["address"].(string),
+		Symbol:     respValue["symbol"].(string),
+		Address:    respValue["address"].(string),
+		PrivateKey: respValue["pk"].(string),
 	}
 	return resp, nil
 }

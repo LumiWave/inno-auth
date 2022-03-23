@@ -54,21 +54,30 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 
 	// 3. ONIT 지갑이 없는 유저는 지갑을 생성
 	if !resAccountWeb.ExistsMainWallet {
-		// 3-1. token-manager에 새 지갑 주소 생성 요청
-		coinList := []context.CoinInfo{{
-			CoinID:   conf.ONIT.ID,
-			CoinName: conf.ONIT.Symbol,
-		}}
-
-		addressList, err := inner.TokenAddressNew(coinList, payload.InnoUID)
+		// 3-1. [token-manager] ETH 지갑 생성
+		var baseCoinList []context.CoinInfo
+		for i, value := range conf.BaseCoin.Symbol {
+			baseCoinList = append(baseCoinList, context.CoinInfo{
+				CoinID:     conf.BaseCoin.ID[i],
+				CoinSymbol: value,
+			})
+		}
+		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
 		if err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 			return c.JSON(http.StatusOK, resp)
 		}
 
-		// 3-2. [DB] 지갑 생성 프로시저 호출
-		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, addressList); err != nil {
+		// 3-2. [DB] ETH 지갑 생성 프로시저 호출
+		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
+
+		// 3-3. [DB] ONIT 사용자 코인 등록
+		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.OnitCoin.ID); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 			return c.JSON(http.StatusOK, resp)
