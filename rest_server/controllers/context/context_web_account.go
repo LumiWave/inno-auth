@@ -30,12 +30,15 @@ func (o *AccountWeb) CheckValidate() *base.BaseResponse {
 ////////// web 계정 로그인 정보
 
 type ReqAccountInfo struct {
-	InnoUID string `json:"inno_uid" validate:"required"`
+	AUID    int64  `json:"au_id"`
+	InnoUID string `json:"inno_uid"`
 }
 
-func (o *ReqAccountInfo) CheckValidate() *base.BaseResponse {
-	if len(o.InnoUID) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyInnoUID)
+func (o *ReqAccountInfo) CheckValidate(ctx *InnoAuthContext) *base.BaseResponse {
+	ctxValue := ctx.GetValue()
+	if ctxValue != nil {
+		o.AUID = ctxValue.AUID
+		o.InnoUID = ctx.GetValue().InnoUID
 	}
 	return nil
 }

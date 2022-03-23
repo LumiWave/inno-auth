@@ -65,3 +65,7 @@ func (o *InnoAuthContext) SetAuthContext(payload *Payload) {
 func MakeDt(data *int64) {
 	*data = datetime.GetTS2MilliSec()
 }
+
+func (o *InnoAuthContext) GetValue() *Payload {
+	return o.Payload
+}

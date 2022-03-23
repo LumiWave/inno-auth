@@ -118,23 +118,19 @@ func DelWebAccountLogout(c echo.Context) error {
 }
 
 // Web 계정 로그인 정보 확인
-func PostWebAccountInfo(c echo.Context, reqAccountInfo *context.ReqAccountInfo) error {
+func PostWebAccountInfo(c echo.Context, params *context.ReqAccountInfo) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	if jwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(context.WebAccountLogin, context.AccessT, reqAccountInfo.InnoUID); err != nil {
-		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+	if jwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(context.WebAccountLogin, context.AccessT, params.InnoUID); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
 	} else {
-		if _, atClaims, err := auth.GetIAuth().VerifyAccessToken(jwtInfo.AccessToken); err != nil {
-			resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
-		} else {
-			resWebAccountInfo := &context.ResWebAccountInfo{
-				JwtInfo: *jwtInfo,
-				InnoUID: reqAccountInfo.InnoUID,
-				AUID:    int64(atClaims["au_id"].(float64)),
-			}
-			resp.Value = *resWebAccountInfo
+		respWebAccountInfo := &context.ResWebAccountInfo{
+			JwtInfo: *jwtInfo,
+			InnoUID: params.InnoUID,
+			AUID:    params.AUID,
 		}
+		resp.Value = *respWebAccountInfo
 	}
 
 	return c.JSON(http.StatusOK, resp)
