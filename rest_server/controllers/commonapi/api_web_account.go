@@ -56,9 +56,9 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	if !resAccountWeb.ExistsMainWallet {
 		// 3-1. [token-manager] ETH 지갑 생성
 		var baseCoinList []context.CoinInfo
-		for i, value := range conf.BaseCoin.Symbol {
+		for i, value := range conf.BaseCoin.SymbolList {
 			baseCoinList = append(baseCoinList, context.CoinInfo{
-				CoinID:     conf.BaseCoin.ID[i],
+				CoinID:     conf.BaseCoin.IDList[i],
 				CoinSymbol: value,
 			})
 		}
@@ -77,7 +77,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 		}
 
 		// 3-3. [DB] ONIT 사용자 코인 등록
-		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.OnitCoin.ID); err != nil {
+		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.OnitCoin.IDList); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 			return c.JSON(http.StatusOK, resp)

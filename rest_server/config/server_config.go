@@ -48,13 +48,13 @@ type SecretInfo struct {
 }
 
 type BaseCoinInfo struct {
-	Symbol []string `yaml:"symbol"`
-	ID     []int64  `yaml:"id"`
+	SymbolList []string `yaml:"symbol_list"`
+	IDList     []int64  `yaml:"id_list"`
 }
 
 type OnitCoinInfo struct {
-	Symbol []string `yaml:"symbol"`
-	ID     []int64  `yaml:"id"`
+	SymbolList []string `yaml:"symbol_list"`
+	IDList     []int64  `yaml:"id_list"`
 }
 
 type ServerConfig struct {
