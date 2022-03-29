@@ -16,13 +16,13 @@ import (
 )
 
 // Web 계정 로그인/가입
-func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
+func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 	conf := config.GetInstance()
 
 	// 1. 소셜 정보 검증
-	userID, email, err := auth.GetIAuth().SocialAuths[accountWeb.SocialType].VerifySocialKey(accountWeb.SocialKey)
+	userID, email, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
 	if err != nil || len(userID) == 0 || len(email) == 0 {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
@@ -30,7 +30,8 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	}
 
 	payload := &context.Payload{
-		LoginType: context.WebAccountLogin,
+		LoginType:  context.WebAccountLogin,
+		SocialType: params.SocialType,
 		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, email),
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
@@ -39,7 +40,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	reqAccountWeb := &context.ReqAccountWeb{
 		InnoUID:    payload.InnoUID,
 		SocialID:   userID,
-		SocialType: accountWeb.SocialType,
+		SocialType: params.SocialType,
 	}
 
 	// 2. 웹 로그인/가입
@@ -51,6 +52,7 @@ func PostWebAccountLogin(c echo.Context, accountWeb *context.AccountWeb) error {
 	}
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
+	resAccountWeb.SocialType = params.SocialType
 
 	// 3. ONIT 지갑이 없는 유저는 지갑을 생성
 	if !resAccountWeb.ExistsMainWallet {
@@ -126,9 +128,10 @@ func PostWebAccountInfo(c echo.Context, params *context.ReqAccountInfo) error {
 		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
 	} else {
 		respWebAccountInfo := &context.ResWebAccountInfo{
-			JwtInfo: *jwtInfo,
-			InnoUID: params.InnoUID,
-			AUID:    params.AUID,
+			JwtInfo:    *jwtInfo,
+			InnoUID:    params.InnoUID,
+			AUID:       params.AUID,
+			SocialType: params.SocialType,
 		}
 		resp.Value = *respWebAccountInfo
 	}
