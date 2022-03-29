@@ -27,6 +27,7 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	atClaims["login_type"] = payload.LoginType
 	atClaims["inno_uid"] = payload.InnoUID
 	atClaims["au_id"] = payload.AUID
+	atClaims["social_type"] = payload.SocialType
 	atClaims["exp"] = jwtInfo.AtExpireDt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
@@ -42,6 +43,7 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	rtClaims["login_type"] = payload.LoginType
 	rtClaims["inno_uid"] = payload.InnoUID
 	rtClaims["au_id"] = payload.AUID
+	rtClaims["social_type"] = payload.SocialType
 	rtClaims["exp"] = jwtInfo.RtExpireDt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
