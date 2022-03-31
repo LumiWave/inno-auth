@@ -18,10 +18,11 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	respAccountLogin := new(context.RespAccountLogin)
 
 	// 0. InnoUID 검증
-	// if err := inner.ValidInnoUID(account.InnoUID); err != nil {
-	// 	resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
-	// 	return c.JSON(http.StatusOK, resp)
-	// }
+	if isExists, err := model.GetDB().VerfiyAccounts(account.InnoUID); !isExists || err != nil {
+		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+		return c.JSON(http.StatusOK, resp)
+	}
+
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
 	if respAuthMember, err := model.GetDB().AuthMembers(account, ctx.Payload); err != nil || respAuthMember == nil {

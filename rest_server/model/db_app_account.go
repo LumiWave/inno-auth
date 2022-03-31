@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	USPAU_Auth_Members = "[dbo].[USPAU_Auth_Members]"
+	USPAU_Auth_Members    = "[dbo].[USPAU_Auth_Members]"
+	USPAU_Verify_Accounts = "[dbo].[USPAU_Verify_Accounts]"
 )
 
 // 앱을 통한 인증 (앱 로그인)
@@ -63,4 +64,19 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	}
 
 	return resp, err
+}
+
+func (o *DB) VerfiyAccounts(innoUID string) (bool, error) {
+	var returnValue orginMssql.ReturnStatus
+	var isExists bool
+	_, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Verify_Accounts,
+		sql.Named("InnoUID", innoUID),
+		sql.Named("IsExists", sql.Out{Dest: &isExists}),
+		&returnValue)
+
+	if returnValue != 1 {
+		return false, err
+	}
+
+	return isExists, err
 }
