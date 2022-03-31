@@ -69,7 +69,7 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 func (o *DB) VerfiyAccounts(innoUID string) (bool, error) {
 	var returnValue orginMssql.ReturnStatus
 	var isExists bool
-	_, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Verify_Accounts,
+	_, err := o.MssqlAccountRead.GetDB().QueryContext(contextR.Background(), USPAU_Verify_Accounts,
 		sql.Named("InnoUID", innoUID),
 		sql.Named("IsExists", sql.Out{Dest: &isExists}),
 		&returnValue)
