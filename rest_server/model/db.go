@@ -66,5 +66,7 @@ func (o *DB) ConnectDB(conf *baseconf.DBAuth) (*basedb.Mssql, error) {
 		return nil, err
 	}
 
+	mssqlDB.GetDB().SetMaxIdleConns(10000)
+
 	return mssqlDB, nil
 }
