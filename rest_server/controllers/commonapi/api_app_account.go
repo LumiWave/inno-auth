@@ -49,7 +49,18 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 				resp.SetReturn(resultcode.Result_Api_Get_Point_App)
 				return c.JSON(http.StatusOK, resp)
 			} else {
-				respAccountLogin.PointList = pointList
+				// 2-2. pointList가 비어있으면(가입이 안되어있으면) 포인트 멤버 다시 가입
+				if len(pointList) == 0 {
+					if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
+						log.Errorf("%v", err)
+						resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
+						return c.JSON(http.StatusOK, resp)
+					} else {
+						respAccountLogin.PointList = pointList
+					}
+				} else {
+					respAccountLogin.PointList = pointList
+				}
 			}
 		}
 
