@@ -59,14 +59,16 @@ func (o *DB) InitMeta() {
 
 func (o *DB) ConnectDB(conf *baseconf.DBAuth) (*basedb.Mssql, error) {
 	port, _ := strconv.ParseInt(conf.Port, 10, 32)
-	mssqlDB, err := basedb.NewMssql(conf.Database, "", conf.ID, conf.Password, conf.Host, int(port))
+	mssqlDB, err := basedb.NewMssql(conf.Database, "", conf.ID, conf.Password, conf.Host, int(port),
+		conf.ApplicationIntent, conf.Timeout, conf.ConnectRetryCount, conf.ConnectRetryInterval)
 	if err != nil {
 		log.Errorf("err: %v, val: %v, %v, %v, %v, %v, %v",
 			err, conf.Host, conf.ID, conf.Password, conf.Database, conf.PoolSize, conf.IdleSize)
 		return nil, err
 	}
 
-	mssqlDB.GetDB().SetMaxIdleConns(10000)
+	idleSize, _ := strconv.ParseInt(conf.IdleSize, 10, 32)
+	mssqlDB.GetDB().SetMaxIdleConns(int(idleSize))
 
 	return mssqlDB, nil
 }
