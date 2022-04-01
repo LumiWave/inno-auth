@@ -17,11 +17,11 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	resp.Success()
 	respAccountLogin := new(context.RespAccountLogin)
 
-	// // 0. InnoUID 검증
-	// if isExists, err := model.GetDB().VerfiyAccounts(account.InnoUID); !isExists || err != nil {
-	// 	resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
-	// 	return c.JSON(http.StatusOK, resp)
-	// }
+	// 0. InnoUID 검증
+	if isExists, err := model.GetDB().VerfiyAccounts(account.InnoUID); !isExists || err != nil {
+		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+		return c.JSON(http.StatusOK, resp)
+	}
 
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
@@ -30,7 +30,6 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 		resp.SetReturn(resultcode.Result_Procedure_Auth_Members)
 		return c.JSON(http.StatusOK, resp)
 	} else {
-
 		// 2. point-manager에 포인트 수량 정보 요청
 		if pointList, err := inner.GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
 			log.Errorf("%v", err)
