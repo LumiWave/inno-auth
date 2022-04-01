@@ -25,7 +25,9 @@ func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWe
 		sql.Named("ExistsMainWallet", sql.Out{Dest: &resp.ExistsMainWallet}),
 		&returnValue)
 
-	defer rows.Close()
+	if rows != nil {
+		defer rows.Close()
+	}
 
 	if returnValue != 1 {
 		return nil, err

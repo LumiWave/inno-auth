@@ -69,6 +69,7 @@ func (o *DB) AddAccountBaseCoins(auid int64, walletInfo []context.WalletInfo) er
 	_, err := o.MssqlAccountAll.GetDB().Exec(execTvp,
 		sql.Named("AUID", auid),
 		sql.Named("TVP", tvpType))
+
 	if err != nil {
 		log.Errorf("%v", err)
 		return err
