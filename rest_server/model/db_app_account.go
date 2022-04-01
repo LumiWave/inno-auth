@@ -72,8 +72,13 @@ func (o *DB) VerfiyAccounts(innoUID string) (bool, error) {
 		sql.Named("InnoUID", innoUID),
 		sql.Named("IsExists", sql.Out{Dest: &isExists}),
 		&returnValue)
+	if err != nil {
+		log.Errorf("USPAU_Verify_Accounts QueryContext: %v", err)
+		return false, err
+	}
 
 	if returnValue != 1 {
+		log.Errorf("USPAU_Verify_Accounts returnvalue: %v", returnValue)
 		return false, err
 	}
 
