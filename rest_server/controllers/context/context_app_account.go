@@ -34,7 +34,6 @@ type MemberInfo struct {
 	AUID       int64 `json:"au_id" url:"au_id"`
 	MUID       int64 `json:"mu_id" url:"mu_id"`
 	DataBaseID int64 `json:"database_id" url:"database_id"`
-	IsJoined   bool  `json:"is_joined"`
 }
 
 // 포인트 매니저 PointApp API 호출 Request
@@ -52,7 +51,6 @@ type CoinInfo struct {
 
 // USPAU_Auth_Members 프로시저 Response
 type RespAuthMember struct {
-	IsJoined      bool
 	AUID          int64
 	MUID          int64
 	DataBaseID    int64

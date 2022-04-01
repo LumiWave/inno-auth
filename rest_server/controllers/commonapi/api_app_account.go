@@ -30,38 +30,14 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 		resp.SetReturn(resultcode.Result_Procedure_Auth_Members)
 		return c.JSON(http.StatusOK, resp)
 	} else {
-		// 2. 신규/기존 유저에 따른 분기 처리
-		if respAuthMember.IsJoined {
-			// 신규 유저
-			// 2-1. point-manager 멤버 등록
-			if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
-				log.Errorf("%v", err)
-				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
-				return c.JSON(http.StatusOK, resp)
-			} else {
-				respAccountLogin.PointList = pointList
-			}
+
+		// 2. point-manager에 포인트 수량 정보 요청
+		if pointList, err := inner.GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Api_Get_Point_App)
+			return c.JSON(http.StatusOK, resp)
 		} else {
-			// 기존 유저
-			// 2-1. point-manager에 포인트 수량 정보 요청
-			if pointList, err := inner.GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
-				log.Errorf("%v", err)
-				resp.SetReturn(resultcode.Result_Api_Get_Point_App)
-				return c.JSON(http.StatusOK, resp)
-			} else {
-				// 2-2. pointList가 비어있으면(가입이 안되어있으면) 포인트 멤버 다시 가입
-				if len(pointList) == 0 {
-					if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
-						log.Errorf("%v", err)
-						resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
-						return c.JSON(http.StatusOK, resp)
-					} else {
-						respAccountLogin.PointList = pointList
-					}
-				} else {
-					respAccountLogin.PointList = pointList
-				}
-			}
+			respAccountLogin.PointList = pointList
 		}
 
 		// 3. Base Coin의 지갑이 없으면 생성
@@ -94,7 +70,6 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 
 		// 5. 같이 데이터를 담아서 게임서버로 전달해줌.
 		respAccountLogin.MemberInfo.AUID = respAuthMember.AUID
-		respAccountLogin.MemberInfo.IsJoined = respAuthMember.IsJoined
 		respAccountLogin.MemberInfo.MUID = respAuthMember.MUID
 		respAccountLogin.MemberInfo.DataBaseID = respAuthMember.DataBaseID
 		resp.Value = respAccountLogin
