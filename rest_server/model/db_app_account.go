@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	USPAU_Auth_Members = "[dbo].[USPAU_Auth_Members]"
-	TVP_AccountCoins   = "dbo.TVP_AccountCoins"
+	USPAU_Auth_Members    = "[dbo].[USPAU_Auth_Members]"
+	USPAU_Verify_Accounts = "[dbo].[USPAU_Verify_Accounts]"
 )
 
 // 앱을 통한 인증 (앱 로그인)
@@ -21,33 +21,73 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	rows, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Members,
 		sql.Named("InnoUID", account.InnoUID),
 		sql.Named("AppID", payload.AppID),
-		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
 		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
 		sql.Named("MUID", sql.Out{Dest: &resp.MUID}),
 		sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),
 		&returnValue)
 	payload.LoginType = context.AppAccountLogin
 
-	// 신규 유저(IsJoined==1)일 경우 CoinID, CoinName을 추가로 전달 받는다.
-	var coinID int64
-	var coinName string
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	// 지갑 생성이 안된 Base Coin List를 전달받는다.
 	for rows.Next() {
-		if err := rows.Scan(&coinID, &coinName); err != nil {
+		var baseCoinID int64
+		var baseCoinSymbol string
+		if err := rows.Scan(&baseCoinID, &baseCoinSymbol); err != nil {
 			log.Errorf("%v", err)
 			return nil, err
 		} else {
-			coinInfo := &context.CoinInfo{
-				CoinID:   coinID,
-				CoinName: coinName,
+			baseCoinInfo := &context.CoinInfo{
+				CoinID:     baseCoinID,
+				CoinSymbol: baseCoinSymbol,
 			}
-			resp.CoinList = append(resp.CoinList, *coinInfo)
+			resp.BaseCoinList = append(resp.BaseCoinList, *baseCoinInfo)
 		}
 	}
-	defer rows.Close()
+	rows.NextResultSet()
+
+	// 사용자 코인 등록이 안된 Base Coin List를 전달받는다.
+	// App CoinList
+	for rows.Next() {
+		var coinID int64
+		if err := rows.Scan(&coinID); err != nil {
+			log.Errorf("%v", err)
+			return nil, err
+		} else {
+			resp.AppCoinIDList = append(resp.AppCoinIDList, coinID)
+		}
+	}
 
 	if returnValue != 1 {
 		return nil, err
 	}
 
 	return resp, err
+}
+
+func (o *DB) VerfiyAccounts(innoUID string) (bool, error) {
+	var returnValue orginMssql.ReturnStatus
+	var isExists bool
+	rows, err := o.MssqlAccountRead.GetDB().QueryContext(contextR.Background(), USPAU_Verify_Accounts,
+		sql.Named("InnoUID", innoUID),
+		sql.Named("IsExists", sql.Out{Dest: &isExists}),
+		&returnValue)
+
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	if err != nil {
+		log.Errorf("USPAU_Verify_Accounts QueryContext: %v", err)
+		return false, err
+	}
+
+	if returnValue != 1 {
+		log.Errorf("USPAU_Verify_Accounts returnvalue: %v", returnValue)
+		return false, err
+	}
+
+	return isExists, err
 }

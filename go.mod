@@ -3,8 +3,8 @@ module github.com/ONBUFF-IP-TOKEN/inno-auth
 go 1.17
 
 require (
-	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.12
-	github.com/ONBUFF-IP-TOKEN/basedb v1.1.7
+	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.13
+	github.com/ONBUFF-IP-TOKEN/basedb v1.1.8
 	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.7
 	github.com/denisenkom/go-mssqldb v0.11.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

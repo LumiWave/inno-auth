@@ -1,9 +1,6 @@
 package inner
 
 import (
-	"errors"
-	"unicode/utf8"
-
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
@@ -15,7 +12,7 @@ func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.Wa
 
 	for _, coin := range coinList {
 		reqAddressNew := &context.ReqAddressNew{
-			Symbol:   coin.CoinName,
+			Symbol:   coin.CoinSymbol,
 			NickName: nickName,
 		}
 		if resp, err := GetTokenAddressNew(reqAddressNew); err != nil {
@@ -23,9 +20,10 @@ func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.Wa
 			return nil, err
 		} else {
 			respAddressNew := &context.WalletInfo{
-				CoinID:  coin.CoinID,
-				Symbol:  coin.CoinName,
-				Address: resp.Address,
+				CoinID:     coin.CoinID,
+				Symbol:     coin.CoinSymbol,
+				Address:    resp.Address,
+				PrivateKey: resp.PrivateKey,
 			}
 			addressList = append(addressList, *respAddressNew)
 		}
@@ -35,17 +33,4 @@ func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.Wa
 
 func DecryptInnoUID(innoUID string) string {
 	return inno.AESDecrypt(innoUID, []byte(config.GetInstance().Secret.Key), []byte(config.GetInstance().Secret.Iv))
-}
-
-func ValidInnoUID(innoUID string) error {
-	// Check InnoUID Length
-	if len(innoUID) > 64 {
-		return errors.New("invalid inno_uid")
-	}
-	// Verify InnoUID
-	decStr := DecryptInnoUID(innoUID)
-	if len(decStr) == 0 || !utf8.ValidString(decStr) {
-		return errors.New("invalid inno_uid")
-	}
-	return nil
 }

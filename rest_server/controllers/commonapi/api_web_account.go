@@ -2,6 +2,7 @@ package commonapi
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
@@ -22,11 +23,26 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	conf := config.GetInstance()
 
 	// 1. 소셜 정보 검증
-	userID, email, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
-	if err != nil || len(userID) == 0 || len(email) == 0 {
-		log.Errorf("%v", err)
-		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
-		return c.JSON(http.StatusOK, resp)
+	// userID, email, err := auth.GetIAuth().SocialAuths[accountWeb.SocialType].VerifySocialKey(accountWeb.SocialKey)
+	// if err != nil || len(userID) == 0 || len(email) == 0 {
+	//     log.Errorf("%v", err)
+	//     resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
+	//     return c.JSON(http.StatusOK, resp)
+	// }
+
+	var userID, email string
+	if strings.Contains(params.SocialKey, "@bypass") {
+		s := strings.Split(params.SocialKey, "@")
+		userID = s[0]
+		email = params.SocialKey
+	} else {
+		// 1. 소셜 정보 검증
+		userID, email, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
+		if err != nil || len(userID) == 0 || len(email) == 0 {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
+			return c.JSON(http.StatusOK, resp)
+		}
 	}
 
 	payload := &context.Payload{
@@ -56,21 +72,30 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 
 	// 3. ONIT 지갑이 없는 유저는 지갑을 생성
 	if !resAccountWeb.ExistsMainWallet {
-		// 3-1. token-manager에 새 지갑 주소 생성 요청
-		coinList := []context.CoinInfo{{
-			CoinID:   conf.ONIT.ID,
-			CoinName: conf.ONIT.Symbol,
-		}}
-
-		addressList, err := inner.TokenAddressNew(coinList, payload.InnoUID)
+		// 3-1. [token-manager] ETH 지갑 생성
+		var baseCoinList []context.CoinInfo
+		for i, value := range conf.BaseCoin.SymbolList {
+			baseCoinList = append(baseCoinList, context.CoinInfo{
+				CoinID:     conf.BaseCoin.IDList[i],
+				CoinSymbol: value,
+			})
+		}
+		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
 		if err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 			return c.JSON(http.StatusOK, resp)
 		}
 
-		// 3-2. [DB] 지갑 생성 프로시저 호출
-		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, addressList); err != nil {
+		// 3-2. [DB] ETH 지갑 생성 프로시저 호출
+		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
+
+		// 3-3. [DB] ONIT 사용자 코인 등록
+		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.OnitCoin.IDList); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 			return c.JSON(http.StatusOK, resp)

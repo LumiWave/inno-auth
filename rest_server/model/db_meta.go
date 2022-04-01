@@ -17,7 +17,9 @@ func (o *DB) GetSocials() error {
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.MssqlAccountRead.GetDB().QueryContext(contextR.Background(), USPAU_Scan_Socials, &returnValue)
 
-	defer rows.Close()
+	if rows != nil {
+		defer rows.Close()
+	}
 
 	for rows.Next() {
 		social := &context.SocialInfo{}

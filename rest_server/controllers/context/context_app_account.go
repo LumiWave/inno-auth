@@ -12,9 +12,15 @@ type Account struct {
 
 // 계정 코인량
 type AccountCoin struct {
-	CoinID        int64   `json:"coin_id"`
-	WalletAddress string  `json:"wallet_address"`
-	Quantity      float64 `json:"quantity"`
+	CoinID   int64   `json:"coin_id"`
+	Quantity float64 `json:"quantity"`
+}
+
+// 계정 지갑
+type AccountBaseCoin struct {
+	BaseCoinID    int64  `json:"base_coin_id"`
+	WalletAddress string `json:"wallet_address"`
+	PrivateKey    string `json:"private_key"`
 }
 
 // 계정 로그인 Response
@@ -28,7 +34,6 @@ type MemberInfo struct {
 	AUID       int64 `json:"au_id" url:"au_id"`
 	MUID       int64 `json:"mu_id" url:"mu_id"`
 	DataBaseID int64 `json:"database_id" url:"database_id"`
-	IsJoined   bool  `json:"is_joined"`
 }
 
 // 포인트 매니저 PointApp API 호출 Request
@@ -40,17 +45,17 @@ type ReqPointApp struct {
 
 // 코인 정보
 type CoinInfo struct {
-	CoinID   int64
-	CoinName string
+	CoinID     int64  `json:"coin_id,omitempty"`
+	CoinSymbol string `json:"coin_symbol,omitempty"`
 }
 
 // USPAU_Auth_Members 프로시저 Response
 type RespAuthMember struct {
-	IsJoined   bool
-	AUID       int64
-	MUID       int64
-	DataBaseID int64
-	CoinList   []CoinInfo
+	AUID          int64
+	MUID          int64
+	DataBaseID    int64
+	BaseCoinList  []CoinInfo
+	AppCoinIDList []int64
 }
 
 // token-manager 새 지갑 주소 생성 Request
@@ -61,9 +66,10 @@ type ReqAddressNew struct {
 
 // token-manager 새 지갑 주소 생성 Response
 type WalletInfo struct {
-	CoinID  int64  `json:"coin_id"`
-	Symbol  string `json:"symbol"`
-	Address string `json:"address"`
+	CoinID     int64  `json:"coin_id"`
+	Symbol     string `json:"symbol"`
+	Address    string `json:"address"`
+	PrivateKey string `json:"pk"`
 }
 
 // point-manager 멤버 등록 Request

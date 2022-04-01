@@ -18,10 +18,11 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 	respAccountLogin := new(context.RespAccountLogin)
 
 	// 0. InnoUID 검증
-	if err := inner.ValidInnoUID(account.InnoUID); err != nil {
+	if isExists, err := model.GetDB().VerfiyAccounts(account.InnoUID); !isExists || err != nil {
 		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
 		return c.JSON(http.StatusOK, resp)
 	}
+
 	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
 	if respAuthMember, err := model.GetDB().AuthMembers(account, ctx.Payload); err != nil || respAuthMember == nil {
@@ -29,33 +30,19 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 		resp.SetReturn(resultcode.Result_Procedure_Auth_Members)
 		return c.JSON(http.StatusOK, resp)
 	} else {
-		// 2. 신규/기존 유저에 따른 분기 처리
-		if respAuthMember.IsJoined {
-			// 신규 유저
-			// 2-1. point-manager 멤버 등록
-			if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
-				log.Errorf("%v", err)
-				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
-				return c.JSON(http.StatusOK, resp)
-			} else {
-				respAccountLogin.PointList = pointList
-			}
+		// 2. point-manager에 포인트 수량 정보 요청
+		if pointList, err := inner.GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Api_Get_Point_App)
+			return c.JSON(http.StatusOK, resp)
 		} else {
-			// 기존 유저
-			// 2-1. point-manager에 포인트 수량 정보 요청
-			if pointList, err := inner.GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
-				log.Errorf("%v", err)
-				resp.SetReturn(resultcode.Result_Api_Get_Point_App)
-				return c.JSON(http.StatusOK, resp)
-			} else {
-				respAccountLogin.PointList = pointList
-			}
+			respAccountLogin.PointList = pointList
 		}
 
-		// 3. Auth-Members 프로시저에서 내 App에서 사용할 CoinList가 존재하면 지갑 생성
-		if len(respAuthMember.CoinList) > 0 {
-			// 3-1. token-manager에 새 지갑 주소 생성 요청
-			addressList, err := inner.TokenAddressNew(respAuthMember.CoinList, account.InnoUID)
+		// 3. Base Coin의 지갑이 없으면 생성
+		if len(respAuthMember.BaseCoinList) > 0 {
+			// 3-1. [token-manager] 지갑 생성
+			walletInfo, err := inner.TokenAddressNew(respAuthMember.BaseCoinList, account.InnoUID)
 			if err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
@@ -63,16 +50,25 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			}
 
 			// 3-2. [DB] 지갑 생성 프로시저 호출
-			if err := model.GetDB().AddAccountCoins(respAuthMember.AUID, addressList); err != nil {
+			if err := model.GetDB().AddAccountBaseCoins(respAuthMember.AUID, walletInfo); err != nil {
+				log.Errorf("%v", err)
+				resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+				return c.JSON(http.StatusOK, resp)
+			}
+		}
+
+		// 4. Auth-Members 프로시저에서 내 App에서 사용할 CoinList가 존재하면 지갑 생성
+		if len(respAuthMember.AppCoinIDList) > 0 {
+			// 4-1. [DB] 사용자 코인 등록 프로시저 호출
+			if err := model.GetDB().AddAccountCoins(respAuthMember.AUID, respAuthMember.AppCoinIDList); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 				return c.JSON(http.StatusOK, resp)
 			}
 		}
 
-		// 4. 같이 데이터를 담아서 게임서버로 전달해줌.
+		// 5. 같이 데이터를 담아서 게임서버로 전달해줌.
 		respAccountLogin.MemberInfo.AUID = respAuthMember.AUID
-		respAccountLogin.MemberInfo.IsJoined = respAuthMember.IsJoined
 		respAccountLogin.MemberInfo.MUID = respAuthMember.MUID
 		respAccountLogin.MemberInfo.DataBaseID = respAuthMember.DataBaseID
 		resp.Value = respAccountLogin
