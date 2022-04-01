@@ -27,6 +27,8 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 		&returnValue)
 	payload.LoginType = context.AppAccountLogin
 
+	defer rows.Close()
+
 	// 지갑 생성이 안된 Base Coin List를 전달받는다.
 	for rows.Next() {
 		var baseCoinID int64
@@ -55,8 +57,6 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 			resp.AppCoinIDList = append(resp.AppCoinIDList, coinID)
 		}
 	}
-
-	defer rows.Close()
 
 	if returnValue != 1 {
 		return nil, err
