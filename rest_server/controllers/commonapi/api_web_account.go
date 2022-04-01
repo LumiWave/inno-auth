@@ -2,7 +2,6 @@ package commonapi
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
@@ -23,26 +22,11 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	conf := config.GetInstance()
 
 	// 1. 소셜 정보 검증
-	// userID, email, err := auth.GetIAuth().SocialAuths[accountWeb.SocialType].VerifySocialKey(accountWeb.SocialKey)
-	// if err != nil || len(userID) == 0 || len(email) == 0 {
-	//     log.Errorf("%v", err)
-	//     resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
-	//     return c.JSON(http.StatusOK, resp)
-	// }
-
-	var userID, email string
-	if strings.Contains(params.SocialKey, "@bypass") {
-		s := strings.Split(params.SocialKey, "@")
-		userID = s[0]
-		email = params.SocialKey
-	} else {
-		// 1. 소셜 정보 검증
-		userID, email, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
-		if err != nil || len(userID) == 0 || len(email) == 0 {
-			log.Errorf("%v", err)
-			resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
-			return c.JSON(http.StatusOK, resp)
-		}
+	userID, email, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
+	if err != nil || len(userID) == 0 || len(email) == 0 {
+		log.Errorf("%v", err)
+		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
+		return c.JSON(http.StatusOK, resp)
 	}
 
 	payload := &context.Payload{
