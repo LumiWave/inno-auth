@@ -19,6 +19,7 @@ func PostAppLogin(c echo.Context, access *context.Access) error {
 	// 1. 인증 서버 접근
 	if payload, returnValue, err := model.GetDB().GetApplications(access); err != nil || returnValue != 1 {
 		if err != nil {
+			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_DBError)
 		} else {
 			resp.SetReturn(resultcode.Result_Auth_NotMatchAppAccount)
