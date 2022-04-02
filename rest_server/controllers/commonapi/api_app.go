@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
+	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
@@ -28,6 +29,7 @@ func PostAppLogin(c echo.Context, access *context.Access) error {
 		} else {
 			// 2. Access, Refresh 토큰 생성
 			if jwtInfoValue, err := auth.GetIAuth().MakeAppToken(payload); err != nil {
+				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 				return c.JSON(http.StatusOK, resp)
 			} else {
