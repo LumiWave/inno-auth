@@ -21,6 +21,7 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	rows, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Members,
 		sql.Named("InnoUID", account.InnoUID),
 		sql.Named("AppID", payload.AppID),
+		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
 		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
 		sql.Named("MUID", sql.Out{Dest: &resp.MUID}),
 		sql.Named("DatabaseID", sql.Out{Dest: &resp.DataBaseID}),

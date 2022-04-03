@@ -12,25 +12,41 @@ import (
 	"github.com/labstack/echo"
 )
 
-func PostAppAccountLogin(c echo.Context, account *context.Account) error {
+const (
+	MemberAuthLog_NewAccount = 7
+	MemberAuthLog_Account    = 8
+)
+
+func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 	respAccountLogin := new(context.RespAccountLogin)
 
-	// 0. InnoUID 검증
-	if isExists, err := model.GetDB().VerfiyAccounts(account.InnoUID); !isExists || err != nil {
+	// 1. InnoUID 검증
+	if isExists, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || err != nil {
 		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
 		return c.JSON(http.StatusOK, resp)
 	}
 
-	// 1. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
+	// 2. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
-	if respAuthMember, err := model.GetDB().AuthMembers(account, ctx.Payload); err != nil || respAuthMember == nil {
+	if respAuthMember, err := model.GetDB().AuthMembers(params, ctx.Payload); err != nil || respAuthMember == nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_Procedure_Auth_Members)
 		return c.JSON(http.StatusOK, resp)
 	} else {
-		// 2. point-manager에 포인트 수량 정보 요청
+		// 3. [DB] 사용자 로그 등록
+		if respAuthMember.IsJoined {
+			// 3-1. [DB] 신규 사용자 로그 등록
+			model.GetDB().AddMemberAuthLogs(MemberAuthLog_NewAccount, respAuthMember.AUID,
+				params.InnoUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID)
+		} else {
+			// 3-1. [DB] 기존 사용자 로그 등록
+			model.GetDB().AddMemberAuthLogs(MemberAuthLog_Account, respAuthMember.AUID,
+				params.InnoUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID)
+		}
+
+		// 4. [point-manager] 포인트 수량 정보 요청
 		if pointList, err := inner.GetPointApp(ctx.Payload.AppID, respAuthMember.MUID, respAuthMember.DataBaseID); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Api_Get_Point_App)
@@ -39,17 +55,17 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			respAccountLogin.PointList = pointList
 		}
 
-		// 3. Base Coin의 지갑이 없으면 생성
+		// 5. Base Coin의 지갑이 없으면 생성
 		if len(respAuthMember.BaseCoinList) > 0 {
-			// 3-1. [token-manager] 지갑 생성
-			walletInfo, err := inner.TokenAddressNew(respAuthMember.BaseCoinList, account.InnoUID)
+			// 5-1. [token-manager] 지갑 생성
+			walletInfo, err := inner.TokenAddressNew(respAuthMember.BaseCoinList, params.InnoUID)
 			if err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 				return c.JSON(http.StatusOK, resp)
 			}
 
-			// 3-2. [DB] 지갑 생성 프로시저 호출
+			// 5-2. [DB] 지갑 생성 프로시저 호출
 			if err := model.GetDB().AddAccountBaseCoins(respAuthMember.AUID, walletInfo); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
@@ -57,9 +73,9 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			}
 		}
 
-		// 4. Auth-Members 프로시저에서 내 App에서 사용할 CoinList가 존재하면 지갑 생성
+		// 6. Auth-Members 프로시저에서 내 App에서 사용할 CoinList가 존재하면 지갑 생성
 		if len(respAuthMember.AppCoinIDList) > 0 {
-			// 4-1. [DB] 사용자 코인 등록 프로시저 호출
+			// 6-1. [DB] 사용자 코인 등록 프로시저 호출
 			if err := model.GetDB().AddAccountCoins(respAuthMember.AUID, respAuthMember.AppCoinIDList); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
@@ -67,7 +83,7 @@ func PostAppAccountLogin(c echo.Context, account *context.Account) error {
 			}
 		}
 
-		// 5. 같이 데이터를 담아서 게임서버로 전달해줌.
+		// 7. 같이 데이터를 담아서 게임서버로 전달해줌.
 		respAccountLogin.MemberInfo.AUID = respAuthMember.AUID
 		respAccountLogin.MemberInfo.MUID = respAuthMember.MUID
 		respAccountLogin.MemberInfo.DataBaseID = respAuthMember.DataBaseID

@@ -18,6 +18,11 @@ import (
 	"github.com/labstack/echo"
 )
 
+const (
+	AccountAuthLog_NewAccount = 5
+	AccountAuthLog_Account    = 6
+)
+
 // Web 계정 로그인/가입
 func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resp := new(base.BaseResponse)
@@ -75,9 +80,18 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resAccountWeb.InnoUID = payload.InnoUID
 	resAccountWeb.SocialType = params.SocialType
 
-	// 3. ONIT 지갑이 없는 유저는 지갑을 생성
+	// 3. [DB] 사용자 로그 등록
+	if resAccountWeb.IsJoined {
+		// 3-1. [DB] 신규 사용자 로그 등록
+		model.GetDB().AddAccountAuthLog(AccountAuthLog_NewAccount, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
+	} else {
+		// 3-1. [DB] 기존 사용자 로그 등록
+		model.GetDB().AddAccountAuthLog(AccountAuthLog_Account, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
+	}
+
+	// 4. ONIT 지갑이 없는 유저는 지갑을 생성
 	if !resAccountWeb.ExistsMainWallet {
-		// 3-1. [token-manager] ETH 지갑 생성
+		// 4-1. [token-manager] ETH 지갑 생성
 		var baseCoinList []context.CoinInfo
 		for i, value := range conf.BaseCoin.SymbolList {
 			baseCoinList = append(baseCoinList, context.CoinInfo{
@@ -92,23 +106,19 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			return c.JSON(http.StatusOK, resp)
 		}
 
-		// 3-2. [DB] ETH 지갑 생성 프로시저 호출
+		// 4-2. [DB] ETH 지갑 생성 프로시저 호출
 		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
 			return c.JSON(http.StatusOK, resp)
 		}
 
-		// 3-3. [DB] ONIT 사용자 코인 등록
+		// 4-3. [DB] ONIT 사용자 코인 등록
 		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.OnitCoin.IDList); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 			return c.JSON(http.StatusOK, resp)
 		}
-
-		model.GetDB().SetLog(5, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
-	} else {
-		model.GetDB().SetLog(6, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
 	}
 
 	// 4. Access, Refresh 토큰 생성

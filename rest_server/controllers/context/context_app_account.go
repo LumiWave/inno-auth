@@ -54,6 +54,7 @@ type RespAuthMember struct {
 	AUID          int64
 	MUID          int64
 	DataBaseID    int64
+	IsJoined      bool
 	BaseCoinList  []CoinInfo
 	AppCoinIDList []int64
 }

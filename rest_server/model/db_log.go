@@ -11,12 +11,13 @@ import (
 )
 
 const (
-	USPR_Add_AccountAuthLogs = "[dbo].[USPR_Add_AccountAuthLogs]"
+	USPAU_Add_AccountAuthLogs = "[dbo].[USPAU_Add_AccountAuthLogs]"
+	USPAU_Add_MemberAuthLogs  = "[dbo].[USPAU_Add_MemberAuthLogs]"
 )
 
-func (o *DB) SetLog(eventid int, auid int64, innoID string, socialID string, socialType int64) error {
+func (o *DB) AddAccountAuthLog(eventid int, auid int64, innoID string, socialID string, socialType int64) error {
 	var returnValue orginMssql.ReturnStatus
-	rows, err := o.MssqlLog.GetDB().QueryContext(contextR.Background(), USPR_Add_AccountAuthLogs,
+	rows, err := o.MssqlLog.GetDB().QueryContext(contextR.Background(), USPAU_Add_AccountAuthLogs,
 		sql.Named("LogID", 4),
 		sql.Named("EventID", eventid),
 		sql.Named("AUID", auid),
@@ -30,8 +31,32 @@ func (o *DB) SetLog(eventid int, auid int64, innoID string, socialID string, soc
 	}
 
 	if returnValue != 1 {
-		log.Errorf("USPR_Add_AccountAuthLogs returnvalue error : %v", returnValue)
-		return errors.New("USPR_Add_AccountAuthLogs returnvalue error " + strconv.Itoa(int(returnValue)))
+		log.Errorf("USPAU_Add_AccountAuthLogs returnvalue error : %v", returnValue)
+		return errors.New("USPAU_Add_AccountAuthLogs returnvalue error " + strconv.Itoa(int(returnValue)))
+	}
+
+	return err
+}
+
+func (o *DB) AddMemberAuthLogs(eventid int64, auid int64, innoUID string, muid int64, appID int64, databaseID int64) error {
+	var returnValue orginMssql.ReturnStatus
+	rows, err := o.MssqlLog.GetDB().QueryContext(contextR.Background(), USPAU_Add_MemberAuthLogs,
+		sql.Named("LogID", 4),
+		sql.Named("EventID", eventid),
+		sql.Named("AUID", auid),
+		sql.Named("InnoUID", innoUID),
+		sql.Named("MUID", muid),
+		sql.Named("AppID", appID),
+		sql.Named("DatabaseID", databaseID),
+		&returnValue)
+
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	if returnValue != 1 {
+		log.Errorf("USPAU_Add_MemberAuthLogs returnvalue error : %v", returnValue)
+		return errors.New("USPAU_Add_MemberAuthLogs returnvalue error " + strconv.Itoa(int(returnValue)))
 	}
 
 	return err
