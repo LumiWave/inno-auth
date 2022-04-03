@@ -105,6 +105,10 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 			return c.JSON(http.StatusOK, resp)
 		}
+
+		model.GetDB().SetLog(5, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
+	} else {
+		model.GetDB().SetLog(6, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
 	}
 
 	// 4. Access, Refresh 토큰 생성

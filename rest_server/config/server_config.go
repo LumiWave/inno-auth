@@ -63,6 +63,7 @@ type ServerConfig struct {
 	InnoAuth           InnoAuthServer  `yaml:"inno_auth_server"`
 	MssqlDBAccountAll  baseconf.DBAuth `yaml:"mssql_db_account"`
 	MssqlDBAccountRead baseconf.DBAuth `yaml:"mssql_db_account_read"`
+	MssqlDBLog         baseconf.DBAuth `yaml:"mssql_db_log"`
 
 	Auth          ApiAuth            `yaml:"api_auth"`
 	AccessCountry AccessCountryInfo  `yaml:"access_country"`

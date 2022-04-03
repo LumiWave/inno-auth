@@ -20,7 +20,9 @@ type DBMeta struct {
 type DB struct {
 	MssqlAccountAll  *basedb.Mssql
 	MssqlAccountRead *basedb.Mssql
-	Cache            *basedb.Cache
+	MssqlLog         *basedb.Mssql
+
+	Cache *basedb.Cache
 
 	DBMeta
 }
@@ -43,6 +45,11 @@ func InitDB(conf *config.ServerConfig) (err error) {
 	}
 
 	gDB.MssqlAccountRead, err = gDB.ConnectDB(&conf.MssqlDBAccountRead)
+	if err != nil {
+		return err
+	}
+
+	gDB.MssqlLog, err = gDB.ConnectDB(&conf.MssqlDBLog)
 	if err != nil {
 		return err
 	}
