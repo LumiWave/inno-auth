@@ -50,6 +50,11 @@ func (o *DB) AddMemberAuthLogs(eventid int64, auid int64, innoUID string, muid i
 		sql.Named("DatabaseID", databaseID),
 		&returnValue)
 
+	if err != nil {
+		log.Errorf("USPAU_Add_MemberAuthLogs QueryContext error : %v", err)
+		return errors.New("USPAU_Add_MemberAuthLogs QueryContext error")
+	}
+
 	if rows != nil {
 		defer rows.Close()
 	}
