@@ -34,6 +34,7 @@ type MemberInfo struct {
 	AUID       int64 `json:"au_id" url:"au_id"`
 	MUID       int64 `json:"mu_id" url:"mu_id"`
 	DataBaseID int64 `json:"database_id" url:"database_id"`
+	IsJoined   bool  `json:"is_joined"`
 }
 
 // 포인트 매니저 PointApp API 호출 Request
