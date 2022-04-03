@@ -93,7 +93,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		}
 
 		// 4-3. [DB] ONIT 사용자 코인 등록
-		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.OnitCoin.IDList); err != nil {
+		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 			return c.JSON(http.StatusOK, resp)

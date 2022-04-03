@@ -52,7 +52,7 @@ type BaseCoinInfo struct {
 	IDList     []int64  `yaml:"id_list"`
 }
 
-type OnitCoinInfo struct {
+type ProjectTokenInfo struct {
 	SymbolList []string `yaml:"symbol_list"`
 	IDList     []int64  `yaml:"id_list"`
 }
@@ -71,7 +71,7 @@ type ServerConfig struct {
 	PointManager  PointManagerServer `yaml:"point_manager"`
 	Secret        SecretInfo         `yaml:"secret"`
 	BaseCoin      BaseCoinInfo       `yaml:"base_coin"`
-	OnitCoin      OnitCoinInfo       `yaml:"onit_coin"`
+	ProjectToken  ProjectTokenInfo   `yaml:"project_token"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {
