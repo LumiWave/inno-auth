@@ -27,9 +27,9 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 	}
 
 	t := http.DefaultTransport.(*http.Transport).Clone()
-	t.MaxIdleConns = 100
-	t.MaxConnsPerHost = 100
-	t.MaxIdleConnsPerHost = 100
+	t.MaxIdleConns = 10000
+	t.MaxConnsPerHost = 100000
+	t.MaxIdleConnsPerHost = 1000
 
 	client := &http.Client{
 		Timeout:   10 * time.Second,
@@ -48,7 +48,6 @@ func HttpCall(uri string, auth string, method string, body *bytes.Buffer, queryS
 	}
 
 	client, req := MakeHttpClient(uri, auth, method, body, queryStr)
-	return nil, errors.New("errorrr")
 	resp, err := client.Do(req)
 
 	if err != nil {
@@ -63,12 +62,6 @@ func HttpCall(uri string, auth string, method string, body *bytes.Buffer, queryS
 func ParseResponse(resp *http.Response) (*base.BaseResponse, error) {
 	decoder := json.NewDecoder(resp.Body)
 	if resp.StatusCode != 200 && resp.StatusCode != 201 {
-		// ErrorResp := new(base.BaseResponse)
-		// err := decoder.Decode(ErrorResp)
-		// if err != nil {
-		// 	log.Errorf("HttpCall ParseResponse(StatusCode:%v): %v", resp.StatusCode, err)
-		// 	return nil, errors.New(resp.Status)
-		// }
 		log.Errorf("HttpCall ParseResponse(%v)", resp.StatusCode)
 		return nil, errors.New("HttpCall ParseResponse")
 	}
