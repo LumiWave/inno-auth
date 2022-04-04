@@ -13,7 +13,18 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+var gTransport http.Transport
 var gClient http.Client
+
+func InitHttpClient() {
+	gTransport.MaxIdleConns = 100
+	gTransport.MaxIdleConnsPerHost = 100
+	gTransport.IdleConnTimeout = 30 * time.Second
+	gTransport.DisableKeepAlives = false
+
+	gClient.Timeout = 10 * time.Second
+	gClient.Transport = &gTransport
+}
 
 func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, queryStr string) (*http.Client, *http.Request) {
 	req, err := http.NewRequest(method, uri, body)
@@ -28,14 +39,17 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 		req.URL.RawQuery = queryStr
 	}
 
-	t := http.DefaultTransport.(*http.Transport).Clone()
+	// gTransport = http.Transport{
+	// 	MaxIdleConnsPerHost: 10,
+	// 	DisableKeepAlives:   false,
+	// }
+
+	//http.DefaultTransport.(*http.Transport)
 	//t.MaxIdleConns = 10
 	//t.MaxConnsPerHost = 10
-	t.MaxIdleConnsPerHost = 10
-	t.DisableKeepAlives = false
+	// gTransport.MaxIdleConnsPerHost = 10
+	// gTransport.DisableKeepAlives = false
 
-	gClient.Timeout = 10 * time.Second
-	gClient.Transport = t
 	//client := &http.Client{
 	//	Timeout:   10 * time.Second,
 	//	Transport: t,

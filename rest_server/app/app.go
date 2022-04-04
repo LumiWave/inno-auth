@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/baseapi"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
@@ -27,6 +28,8 @@ func (o *ServerApp) Init(configFile string) (err error) {
 	o.conf = config.GetInstance(configFile)
 	base.AppendReturnCodeText(&resultcode.ResultCodeText)
 	context.AppendRequestParameter()
+
+	baseapi.InitHttpClient()
 
 	if err := o.NewDB(o.conf); err != nil {
 		return err
