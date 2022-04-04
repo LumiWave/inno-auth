@@ -13,6 +13,8 @@ import (
 	"github.com/google/go-querystring/query"
 )
 
+var gClient http.Client
+
 func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, queryStr string) (*http.Client, *http.Request) {
 	req, err := http.NewRequest(method, uri, body)
 	if err != nil {
@@ -30,13 +32,16 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 	t.MaxIdleConns = 10000
 	t.MaxConnsPerHost = 100000
 	t.MaxIdleConnsPerHost = 1000
+	t.DisableKeepAlives = false
 
-	client := &http.Client{
-		Timeout:   10 * time.Second,
-		Transport: t,
-	}
+	gClient.Timeout = 10 * time.Second
+	gClient.Transport = t
+	//client := &http.Client{
+	//	Timeout:   10 * time.Second,
+	//	Transport: t,
+	//}
 
-	return client, req
+	return &gClient, req
 }
 
 func HttpCall(uri string, auth string, method string, body *bytes.Buffer, queryStruct interface{}) (*base.BaseResponse, error) {
@@ -65,6 +70,7 @@ func ParseResponse(resp *http.Response) (*base.BaseResponse, error) {
 		log.Errorf("HttpCall ParseResponse(%v)", resp.StatusCode)
 		return nil, errors.New("HttpCall ParseResponse")
 	}
+
 	baseResp := new(base.BaseResponse)
 	err := decoder.Decode(&baseResp)
 	if err != nil {
