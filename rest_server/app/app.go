@@ -6,6 +6,7 @@ import (
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/api_inno_log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
@@ -32,6 +33,8 @@ func (o *ServerApp) Init(configFile string) (err error) {
 		return err
 	}
 
+	o.InitLogServer(o.conf)
+
 	if auth, err := auth.NewIAuth(&o.conf.Auth); err != nil {
 		return err
 	} else {
@@ -39,6 +42,17 @@ func (o *ServerApp) Init(configFile string) (err error) {
 	}
 
 	return err
+}
+
+func (o *ServerApp) InitLogServer(conf *config.ServerConfig) {
+	confLog := conf.InnoLog
+	hostInfo := api_inno_log.HostInfo{
+		IntHostUri: confLog.InternalpiDomain,
+		ExtHostUri: confLog.ExternalpiDomain,
+		IntVer:     confLog.InternalVer,
+		ExtVer:     confLog.ExternalVer,
+	}
+	api_inno_log.NewServerInfo("", hostInfo)
 }
 
 func (o *ServerApp) CleanUp() {

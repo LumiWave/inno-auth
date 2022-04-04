@@ -2,10 +2,12 @@ package commonapi
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/api_inno_log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
@@ -60,13 +62,22 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resAccountWeb.SocialType = params.SocialType
 
 	// 3. [DB] 사용자 로그 등록
+	logParams := &api_inno_log.AccountAuthLog{
+		LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
+		LogID:      4,
+		AUID:       resAccountWeb.AUID,
+		InnoUID:    payload.InnoUID,
+		SocialID:   userID,
+		SocialType: params.SocialType,
+	}
 	if resAccountWeb.IsJoined {
 		// 3-1. [DB] 신규 사용자 로그 등록
-		model.GetDB().AddAccountAuthLog(AccountAuthLog_NewAccount, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
+		logParams.EventID = AccountAuthLog_NewAccount
 	} else {
 		// 3-1. [DB] 기존 사용자 로그 등록
-		model.GetDB().AddAccountAuthLog(AccountAuthLog_Account, resAccountWeb.AUID, payload.InnoUID, userID, params.SocialType)
+		logParams.EventID = AccountAuthLog_Account
 	}
+	go api_inno_log.GetInstance().PostAccountAuth(logParams)
 
 	// 4. ONIT 지갑이 없는 유저는 지갑을 생성
 	if !resAccountWeb.ExistsMainWallet {
