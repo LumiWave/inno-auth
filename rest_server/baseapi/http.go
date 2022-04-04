@@ -29,10 +29,10 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 	}
 
 	t := http.DefaultTransport.(*http.Transport).Clone()
-	t.MaxIdleConns = 10000
-	t.MaxConnsPerHost = 100000
-	t.MaxIdleConnsPerHost = 1000
-	t.DisableKeepAlives = false
+	//t.MaxIdleConns = 10
+	//t.MaxConnsPerHost = 10
+	t.MaxIdleConnsPerHost = 10
+	//t.DisableKeepAlives = false
 
 	gClient.Timeout = 10 * time.Second
 	gClient.Transport = t
