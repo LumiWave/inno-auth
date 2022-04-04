@@ -33,9 +33,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	// }
 
 	userID := strconv.FormatInt(time.Now().UnixNano()+rand.Int63(), 10)
-	startTime := time.Now().UnixMilli()
-	_, _, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
-	log.Errorf("Google VerifySocialKey time %v", time.Now().UnixMilli()-startTime)
+	//startTime := time.Now().UnixMilli()
+	//_, _, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
+	//log.Errorf("Google VerifySocialKey time %v", time.Now().UnixMilli()-startTime)
 
 	payload := &context.Payload{
 		LoginType:  context.WebAccountLogin,
@@ -52,7 +52,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	}
 
 	// 2. 웹 로그인/가입
-	startTime = time.Now().UnixMilli()
+	startTime := time.Now().UnixMilli()
 	resAccountWeb, err := model.GetDB().AuthAccounts(reqAccountWeb)
 	log.Errorf("AuthAccounts time %v", time.Now().UnixMilli()-startTime)
 	if err != nil {
