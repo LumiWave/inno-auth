@@ -47,7 +47,9 @@ func HttpCall(uri string, auth string, method string, body *bytes.Buffer, queryS
 	}
 
 	client, req := MakeHttpClient(uri, auth, method, body, queryStr)
+	return nil, errors.New("errorrr")
 	resp, err := client.Do(req)
+
 	if err != nil {
 		return nil, err
 	} else {
