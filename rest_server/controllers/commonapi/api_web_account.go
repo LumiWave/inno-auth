@@ -37,12 +37,17 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	//_, _, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
 	//log.Errorf("Google VerifySocialKey time %v", time.Now().UnixMilli()-startTime)
 
+	startTime1 := time.Now().UnixMilli()
 	payload := &context.Payload{
 		LoginType:  context.WebAccountLogin,
 		SocialType: params.SocialType,
 		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
+	}
+	endTime1 := time.Now().UnixMilli()
+	if endTime1-startTime1 >= 100 {
+		log.Errorf("%v", endTime1-startTime1)
 	}
 
 	reqAccountWeb := &context.ReqAccountWeb{
@@ -52,11 +57,16 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	}
 
 	// 2. 웹 로그인/가입
+	startTime2 := time.Now().UnixMilli()
 	resAccountWeb, err := model.GetDB().AuthAccounts(reqAccountWeb)
 	if err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
 		return c.JSON(http.StatusOK, resp)
+	}
+	endTime2 := time.Now().UnixMilli()
+	if endTime2-startTime2 >= 100 {
+		log.Errorf("%v", endTime2-startTime2)
 	}
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
@@ -72,30 +82,45 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 				CoinSymbol: value,
 			})
 		}
+		startTime3 := time.Now().UnixMilli()
 		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
 		if err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 			return c.JSON(http.StatusOK, resp)
 		}
+		endTime3 := time.Now().UnixMilli()
+		if endTime3-startTime3 >= 100 {
+			log.Errorf("%v", endTime3-startTime3)
+		}
 
 		// 3-2. [DB] ETH 지갑 생성 프로시저 호출
+		startTime4 := time.Now().UnixMilli()
 		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
 			return c.JSON(http.StatusOK, resp)
 		}
+		endTime4 := time.Now().UnixMilli()
+		if endTime4-startTime4 >= 100 {
+			log.Errorf("%v", endTime4-startTime4)
+		}
 
+		startTime5 := time.Now().UnixMilli()
 		// 3-3. [DB] ONIT 사용자 코인 등록
 		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 			return c.JSON(http.StatusOK, resp)
 		}
+		endTime5 := time.Now().UnixMilli()
+		if endTime5-startTime5 >= 100 {
+			log.Errorf("%v", endTime5-startTime5)
+		}
 	}
 
 	// 4. Access, Refresh 토큰 생성
-
+	startTime6 := time.Now().UnixMilli()
 	// 4-1. 기존에 발급된 토큰이 있는지 확인
 	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
 		// 4-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
@@ -110,6 +135,10 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	} else {
 		// 4-2. 기존 발급된 토큰으로 응답
 		resAccountWeb.JwtInfo = *oldJwtInfo
+	}
+	endTime6 := time.Now().UnixMilli()
+	if endTime6-startTime6 >= 100 {
+		log.Errorf("%v", endTime6-startTime6)
 	}
 
 	resp.Value = *resAccountWeb
