@@ -17,8 +17,8 @@ var gTransport http.Transport
 var gClient http.Client
 
 func InitHttpClient() {
-	gTransport.MaxIdleConns = 1000
-	gTransport.MaxIdleConnsPerHost = 1000
+	gTransport.MaxIdleConns = 100
+	gTransport.MaxIdleConnsPerHost = 100
 	gTransport.IdleConnTimeout = 30 * time.Second
 	gTransport.DisableKeepAlives = false
 
@@ -38,22 +38,6 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 	if len(queryStr) > 0 {
 		req.URL.RawQuery = queryStr
 	}
-
-	// gTransport = http.Transport{
-	// 	MaxIdleConnsPerHost: 10,
-	// 	DisableKeepAlives:   false,
-	// }
-
-	//http.DefaultTransport.(*http.Transport)
-	//t.MaxIdleConns = 10
-	//t.MaxConnsPerHost = 10
-	// gTransport.MaxIdleConnsPerHost = 10
-	// gTransport.DisableKeepAlives = false
-
-	//client := &http.Client{
-	//	Timeout:   10 * time.Second,
-	//	Transport: t,
-	//}
 
 	return &gClient, req
 }
