@@ -1,7 +1,10 @@
 package commonapi
 
 import (
+	"math/rand"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
@@ -22,12 +25,15 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	conf := config.GetInstance()
 
 	// 1. 소셜 정보 검증
-	userID, email, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
-	if err != nil || len(userID) == 0 || len(email) == 0 {
-		log.Errorf("%v", err)
-		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
-		return c.JSON(http.StatusOK, resp)
-	}
+	// userID, email, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
+	// if err != nil || len(userID) == 0 || len(email) == 0 {
+	// 	log.Errorf("%v", err)
+	// 	resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
+	// 	return c.JSON(http.StatusOK, resp)
+	// }
+
+	userID := strconv.FormatInt(time.Now().UnixNano()+rand.Int63(), 10)
+	_, _, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
 
 	payload := &context.Payload{
 		LoginType:  context.WebAccountLogin,
