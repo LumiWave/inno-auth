@@ -12,11 +12,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-const (
-	MemberAuthLog_NewAccount = 7
-	MemberAuthLog_Account    = 8
-)
-
 func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
@@ -24,6 +19,7 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 
 	// 1. InnoUID 검증
 	if isExists, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || err != nil {
+		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
 		return c.JSON(http.StatusOK, resp)
 	}
@@ -46,9 +42,7 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 			} else {
 				respAccountLogin.PointList = pointList
 			}
-			// 3-2. [DB] 신규 사용자 로그 등록
-			model.GetDB().AddMemberAuthLogs(MemberAuthLog_NewAccount, respAuthMember.AUID,
-				params.InnoUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID)
+
 		} else {
 			// 기존 유저
 			// 3-1. [point-manager] 포인트 수량 정보 요청
@@ -70,9 +64,6 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 					respAccountLogin.PointList = pointList
 				}
 			}
-			// 3-3. [DB] 기존 사용자 로그 등록
-			model.GetDB().AddMemberAuthLogs(MemberAuthLog_Account, respAuthMember.AUID,
-				params.InnoUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID)
 		}
 
 		// 4. Base Coin의 지갑이 없으면 생성
