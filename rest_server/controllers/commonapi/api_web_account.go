@@ -74,6 +74,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 				CoinSymbol: value,
 			})
 		}
+
+		return c.JSON(http.StatusOK, resp)
+
 		//startTime := time.Now().UnixMilli()
 		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
 		//log.Errorf("TokenAddressNew timecheck123 %v", time.Now().UnixMilli()-startTime)
