@@ -32,7 +32,7 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 	//t.MaxIdleConns = 10
 	//t.MaxConnsPerHost = 10
 	t.MaxIdleConnsPerHost = 10
-	//t.DisableKeepAlives = false
+	t.DisableKeepAlives = false
 
 	gClient.Timeout = 10 * time.Second
 	gClient.Transport = t
