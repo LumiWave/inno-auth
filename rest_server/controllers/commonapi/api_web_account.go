@@ -22,6 +22,23 @@ import (
 func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
+
+	var baseCoinList []context.CoinInfo
+	baseCoinList = append(baseCoinList, context.CoinInfo{
+		CoinID:     1,
+		CoinSymbol: "ETH",
+	})
+
+	_, err := inner.TokenAddressNew(baseCoinList, "1")
+	//log.Errorf("TokenAddressNew timecheck123 %v", time.Now().UnixMilli()-startTime)
+	if err != nil {
+		log.Errorf("%v", err)
+		resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+		return c.JSON(http.StatusOK, resp)
+	}
+
+	return c.JSON(http.StatusOK, resp)
+
 	conf := config.GetInstance()
 
 	// 1. 소셜 정보 검증
@@ -75,8 +92,6 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			})
 		}
 
-		return c.JSON(http.StatusOK, resp)
-
 		//startTime := time.Now().UnixMilli()
 		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
 		//log.Errorf("TokenAddressNew timecheck123 %v", time.Now().UnixMilli()-startTime)
@@ -85,6 +100,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 			return c.JSON(http.StatusOK, resp)
 		}
+
+		return c.JSON(http.StatusOK, resp)
 
 		// 4-2. [DB] ETH 지갑 생성 프로시저 호출
 		//startTime = time.Now().UnixMilli()
