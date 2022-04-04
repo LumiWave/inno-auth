@@ -44,7 +44,6 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
 	}
-	return c.JSON(http.StatusOK, resp)
 
 	reqAccountWeb := &context.ReqAccountWeb{
 		InnoUID:    payload.InnoUID,
@@ -64,6 +63,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
 	resAccountWeb.SocialType = params.SocialType
+
+	return c.JSON(http.StatusOK, resp)
 
 	// 4. ONIT 지갑이 없는 유저는 지갑을 생성
 	if !resAccountWeb.ExistsMainWallet {
