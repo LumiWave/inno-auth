@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
+	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/google/go-querystring/query"
 )
 
@@ -62,16 +63,19 @@ func HttpCall(uri string, auth string, method string, body *bytes.Buffer, queryS
 func ParseResponse(resp *http.Response) (*base.BaseResponse, error) {
 	decoder := json.NewDecoder(resp.Body)
 	if resp.StatusCode != 200 && resp.StatusCode != 201 {
-		ErrorResp := new(base.BaseResponse)
-		err := decoder.Decode(ErrorResp)
-		if err != nil {
-			return nil, errors.New(resp.Status)
-		}
-		return nil, err
+		// ErrorResp := new(base.BaseResponse)
+		// err := decoder.Decode(ErrorResp)
+		// if err != nil {
+		// 	log.Errorf("HttpCall ParseResponse(StatusCode:%v): %v", resp.StatusCode, err)
+		// 	return nil, errors.New(resp.Status)
+		// }
+		log.Errorf("HttpCall ParseResponse(%v)", resp.StatusCode)
+		return nil, errors.New("HttpCall ParseResponse")
 	}
 	baseResp := new(base.BaseResponse)
 	err := decoder.Decode(&baseResp)
 	if err != nil {
+		log.Errorf("ParseResponse Decode err: %v", err)
 		return nil, err
 	}
 	return baseResp, err
