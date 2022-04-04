@@ -44,6 +44,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
 	}
+	return c.JSON(http.StatusOK, resp)
 
 	reqAccountWeb := &context.ReqAccountWeb{
 		InnoUID:    payload.InnoUID,
@@ -52,9 +53,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	}
 
 	// 2. 웹 로그인/가입
-	startTime := time.Now().UnixMilli()
+	//startTime := time.Now().UnixMilli()
 	resAccountWeb, err := model.GetDB().AuthAccounts(reqAccountWeb)
-	log.Errorf("AuthAccounts timecheck123 %v", time.Now().UnixMilli()-startTime)
+	//log.Errorf("AuthAccounts timecheck123 %v", time.Now().UnixMilli()-startTime)
 	if err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
@@ -74,9 +75,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 				CoinSymbol: value,
 			})
 		}
-		startTime := time.Now().UnixMilli()
+		//startTime := time.Now().UnixMilli()
 		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
-		log.Errorf("TokenAddressNew timecheck123 %v", time.Now().UnixMilli()-startTime)
+		//log.Errorf("TokenAddressNew timecheck123 %v", time.Now().UnixMilli()-startTime)
 		if err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
@@ -84,9 +85,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		}
 
 		// 4-2. [DB] ETH 지갑 생성 프로시저 호출
-		startTime = time.Now().UnixMilli()
+		//startTime = time.Now().UnixMilli()
 		err = model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo)
-		log.Errorf("AddAccountBaseCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
+		//log.Errorf("AddAccountBaseCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
 		if err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
@@ -94,9 +95,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		}
 
 		// 4-3. [DB] ONIT 사용자 코인 등록
-		startTime = time.Now().UnixMilli()
+		//startTime = time.Now().UnixMilli()
 		err = model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList)
-		log.Errorf("AddAccountCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
+		//log.Errorf("AddAccountCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
 		if err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
