@@ -25,7 +25,16 @@ func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, 
 		req.URL.RawQuery = queryStr
 	}
 
-	client := &http.Client{Timeout: 60 * time.Second}
+	t := http.DefaultTransport.(*http.Transport).Clone()
+	t.MaxIdleConns = 100
+	t.MaxConnsPerHost = 100
+	t.MaxIdleConnsPerHost = 100
+
+	client := &http.Client{
+		Timeout:   10 * time.Second,
+		Transport: t,
+	}
+
 	return client, req
 }
 
