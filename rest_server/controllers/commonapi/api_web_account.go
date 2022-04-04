@@ -11,6 +11,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -64,44 +65,44 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resAccountWeb.SocialType = params.SocialType
 
 	// 4. ONIT 지갑이 없는 유저는 지갑을 생성
-	// if !resAccountWeb.ExistsMainWallet {
-	// 	// 4-1. [token-manager] ETH 지갑 생성
-	// 	var baseCoinList []context.CoinInfo
-	// 	for i, value := range conf.BaseCoin.SymbolList {
-	// 		baseCoinList = append(baseCoinList, context.CoinInfo{
-	// 			CoinID:     conf.BaseCoin.IDList[i],
-	// 			CoinSymbol: value,
-	// 		})
-	// 	}
-	// 	//startTime := time.Now().UnixMilli()
-	// 	walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
-	// 	//log.Errorf("TokenAddressNew timecheck123 %v", time.Now().UnixMilli()-startTime)
-	// 	if err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
+	if !resAccountWeb.ExistsMainWallet {
+		// 4-1. [token-manager] ETH 지갑 생성
+		var baseCoinList []context.CoinInfo
+		for i, value := range conf.BaseCoin.SymbolList {
+			baseCoinList = append(baseCoinList, context.CoinInfo{
+				CoinID:     conf.BaseCoin.IDList[i],
+				CoinSymbol: value,
+			})
+		}
+		//startTime := time.Now().UnixMilli()
+		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
+		//log.Errorf("TokenAddressNew timecheck123 %v", time.Now().UnixMilli()-startTime)
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+			return c.JSON(http.StatusOK, resp)
+		}
 
-	// 	// 4-2. [DB] ETH 지갑 생성 프로시저 호출
-	// 	//startTime = time.Now().UnixMilli()
-	// 	err = model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo)
-	// 	//log.Errorf("AddAccountBaseCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
-	// 	if err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
+		// 4-2. [DB] ETH 지갑 생성 프로시저 호출
+		//startTime = time.Now().UnixMilli()
+		err = model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo)
+		//log.Errorf("AddAccountBaseCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
 
-	// 	// 4-3. [DB] ONIT 사용자 코인 등록
-	// 	//startTime = time.Now().UnixMilli()
-	// 	err = model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList)
-	// 	//log.Errorf("AddAccountCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
-	// 	if err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
-	// }
+		// 4-3. [DB] ONIT 사용자 코인 등록
+		//startTime = time.Now().UnixMilli()
+		err = model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList)
+		//log.Errorf("AddAccountCoins timecheck123 %v", time.Now().UnixMilli()-startTime)
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
+	}
 
 	// 4. Access, Refresh 토큰 생성
 
