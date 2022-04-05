@@ -51,8 +51,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			[]byte(conf.Secret.Iv)),
 	}
 	endTime1 := time.Now().UnixMilli()
-	if endTime1-startTime1 >= 100 {
-		log.Errorf("%v", endTime1-startTime1)
+	if endTime1-startTime1 >= 1000 {
+		log.Errorf("MakeInnoID time:%v", endTime1-startTime1)
 	}
 
 	reqAccountWeb := &context.ReqAccountWeb{
@@ -70,8 +70,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		return c.JSON(http.StatusOK, resp)
 	}
 	endTime2 := time.Now().UnixMilli()
-	if endTime2-startTime2 >= 100 {
-		log.Errorf("%v", endTime2-startTime2)
+	if endTime2-startTime2 >= 1000 {
+		log.Errorf("AuthAccounts time: %v", endTime2-startTime2)
 	}
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
