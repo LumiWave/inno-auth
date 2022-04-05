@@ -12,6 +12,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/api_inno_log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -95,52 +96,52 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	}
 	go api_inno_log.GetInstance().PostAccountAuth(logParams)
 
-	// // 4. ONIT 지갑이 없는 유저는 지갑을 생성
-	// if !resAccountWeb.ExistsMainWallet {
-	// 	// 3-1. [token-manager] ETH 지갑 생성
-	// 	var baseCoinList []context.CoinInfo
-	// 	for i, value := range conf.BaseCoin.SymbolList {
-	// 		baseCoinList = append(baseCoinList, context.CoinInfo{
-	// 			CoinID:     conf.BaseCoin.IDList[i],
-	// 			CoinSymbol: value,
-	// 		})
-	// 	}
-	// 	startTime3 := time.Now().UnixMilli()
-	// 	walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
-	// 	if err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
-	// 	endTime3 := time.Now().UnixMilli()
-	// 	if endTime3-startTime3 >= 1000 {
-	// 		log.Errorf("%v", endTime3-startTime3)
-	// 	}
+	// 4. ONIT 지갑이 없는 유저는 지갑을 생성
+	if !resAccountWeb.ExistsMainWallet {
+		// 3-1. [token-manager] ETH 지갑 생성
+		var baseCoinList []context.CoinInfo
+		for i, value := range conf.BaseCoin.SymbolList {
+			baseCoinList = append(baseCoinList, context.CoinInfo{
+				CoinID:     conf.BaseCoin.IDList[i],
+				CoinSymbol: value,
+			})
+		}
+		startTime3 := time.Now().UnixMilli()
+		walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+			return c.JSON(http.StatusOK, resp)
+		}
+		endTime3 := time.Now().UnixMilli()
+		if endTime3-startTime3 >= 1000 {
+			log.Errorf("%v", endTime3-startTime3)
+		}
 
-	// 	// 3-2. [DB] ETH 지갑 생성 프로시저 호출
-	// 	startTime4 := time.Now().UnixMilli()
-	// 	if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
-	// 	endTime4 := time.Now().UnixMilli()
-	// 	if endTime4-startTime4 >= 1000 {
-	// 		log.Errorf("AddAccountBaseCoins time: %v", endTime4-startTime4)
-	// 	}
+		// 3-2. [DB] ETH 지갑 생성 프로시저 호출
+		startTime4 := time.Now().UnixMilli()
+		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
+		endTime4 := time.Now().UnixMilli()
+		if endTime4-startTime4 >= 1000 {
+			log.Errorf("AddAccountBaseCoins time: %v", endTime4-startTime4)
+		}
 
-	// 	startTime5 := time.Now().UnixMilli()
-	// 	// 3-3. [DB] ONIT 사용자 코인 등록
-	// 	if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList); err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
-	// 	endTime5 := time.Now().UnixMilli()
-	// 	if endTime5-startTime5 >= 1000 {
-	// 		log.Errorf("AddAccountCoins time: %v", endTime5-startTime5)
-	// 	}
-	// }
+		startTime5 := time.Now().UnixMilli()
+		// 3-3. [DB] ONIT 사용자 코인 등록
+		if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
+		endTime5 := time.Now().UnixMilli()
+		if endTime5-startTime5 >= 1000 {
+			log.Errorf("AddAccountCoins time: %v", endTime5-startTime5)
+		}
+	}
 
 	// 4. Access, Refresh 토큰 생성
 	startTime6 := time.Now().UnixMilli()
