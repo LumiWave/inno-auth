@@ -41,6 +41,12 @@ type TokenManagerServer struct {
 type PointManagerServer struct {
 	Uri string `yaml:"uri"`
 }
+type ApiInno struct {
+	InternalpiDomain string `yaml:"api_internal_domain"`
+	ExternalpiDomain string `yaml:"api_external_domain"`
+	InternalVer      string `yaml:"internal_ver"`
+	ExternalVer      string `yaml:"external_ver"`
+}
 
 type SecretInfo struct {
 	Key string `yaml:"key"`
@@ -69,6 +75,7 @@ type ServerConfig struct {
 	AccessCountry AccessCountryInfo  `yaml:"access_country"`
 	TokenManager  TokenManagerServer `yaml:"token_manager"`
 	PointManager  PointManagerServer `yaml:"point_manager"`
+	InnoLog       ApiInno            `yaml:"inno-log"`
 	Secret        SecretInfo         `yaml:"secret"`
 	BaseCoin      BaseCoinInfo       `yaml:"base_coin"`
 	ProjectToken  ProjectTokenInfo   `yaml:"project_token"`

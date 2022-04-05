@@ -2,14 +2,21 @@ package commonapi
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/api_inno_log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
+)
+
+const (
+	MemberAuthLog_NewAccount = 7
+	MemberAuthLog_Account    = 8
 )
 
 func PostAppAccountLogin(c echo.Context, params *context.Account) error {
@@ -42,7 +49,18 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 			} else {
 				respAccountLogin.PointList = pointList
 			}
-
+			// 3-2. [DB] 신규 사용자 로그 등록
+			logParams := &api_inno_log.MemberAuthLog{
+				LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
+				LogID:      4,
+				EventID:    MemberAuthLog_NewAccount,
+				AUID:       respAuthMember.AUID,
+				InnoUID:    params.InnoUID,
+				MUID:       respAuthMember.MUID,
+				AppID:      ctx.Payload.AppID,
+				DataBaseID: respAuthMember.DataBaseID,
+			}
+			go api_inno_log.GetInstance().PostMemberAuth(logParams)
 		} else {
 			// 기존 유저
 			// 3-1. [point-manager] 포인트 수량 정보 요청
@@ -64,6 +82,18 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 					respAccountLogin.PointList = pointList
 				}
 			}
+			// 3-3. [DB] 기존 사용자 로그 등록
+			logParams := &api_inno_log.MemberAuthLog{
+				LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
+				LogID:      4,
+				EventID:    MemberAuthLog_Account,
+				AUID:       respAuthMember.AUID,
+				InnoUID:    params.InnoUID,
+				MUID:       respAuthMember.MUID,
+				AppID:      ctx.Payload.AppID,
+				DataBaseID: respAuthMember.DataBaseID,
+			}
+			go api_inno_log.GetInstance().PostMemberAuth(logParams)
 		}
 
 		// 4. Base Coin의 지갑이 없으면 생성
