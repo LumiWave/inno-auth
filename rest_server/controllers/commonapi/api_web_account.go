@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
@@ -42,18 +41,19 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	//_, _, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
 	//log.Errorf("Google VerifySocialKey time %v", time.Now().UnixMilli()-startTime)
 
-	startTime1 := time.Now().UnixMilli()
+	//startTime1 := time.Now().UnixMilli()
 	payload := &context.Payload{
 		LoginType:  context.WebAccountLogin,
 		SocialType: params.SocialType,
-		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
-			[]byte(conf.Secret.Key),
-			[]byte(conf.Secret.Iv)),
+		InnoUID:    userID,
+		// inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
+		// 	[]byte(conf.Secret.Key),
+		// 	[]byte(conf.Secret.Iv)),
 	}
-	endTime1 := time.Now().UnixMilli()
-	if endTime1-startTime1 >= 1000 {
-		log.Errorf("MakeInnoID time:%v", endTime1-startTime1)
-	}
+	// endTime1 := time.Now().UnixMilli()
+	// if endTime1-startTime1 >= 1000 {
+	// 	log.Errorf("MakeInnoID time:%v", endTime1-startTime1)
+	// }
 
 	reqAccountWeb := &context.ReqAccountWeb{
 		InnoUID:    payload.InnoUID,
