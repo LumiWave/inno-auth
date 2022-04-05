@@ -77,7 +77,6 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
 	resAccountWeb.SocialType = params.SocialType
-	return c.JSON(http.StatusOK, resp)
 
 	// 3. [DB] 사용자 로그 등록
 	logParams := &api_inno_log.AccountAuthLog{
