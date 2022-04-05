@@ -72,7 +72,7 @@ func (o *DB) ConnectDB(conf *baseconf.DBAuth) (*basedb.Mssql, error) {
 	idleSize, _ := strconv.ParseInt(conf.IdleSize, 10, 32)
 	mssqlDB.GetDB().SetMaxOpenConns(int(idleSize))
 	mssqlDB.GetDB().SetMaxIdleConns(int(idleSize))
-	mssqlDB.GetDB().SetConnMaxLifetime(1 * time.Hour)
+	mssqlDB.GetDB().SetConnMaxLifetime(24 * time.Hour)
 
 	return mssqlDB, nil
 }
