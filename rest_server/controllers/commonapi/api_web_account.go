@@ -114,7 +114,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			return c.JSON(http.StatusOK, resp)
 		}
 		endTime3 := time.Now().UnixMilli()
-		if endTime3-startTime3 >= 100 {
+		if endTime3-startTime3 >= 1000 {
 			log.Errorf("%v", endTime3-startTime3)
 		}
 
@@ -126,8 +126,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			return c.JSON(http.StatusOK, resp)
 		}
 		endTime4 := time.Now().UnixMilli()
-		if endTime4-startTime4 >= 100 {
-			log.Errorf("%v", endTime4-startTime4)
+		if endTime4-startTime4 >= 1000 {
+			log.Errorf("AddAccountBaseCoins time: %v", endTime4-startTime4)
 		}
 
 		startTime5 := time.Now().UnixMilli()
@@ -138,8 +138,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			return c.JSON(http.StatusOK, resp)
 		}
 		endTime5 := time.Now().UnixMilli()
-		if endTime5-startTime5 >= 100 {
-			log.Errorf("%v", endTime5-startTime5)
+		if endTime5-startTime5 >= 1000 {
+			log.Errorf("AddAccountCoins time: %v", endTime5-startTime5)
 		}
 	}
 
@@ -161,7 +161,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		resAccountWeb.JwtInfo = *oldJwtInfo
 	}
 	endTime6 := time.Now().UnixMilli()
-	if endTime6-startTime6 >= 100 {
+	if endTime6-startTime6 >= 1000 {
 		log.Errorf("%v", endTime6-startTime6)
 	}
 
