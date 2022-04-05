@@ -43,7 +43,7 @@ func NewClient() *http.Client {
 	t.MaxIdleConns = 100
 	t.MaxIdleConnsPerHost = 100
 	t.IdleConnTimeout = 30 * time.Second
-	t.DisableKeepAlives = true
+	t.DisableKeepAlives = false
 	t.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	client := &http.Client{
