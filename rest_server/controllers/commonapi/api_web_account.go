@@ -77,6 +77,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resAccountWeb.InnoUID = payload.InnoUID
 	resAccountWeb.SocialType = params.SocialType
 
+	return c.JSON(http.StatusOK, resp)
+
 	// 3. [DB] 사용자 로그 등록
 	// logParams := &api_inno_log.AccountAuthLog{
 	// 	LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
