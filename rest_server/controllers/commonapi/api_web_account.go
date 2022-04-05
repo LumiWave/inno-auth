@@ -77,6 +77,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	payload.AUID = resAccountWeb.AUID
 	resAccountWeb.InnoUID = payload.InnoUID
 	resAccountWeb.SocialType = params.SocialType
+	return c.JSON(http.StatusOK, resp)
 
 	// 3. [DB] 사용자 로그 등록
 	logParams := &api_inno_log.AccountAuthLog{
@@ -162,7 +163,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	}
 	endTime6 := time.Now().UnixMilli()
 	if endTime6-startTime6 >= 1000 {
-		log.Errorf("%v", endTime6-startTime6)
+		log.Errorf("MakeWebToken time: %v", endTime6-startTime6)
 	}
 
 	resp.Value = *resAccountWeb
