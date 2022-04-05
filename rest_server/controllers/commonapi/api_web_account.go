@@ -94,6 +94,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
 			return c.JSON(http.StatusOK, resp)
 		}
+
+		return c.JSON(http.StatusOK, resp)
 		// endTime3 := time.Now().UnixMilli()
 		// if endTime3-startTime3 >= 1000 {
 		// 	log.Errorf("%v", endTime3-startTime3)
@@ -106,6 +108,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
 			return c.JSON(http.StatusOK, resp)
 		}
+
 		// endTime4 := time.Now().UnixMilli()
 		// if endTime4-startTime4 >= 1000 {
 		// 	log.Errorf("AddAccountBaseCoins time: %v", endTime4-startTime4)
