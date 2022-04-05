@@ -41,14 +41,14 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 		// 3. 신규/기존 유저에 따른 분기 처리
 		if respAuthMember.IsJoined {
 			// 신규 유저
-			// // 3-1. [point-manager] 멤버 등록
-			// if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
-			// 	log.Errorf("%v", err)
-			// 	resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
-			// 	return c.JSON(http.StatusOK, resp)
-			// } else {
-			// 	respAccountLogin.PointList = pointList
-			// }
+			// 3-1. [point-manager] 멤버 등록
+			if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
+				log.Errorf("%v", err)
+				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
+				return c.JSON(http.StatusOK, resp)
+			} else {
+				respAccountLogin.PointList = pointList
+			}
 		} else {
 			// 기존 유저
 			// 3-1. [point-manager] 포인트 수량 정보 요청
