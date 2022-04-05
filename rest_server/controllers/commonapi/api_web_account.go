@@ -95,7 +95,6 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			return c.JSON(http.StatusOK, resp)
 		}
 
-		return c.JSON(http.StatusOK, resp)
 		// endTime3 := time.Now().UnixMilli()
 		// if endTime3-startTime3 >= 1000 {
 		// 	log.Errorf("%v", endTime3-startTime3)
