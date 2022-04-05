@@ -6,8 +6,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/api_inno_log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
@@ -41,19 +43,18 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	//_, _, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
 	//log.Errorf("Google VerifySocialKey time %v", time.Now().UnixMilli()-startTime)
 
-	//startTime1 := time.Now().UnixMilli()
+	startTime1 := time.Now().UnixMilli()
 	payload := &context.Payload{
 		LoginType:  context.WebAccountLogin,
 		SocialType: params.SocialType,
-		InnoUID:    userID,
-		// inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
-		// 	[]byte(conf.Secret.Key),
-		// 	[]byte(conf.Secret.Iv)),
+		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
+			[]byte(conf.Secret.Key),
+			[]byte(conf.Secret.Iv)),
 	}
-	// endTime1 := time.Now().UnixMilli()
-	// if endTime1-startTime1 >= 1000 {
-	// 	log.Errorf("MakeInnoID time:%v", endTime1-startTime1)
-	// }
+	endTime1 := time.Now().UnixMilli()
+	if endTime1-startTime1 >= 1000 {
+		log.Errorf("MakeInnoID time:%v", endTime1-startTime1)
+	}
 
 	reqAccountWeb := &context.ReqAccountWeb{
 		InnoUID:    payload.InnoUID,
@@ -77,25 +78,23 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resAccountWeb.InnoUID = payload.InnoUID
 	resAccountWeb.SocialType = params.SocialType
 
-	return c.JSON(http.StatusOK, resp)
-
 	// 3. [DB] 사용자 로그 등록
-	// logParams := &api_inno_log.AccountAuthLog{
-	// 	LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
-	// 	LogID:      4,
-	// 	AUID:       resAccountWeb.AUID,
-	// 	InnoUID:    payload.InnoUID,
-	// 	SocialID:   userID,
-	// 	SocialType: params.SocialType,
-	// }
-	// if resAccountWeb.IsJoined {
-	// 	// 3-1. [DB] 신규 사용자 로그 등록
-	// 	logParams.EventID = AccountAuthLog_NewAccount
-	// } else {
-	// 	// 3-1. [DB] 기존 사용자 로그 등록
-	// 	logParams.EventID = AccountAuthLog_Account
-	// }
-	// go api_inno_log.GetInstance().PostAccountAuth(logParams)
+	logParams := &api_inno_log.AccountAuthLog{
+		LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
+		LogID:      4,
+		AUID:       resAccountWeb.AUID,
+		InnoUID:    payload.InnoUID,
+		SocialID:   userID,
+		SocialType: params.SocialType,
+	}
+	if resAccountWeb.IsJoined {
+		// 3-1. [DB] 신규 사용자 로그 등록
+		logParams.EventID = AccountAuthLog_NewAccount
+	} else {
+		// 3-1. [DB] 기존 사용자 로그 등록
+		logParams.EventID = AccountAuthLog_Account
+	}
+	go api_inno_log.GetInstance().PostAccountAuth(logParams)
 
 	// 4. ONIT 지갑이 없는 유저는 지갑을 생성
 	if !resAccountWeb.ExistsMainWallet {
