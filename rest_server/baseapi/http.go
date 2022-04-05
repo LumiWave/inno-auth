@@ -19,7 +19,7 @@ var gClient http.Client
 func InitHttpClient() {
 	gTransport.MaxIdleConns = 100
 	gTransport.MaxIdleConnsPerHost = 100
-	gTransport.IdleConnTimeout = 30 * time.Second
+	gTransport.IdleConnTimeout = 1 * time.Hour
 	gTransport.DisableKeepAlives = false
 
 	gClient.Timeout = 10 * time.Second
