@@ -2,7 +2,6 @@ package model
 
 import (
 	"strconv"
-	"time"
 
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
 	"github.com/ONBUFF-IP-TOKEN/basedb"
@@ -72,7 +71,8 @@ func (o *DB) ConnectDB(conf *baseconf.DBAuth) (*basedb.Mssql, error) {
 	idleSize, _ := strconv.ParseInt(conf.IdleSize, 10, 32)
 	mssqlDB.GetDB().SetMaxOpenConns(int(idleSize))
 	mssqlDB.GetDB().SetMaxIdleConns(int(idleSize))
-	mssqlDB.GetDB().SetConnMaxLifetime(24 * time.Hour)
+	//mssqlDB.GetDB().SetConnMaxIdleTime(10 * time.Minute)
+	//mssqlDB.GetDB().SetConnMaxLifetime(30 * time.Minute)
 
 	return mssqlDB, nil
 }
