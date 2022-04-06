@@ -12,24 +12,17 @@ import (
 	"github.com/labstack/echo"
 )
 
-const (
-	MemberAuthLog_NewAccount = 7
-	MemberAuthLog_Account    = 8
-)
-
 func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 	respAccountLogin := new(context.RespAccountLogin)
 
 	// 1. InnoUID 검증
-	_, _ = model.GetDB().VerfiyAccounts(params.InnoUID)
-
-	// if isExists, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || err != nil {
-	// 	log.Errorf("%v", err)
-	// 	resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
-	// 	return c.JSON(http.StatusOK, resp)
-	// }
+	if isExists, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || err != nil {
+		log.Errorf("%v", err)
+		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+		return c.JSON(http.StatusOK, resp)
+	}
 
 	// 2. 인증 프로시저 호출 (신규 유저, 기존 유저를 체크)
 	ctx := base.GetContext(c).(*context.InnoAuthContext)
