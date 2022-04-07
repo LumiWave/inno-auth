@@ -6,11 +6,11 @@
         {
             "label": "prebuild",
             "type": "shell",
-            "command" : "./prebuild.sh dev",
+            "command" : "./prebuild.sh local",
             "windows": {
                 "command": "cmd",
                 "args": [
-                    "/C", ".\\prebuild.sh dev"
+                    "/C", ".\\prebuild.sh local"
                 ]
             },
             "problemMatcher": [],
