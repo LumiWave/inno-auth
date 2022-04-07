@@ -57,6 +57,7 @@ config: init
 	cp etc/conf/$(server_ext_api) $(output)/$(server_ext_api)
 	cp etc/onbuffcerti.crt bin/onbuffcerti.crt
 	cp etc/onbuffcerti.key bin/onbuffcerti.key
+	cp etc/IP2LOCATION-LITE-DB1.BIN bin/IP2LOCATION-LITE-DB1.BIN
 	
 docs: init
 	# copy the API docs to the output directory.
