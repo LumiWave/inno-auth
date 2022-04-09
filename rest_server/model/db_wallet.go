@@ -36,7 +36,7 @@ func (o *DB) AddAccountCoins(auid int64, coinIDList []int64) error {
 		TypeName: TVP_AccountCoins,
 		Value:    tableData,
 	}
-	_, err := o.MssqlAccountAll.GetDB().Exec(execTvp,
+	_, err := o.MssqlAccountAll.Exec(execTvp,
 		sql.Named("AUID", auid),
 		sql.Named("TVP", tvpType))
 	if err != nil {
@@ -66,7 +66,7 @@ func (o *DB) AddAccountBaseCoins(auid int64, walletInfo []context.WalletInfo) er
 		TypeName: TVP_AccountBaseCoins,
 		Value:    tableData,
 	}
-	_, err := o.MssqlAccountAll.GetDB().Exec(execTvp,
+	_, err := o.MssqlAccountAll.Exec(execTvp,
 		sql.Named("AUID", auid),
 		sql.Named("TVP", tvpType))
 

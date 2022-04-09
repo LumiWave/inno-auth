@@ -18,7 +18,7 @@ const (
 func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*context.RespAuthMember, error) {
 	resp := new(context.RespAuthMember)
 	var returnValue orginMssql.ReturnStatus
-	rows, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Members,
+	rows, err := o.MssqlAccountAll.QueryContext(contextR.Background(), USPAU_Auth_Members,
 		sql.Named("InnoUID", account.InnoUID),
 		sql.Named("AppID", payload.AppID),
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
@@ -71,7 +71,7 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 func (o *DB) VerfiyAccounts(innoUID string) (bool, error) {
 	var returnValue orginMssql.ReturnStatus
 	var isExists bool
-	rows, err := o.MssqlAccountRead.GetDB().QueryContext(contextR.Background(), USPAU_Verify_Accounts,
+	rows, err := o.MssqlAccountRead.QueryContext(contextR.Background(), USPAU_Verify_Accounts,
 		sql.Named("InnoUID", innoUID),
 		sql.Named("IsExists", sql.Out{Dest: &isExists}),
 		&returnValue)
