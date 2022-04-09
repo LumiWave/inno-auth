@@ -50,11 +50,11 @@ func InitDB(conf *config.ServerConfig) (err error) {
 			timer.Stop()
 
 			// DB ping 체크 후 오류 시 재 연결
-			if db := checkPingDB(gDB.MssqlAccountAll, conf.MssqlDBAccountAll); db != nil {
+			if db := CheckPingDB(gDB.MssqlAccountAll, conf.MssqlDBAccountAll); db != nil {
 				gDB.MssqlAccountAll = db
 			}
 
-			if db := checkPingDB(gDB.MssqlAccountRead, conf.MssqlDBAccountRead); db != nil {
+			if db := CheckPingDB(gDB.MssqlAccountRead, conf.MssqlDBAccountRead); db != nil {
 				gDB.MssqlAccountRead = db
 			}
 		}
@@ -101,7 +101,7 @@ func ConnectAllDB(conf *config.ServerConfig) error {
 	return nil
 }
 
-func checkPingDB(db *basedb.Mssql, conf baseconf.DBAuth) *basedb.Mssql {
+func CheckPingDB(db *basedb.Mssql, conf baseconf.DBAuth) *basedb.Mssql {
 	// 연결이 안되어있거나, DB Connection이 끊어진 경우에는 재연결 시도
 	if db == nil || !db.Connection.IsConnect {
 		var err error
@@ -122,7 +122,7 @@ func checkPingDB(db *basedb.Mssql, conf baseconf.DBAuth) *basedb.Mssql {
 			if db.Connection.RetryCount >= 2 {
 				db.Connection.IsConnect = false
 				// DB Close
-				if err2 := db.GetDB().Close(); err2 != nil {
+				if err = db.GetDB().Close(); err == nil {
 					log.Errorf("DB Closed (RetryCount >=2)")
 				}
 			}
