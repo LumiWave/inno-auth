@@ -117,7 +117,7 @@ func checkPingDB(db *basedb.Mssql, conf baseconf.DBAuth) *basedb.Mssql {
 		if err := db.GetDB().Ping(); err != nil {
 			// 재시도 횟수
 			db.Connection.RetryCount += 1
-			log.Errorf("Check DB Ping err RetryCount(%v)", db.Connection.RetryCount)
+			log.Errorf("%v DB Ping err RetryCount(%v)", conf.Database, db.Connection.RetryCount)
 			// ping 2회 시도해도 안되면 close
 			if db.Connection.RetryCount >= 2 {
 				db.Connection.IsConnect = false
