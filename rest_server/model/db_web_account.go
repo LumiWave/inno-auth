@@ -16,7 +16,7 @@ const (
 func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, error) {
 	resp := new(context.ResAccountWeb)
 	var returnValue orginMssql.ReturnStatus
-	rows, err := o.MssqlAccountAll.GetDB().QueryContext(contextR.Background(), USPAU_Auth_Accounts,
+	rows, err := o.MssqlAccountAll.QueryContext(contextR.Background(), USPAU_Auth_Accounts,
 		sql.Named("InnoUID", account.InnoUID),
 		sql.Named("SocialID", account.SocialID),
 		sql.Named("SocialType", account.SocialType),

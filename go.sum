@@ -38,8 +38,8 @@ github.com/ONBUFF-IP-TOKEN/baseapp v1.0.13/go.mod h1:NQLToyeNDUPLYUqvLbbKm9ho5Ly
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.15 h1:reIrorLXlnnZ7IrT2wp0koUav+WTXnNFhmrf8+yWRLk=
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.15/go.mod h1:NQLToyeNDUPLYUqvLbbKm9ho5LySl2ycptA1rNIktGc=
 github.com/ONBUFF-IP-TOKEN/basedb v1.1.7/go.mod h1:DF+DtgCI+imyaSd4DFbg3wHPODizku2Qei57jFP1rMo=
-github.com/ONBUFF-IP-TOKEN/basedb v1.1.8 h1:Ro6moHx/d/zDRFuQ16gGDFOz27w7pOLkJWQhnw/n7VQ=
-github.com/ONBUFF-IP-TOKEN/basedb v1.1.8/go.mod h1:BVJTih2yOZeU5MyYQLSW/309zZ+2+/dzl9xlauYd19E=
+github.com/ONBUFF-IP-TOKEN/basedb v1.1.14 h1:i5J9xsx0J4hAY7gWrIJ4zyxeWziT+RTG6vGVHHhA3Cc=
+github.com/ONBUFF-IP-TOKEN/basedb v1.1.14/go.mod h1:BVJTih2yOZeU5MyYQLSW/309zZ+2+/dzl9xlauYd19E=
 github.com/ONBUFF-IP-TOKEN/basenet v1.0.3 h1:Dl+haCsmkSQUtGism2G19qWqcnhit5E9Qz8MIKP3eqk=
 github.com/ONBUFF-IP-TOKEN/basenet v1.0.3/go.mod h1:NWwVUbB8LYVIRdPwdWeSjHuh9Z/nF5De28KgyRjTvEQ=
 github.com/ONBUFF-IP-TOKEN/baseutil v1.0.7 h1:t/EgkTSuTGxHAR/rrLTXDIBrj6y6pdmAvqxIW4tK7E4=

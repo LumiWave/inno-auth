@@ -17,7 +17,7 @@ const (
 func (o *DB) GetApplications(access *context.Access) (*context.Payload, int, error) {
 	payload := new(context.Payload)
 	var returnValue orginMssql.ReturnStatus
-	rows, err := o.MssqlAccountRead.GetDB().QueryContext(contextR.Background(), USPAU_Get_Applications,
+	rows, err := o.MssqlAccountRead.QueryContext(contextR.Background(), USPAU_Get_Applications,
 		sql.Named("AccessID", access.AccessID), sql.Named("AccessPW", access.AccessPW),
 		sql.Named("AppID", sql.Out{Dest: &payload.AppID}),
 		sql.Named("CompanyID", sql.Out{Dest: &payload.CompanyID}),
