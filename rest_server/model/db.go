@@ -107,7 +107,7 @@ func CheckPingDB(db *basedb.Mssql, conf baseconf.DBAuth) *basedb.Mssql {
 		var err error
 		newDB, err := gDB.ConnectDB(&conf)
 		if err == nil {
-			log.Debugf("connect DB OK")
+			log.Errorf("connect DB OK")
 		}
 		return newDB
 	}
