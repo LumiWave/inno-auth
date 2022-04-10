@@ -23,7 +23,6 @@ func (o *ExternalAPI) PostWebAccountLogin(c echo.Context) error {
 
 	// Request 유효성 체크
 	if err := params.CheckValidate(); err != nil {
-		log.Errorf("%v", err)
 		return c.JSON(http.StatusOK, err)
 	}
 
