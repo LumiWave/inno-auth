@@ -40,6 +40,11 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 				return c.JSON(http.StatusOK, resp)
 			} else {
+				if len(pointList) == 0 {
+					log.Errorf("PointList len=0 err : %v", err)
+					resp.SetReturn(resultcode.Result_Api_PointList_Empty)
+					return c.JSON(http.StatusOK, resp)
+				}
 				respAccountLogin.PointList = pointList
 			}
 		} else {

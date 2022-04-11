@@ -27,6 +27,7 @@ const (
 	Result_Auth_Invalid_InnoUID             = 22009
 	Result_Auth_Invalid_IPAddress           = 22010
 	Result_Procedure_Add_Base_Account_Coins = 22011
+	Result_Api_PointList_Empty              = 22012
 
 	Result_Auth_MakeTokenError = 23001
 )
@@ -58,6 +59,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_Invalid_InnoUID:             "Invalid InnoUID",
 	Result_Auth_Invalid_IPAddress:           "Invalid IP address.",
 	Result_Procedure_Add_Base_Account_Coins: "Error Procedure Add Base Accounts Coins",
+	Result_Api_PointList_Empty:              "Error Member PointList is Empty",
 
 	Result_Auth_MakeTokenError: "Make Token Error",
 }
