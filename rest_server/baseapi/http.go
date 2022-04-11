@@ -17,8 +17,13 @@ var gTransport http.Transport
 var gClient http.Client
 
 func InitHttpClient() {
+	gTransport.MaxIdleConns = 100
+	gTransport.MaxIdleConnsPerHost = 100
+	gTransport.IdleConnTimeout = 30 * time.Second
+	gTransport.DisableKeepAlives = false
+
 	gClient.Timeout = 10 * time.Second
-	gClient.Transport = http.DefaultTransport
+	gClient.Transport = &gTransport
 }
 
 func MakeHttpClient(uri string, auth string, method string, body *bytes.Buffer, queryStr string) (*http.Client, *http.Request) {
