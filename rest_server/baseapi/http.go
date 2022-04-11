@@ -22,7 +22,7 @@ func InitHttpClient() {
 	gTransport.IdleConnTimeout = 30 * time.Second
 	gTransport.DisableKeepAlives = false
 
-	gClient.Timeout = 10 * time.Second
+	gClient.Timeout = 30 * time.Second
 	gClient.Transport = &gTransport
 }
 
