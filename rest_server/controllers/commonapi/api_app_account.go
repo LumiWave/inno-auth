@@ -19,7 +19,7 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 
 	// 1. InnoUID 검증
 	if isExists, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || err != nil {
-		log.Errorf("%v", err)
+		log.Errorf("VerifyAccounts err : %v, isExists : %v", err, isExists)
 		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
 		return c.JSON(http.StatusOK, resp)
 	}
