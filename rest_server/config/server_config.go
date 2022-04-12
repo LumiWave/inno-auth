@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
@@ -99,10 +100,16 @@ func GetInstance(filepath ...string) *ServerConfig {
 				fmt.Println(port)
 			}
 			currentConfig.AccessCountry.WhiteListMap = make(map[string]bool)
-			for _, value := range currentConfig.AccessCountry.WhiteList {
-				currentConfig.AccessCountry.WhiteListMap[value] = true
+			for _, ip := range currentConfig.AccessCountry.WhiteList {
+				slice := strings.Split(ip, ".")
+				if len(slice) == 4 && slice[3] == "0" {
+					for i := 1; i <= 255; i++ {
+						ip = fmt.Sprintf("%v.%v.%v.%v", slice[0], slice[1], slice[2], strconv.Itoa(i))
+						currentConfig.AccessCountry.WhiteListMap[ip] = true
+					}
+				}
+				currentConfig.AccessCountry.WhiteListMap[ip] = true
 			}
-
 		}
 	})
 
