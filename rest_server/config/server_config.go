@@ -32,6 +32,8 @@ type ApiAuth struct {
 type AccessCountryInfo struct {
 	LocationFilePath    string   `yaml:"location_filepath"`
 	DisallowedCountries []string `yaml:"disallowed_country"`
+	WhiteList           []string `yaml:"white_list"`
+	WhiteListMap        map[string]bool
 }
 
 type TokenManagerServer struct {
@@ -96,6 +98,11 @@ func GetInstance(filepath ...string) *ServerConfig {
 				currentConfig.APIServers[1].Port = int(port)
 				fmt.Println(port)
 			}
+			currentConfig.AccessCountry.WhiteListMap = make(map[string]bool)
+			for _, value := range currentConfig.AccessCountry.WhiteList {
+				currentConfig.AccessCountry.WhiteListMap[value] = true
+			}
+
 		}
 	})
 
