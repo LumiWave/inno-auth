@@ -35,7 +35,7 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 		if respAuthMember.IsJoined {
 			// 신규 유저
 			// 3-1. [point-manager] 멤버 등록
-			if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
+			if pointList, err := inner.PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 				return c.JSON(http.StatusOK, resp)
@@ -57,7 +57,7 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 			} else {
 				// 3-2. [point-manager] pointList가 비어있으면(가입이 안되어있으면) 포인트 멤버 다시 가입
 				if len(pointList) == 0 {
-					if pointList, err := PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
+					if pointList, err := inner.PointMemberRegister(respAuthMember.AUID, respAuthMember.MUID, ctx.Payload.AppID, respAuthMember.DataBaseID); err != nil {
 						log.Errorf("%v", err)
 						resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 						return c.JSON(http.StatusOK, resp)
@@ -107,14 +107,4 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 	}
 
 	return c.JSON(http.StatusOK, resp)
-}
-
-func PointMemberRegister(AUID int64, MUID int64, AppID int64, DataBaseID int64) ([]context.Point, error) {
-	reqPointMemberRegister := &context.ReqPointMemberRegister{
-		AUID:       AUID,
-		MUID:       MUID,
-		AppID:      AppID,
-		DataBaseID: DataBaseID,
-	}
-	return inner.PostPointMemberRegister(reqPointMemberRegister)
 }

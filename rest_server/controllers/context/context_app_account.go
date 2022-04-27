@@ -1,6 +1,7 @@
 package context
 
 import (
+	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/point_manager"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 )
@@ -25,8 +26,8 @@ type AccountBaseCoin struct {
 
 // 계정 로그인 Response
 type RespAccountLogin struct {
-	MemberInfo MemberInfo `json:"member_info"`
-	PointList  []Point    `json:"points"`
+	MemberInfo MemberInfo            `json:"member_info"`
+	PointList  []point_manager.Point `json:"points"`
 }
 
 // 멤버 정보 (로그인 완료 시 리턴)
@@ -72,20 +73,6 @@ type WalletInfo struct {
 	Symbol     string `json:"symbol"`
 	Address    string `json:"address"`
 	PrivateKey string `json:"pk"`
-}
-
-// point-manager 멤버 등록 Request
-type ReqPointMemberRegister struct {
-	AUID       int64 `json:"au_id"`
-	MUID       int64 `json:"mu_id"`
-	AppID      int64 `json:"app_id"`
-	DataBaseID int64 `json:"database_id"`
-}
-
-// 포인트 수량
-type Point struct {
-	PointID  int64 `json:"point_id"`
-	Quantity int64 `json:"quantity"`
 }
 
 func NewAccount() *Account {

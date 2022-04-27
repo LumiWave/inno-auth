@@ -42,7 +42,10 @@ type TokenManagerServer struct {
 }
 
 type PointManagerServer struct {
-	Uri string `yaml:"uri"`
+	InternalUri     string `yaml:"internal_uri"`
+	ExternalUri     string `yaml:"external_uri"`
+	InternalVersion string `yaml:"internal_version"`
+	ExternalVersion string `yaml:"external_version"`
 }
 type ApiInno struct {
 	InternalpiDomain string `yaml:"api_internal_domain"`
