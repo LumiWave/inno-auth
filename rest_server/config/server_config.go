@@ -38,7 +38,10 @@ type AccessCountryInfo struct {
 }
 
 type TokenManagerServer struct {
-	Uri string `yaml:"uri"`
+	InternalUri     string `yaml:"internal_uri"`
+	ExternalUri     string `yaml:"external_uri"`
+	InternalVersion string `yaml:"internal_version"`
+	ExternalVersion string `yaml:"external_version"`
 }
 
 type PointManagerServer struct {

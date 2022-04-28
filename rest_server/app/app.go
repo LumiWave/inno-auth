@@ -15,6 +15,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/internalapi"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/point_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/token_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 )
 
@@ -39,6 +40,7 @@ func (o *ServerApp) Init(configFile string) (err error) {
 
 	o.InitLogServer(o.conf)
 	o.InitPointManager(o.conf)
+	o.InitTokenManager(o.conf)
 
 	if auth, err := auth.NewIAuth(&o.conf.Auth); err != nil {
 		return err
@@ -91,4 +93,8 @@ func (o *ServerApp) NewDB(conf *config.ServerConfig) error {
 
 func (o *ServerApp) InitPointManager(conf *config.ServerConfig) error {
 	return point_server.InitPointManager(conf)
+}
+
+func (o *ServerApp) InitTokenManager(conf *config.ServerConfig) error {
+	return token_server.InitTokenManager(conf)
 }
