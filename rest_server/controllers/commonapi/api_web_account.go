@@ -37,6 +37,13 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			[]byte(conf.Secret.Iv)),
 	}
 
+	// 1-1. InnoUID 생성 에러 오류
+	if len(payload.InnoUID) == 0 {
+		log.Errorf("MakeInnoUID is empty : InnoUID(%v)", payload.InnoUID)
+		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+		return c.JSON(http.StatusOK, resp)
+	}
+
 	reqAccountWeb := &context.ReqAccountWeb{
 		InnoUID:    payload.InnoUID,
 		SocialID:   userID,
