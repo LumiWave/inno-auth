@@ -13,25 +13,38 @@ const (
 )
 
 // Web 가입/로그인
-func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, error) {
+func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, []*context.NeedWallet, error) {
 	resp := new(context.ResAccountWeb)
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.MssqlAccountAll.QueryContext(contextR.Background(), USPAU_Auth_Accounts,
 		sql.Named("InnoUID", account.InnoUID),
 		sql.Named("SocialID", account.SocialID),
 		sql.Named("SocialType", account.SocialType),
+		sql.Named("EA", account.EA),
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
 		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
-		sql.Named("ExistsMainWallet", sql.Out{Dest: &resp.ExistsMainWallet}),
 		&returnValue)
 
 	if rows != nil {
 		defer rows.Close()
 	}
 
-	if returnValue != 1 {
-		return nil, err
+	var needWallets []*context.NeedWallet
+
+	for rows.Next() {
+		var baseCoinID int64
+		if err := rows.Scan(&baseCoinID); err != nil {
+			return nil, nil, err
+		} else {
+			needWallets = append(needWallets, &context.NeedWallet{
+				BaseCoinID: baseCoinID,
+			})
+		}
 	}
 
-	return resp, err
+	if returnValue != 1 {
+		return nil, nil, err
+	}
+
+	return resp, needWallets, err
 }

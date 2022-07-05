@@ -58,15 +58,19 @@ type ReqAccountWeb struct {
 	InnoUID    string `json:"inno_uid" validate:"required"`
 	SocialID   string `json:"social_id" validate:"required"`
 	SocialType int64  `json:"social_type" validate:"required"`
+	EA         string `json:"ea" validate:"required"`
+}
+
+type NeedWallet struct {
+	BaseCoinID int64
 }
 
 type ResAccountWeb struct {
 	JwtInfo
-	InnoUID          string `json:"inno_uid" validate:"required"`
-	IsJoined         bool   `json:"is_joined" validate:"required"`
-	AUID             int64  `json:"au_id" validate:"required"`
-	SocialType       int64  `json:"social_type" validate:"required"`
-	ExistsMainWallet bool   `json:"exists_main_wallet" validate:"required"`
+	InnoUID    string `json:"inno_uid" validate:"required"`
+	IsJoined   bool   `json:"is_joined" validate:"required"`
+	AUID       int64  `json:"au_id" validate:"required"`
+	SocialType int64  `json:"social_type" validate:"required"`
 }
 
 ////////////////////////////////////////////
