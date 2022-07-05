@@ -3,6 +3,7 @@ package commonapi
 import (
 	"net/http"
 
+	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/point_manager"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
@@ -62,10 +63,20 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 						resp.SetReturn(resultcode.Result_Api_Post_Point_Member_Register)
 						return c.JSON(http.StatusOK, resp)
 					} else {
-						respAccountLogin.PointList = pointList
+						for _, point := range pointList {
+							respAccountLogin.PointList = append(respAccountLogin.PointList, point_manager.Point{
+								PointID:  point.PointID,
+								Quantity: point.Quantity,
+							})
+						}
 					}
 				} else {
-					respAccountLogin.PointList = pointList
+					for _, point := range pointList {
+						respAccountLogin.PointList = append(respAccountLogin.PointList, point_manager.Point{
+							PointID:  point.PointID,
+							Quantity: point.Quantity,
+						})
+					}
 				}
 			}
 		}
