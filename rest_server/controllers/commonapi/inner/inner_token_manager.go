@@ -22,21 +22,21 @@ func GetTokenAddressNew(symbol string, nickName string) (*token_manager.RespAddr
 	return resp, nil
 }
 
-func TokenAddressNew(coinList []context.CoinInfo, nickName string) ([]context.WalletInfo, error) {
-	var addressList []context.WalletInfo
+func TokenAddressNew(coinList []*context.NeedWallet, nickName string) ([]*context.WalletInfo, error) {
+	var addressList []*context.WalletInfo
 
 	for _, coin := range coinList {
-		if resp, err := GetTokenAddressNew(coin.CoinSymbol, nickName); err != nil {
+		if resp, err := GetTokenAddressNew(coin.BaseCoinSymbol, nickName); err != nil {
 			log.Errorf("%v", err)
 			return nil, err
 		} else {
 			respAddressNew := &context.WalletInfo{
-				CoinID:     coin.CoinID,
-				Symbol:     coin.CoinSymbol,
-				Address:    resp.Value.Address,
-				PrivateKey: resp.Value.PrivateKey,
+				BaseCoinID:     coin.BaseCoinID,
+				BaseCoinSymbol: coin.BaseCoinSymbol,
+				Address:        resp.Value.Address,
+				PrivateKey:     resp.Value.PrivateKey,
 			}
-			addressList = append(addressList, *respAddressNew)
+			addressList = append(addressList, respAddressNew)
 		}
 	}
 	return addressList, nil

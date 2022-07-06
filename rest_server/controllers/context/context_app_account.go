@@ -45,19 +45,13 @@ type ReqPointApp struct {
 	DataBaseID int64 `json:"database_id" url:"database_id"`
 }
 
-// 코인 정보
-type CoinInfo struct {
-	CoinID     int64  `json:"coin_id,omitempty"`
-	CoinSymbol string `json:"coin_symbol,omitempty"`
-}
-
 // USPAU_Auth_Members 프로시저 Response
 type RespAuthMember struct {
 	AUID          int64
 	MUID          int64
 	DataBaseID    int64
 	IsJoined      bool
-	BaseCoinList  []CoinInfo
+	BaseCoinList  []*NeedWallet
 	AppCoinIDList []int64
 }
 
@@ -69,10 +63,10 @@ type ReqAddressNew struct {
 
 // token-manager 새 지갑 주소 생성 Response
 type WalletInfo struct {
-	CoinID     int64  `json:"coin_id"`
-	Symbol     string `json:"symbol"`
-	Address    string `json:"address"`
-	PrivateKey string `json:"pk"`
+	BaseCoinID     int64  `json:"base_coin_id"`
+	BaseCoinSymbol string `json:"base_coin_symbol"`
+	Address        string `json:"address"`
+	PrivateKey     string `json:"pk"`
 }
 
 func NewAccount() *Account {

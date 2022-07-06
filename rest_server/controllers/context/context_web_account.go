@@ -61,10 +61,6 @@ type ReqAccountWeb struct {
 	EA         string `json:"ea" validate:"required"`
 }
 
-type NeedWallet struct {
-	BaseCoinID int64
-}
-
 type ResAccountWeb struct {
 	JwtInfo
 	InnoUID    string `json:"inno_uid" validate:"required"`

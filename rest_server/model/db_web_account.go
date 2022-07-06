@@ -33,11 +33,13 @@ func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWe
 
 	for rows.Next() {
 		var baseCoinID int64
-		if err := rows.Scan(&baseCoinID); err != nil {
+		var baseCoinSymbol string
+		if err := rows.Scan(&baseCoinID, &baseCoinSymbol); err != nil {
 			return nil, nil, err
 		} else {
 			needWallets = append(needWallets, &context.NeedWallet{
-				BaseCoinID: baseCoinID,
+				BaseCoinID:     baseCoinID,
+				BaseCoinSymbol: baseCoinSymbol,
 			})
 		}
 	}

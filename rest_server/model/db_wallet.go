@@ -48,14 +48,14 @@ func (o *DB) AddAccountCoins(auid int64, coinIDList []int64) error {
 }
 
 // 지갑 생성 [신규가입 시 호출]
-func (o *DB) AddAccountBaseCoins(auid int64, walletInfo []context.WalletInfo) error {
+func (o *DB) AddAccountBaseCoins(auid int64, walletInfo []*context.WalletInfo) error {
 	execTvp := "exec " + USPAU_Add_AccountBaseCoins + " @AUID, @TVP;"
 
 	var tableData []context.AccountBaseCoin
 
 	for _, wallet := range walletInfo {
 		data := &context.AccountBaseCoin{
-			BaseCoinID:    wallet.CoinID,
+			BaseCoinID:    wallet.BaseCoinID,
 			WalletAddress: wallet.Address,
 			PrivateKey:    wallet.PrivateKey,
 		}

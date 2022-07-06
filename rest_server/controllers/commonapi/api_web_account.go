@@ -8,6 +8,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -60,44 +61,44 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		payload.AUID = resAccountWeb.AUID
 		resAccountWeb.InnoUID = payload.InnoUID
 		resAccountWeb.SocialType = params.SocialType
-		_ = needWallets
 	}
 
-	// 4. ONIT 지갑이 없는 유저는 지갑을 생성
-	// if !resAccountWeb.ExistsWallets[0].ExistsWallet {
-	// 	// 3-1. [token-manager] ETH 지갑 생성
-	// 	var baseCoinList []context.CoinInfo
-	// 	for i, value := range conf.BaseCoin.SymbolList {
-	// 		baseCoinList = append(baseCoinList, context.CoinInfo{
-	// 			CoinID:     conf.BaseCoin.IDList[i],
-	// 			CoinSymbol: value,
-	// 		})
-	// 	}
+	// 3. ETH, MATIC 메인 지갑이 없는 유저는 지갑을 생성
+	// 3-1. [token-manager] ETH, MATIC 지갑 생성
+	if len(needWallets) > 0 {
+		walletInfo, err := inner.TokenAddressNew(needWallets, payload.InnoUID)
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+			return c.JSON(http.StatusOK, resp)
+		}
 
-	// 	walletInfo, err := inner.TokenAddressNew(baseCoinList, payload.InnoUID)
-	// 	if err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
+		// 3-2. [DB] ETH, MATIC 지갑 생성 프로시저 호출
+		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
 
-	// 	// 3-2. [DB] ETH 지갑 생성 프로시저 호출
-	// 	if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
+		for _, needWallet := range needWallets {
+			var coinIDList []int64
+			switch needWallet.BaseCoinID {
+			case 1:
+				coinIDList = conf.EthToken.IDList
+			case 2:
+				coinIDList = conf.MaticToken.IDList
+			}
 
-	// 	// 3-3. [DB] ONIT 사용자 코인 등록
-	// 	if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, conf.ProjectToken.IDList); err != nil {
-	// 		log.Errorf("%v", err)
-	// 		resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
-	// 		return c.JSON(http.StatusOK, resp)
-	// 	}
-	// }
+			// 3-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
+			if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, coinIDList); err != nil {
+				log.Errorf("%v", err)
+				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+				return c.JSON(http.StatusOK, resp)
+			}
+		}
+	}
 
 	// 4. Access, Refresh 토큰 생성
-
 	//4-1. 기존에 발급된 토큰이 있는지 확인
 	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
 		// 4-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)

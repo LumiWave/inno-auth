@@ -40,11 +40,11 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 			log.Errorf("%v", err)
 			return nil, err
 		} else {
-			baseCoinInfo := &context.CoinInfo{
-				CoinID:     baseCoinID,
-				CoinSymbol: baseCoinSymbol,
+			baseCoinInfo := &context.NeedWallet{
+				BaseCoinID:     baseCoinID,
+				BaseCoinSymbol: baseCoinSymbol,
 			}
-			resp.BaseCoinList = append(resp.BaseCoinList, *baseCoinInfo)
+			resp.BaseCoinList = append(resp.BaseCoinList, baseCoinInfo)
 		}
 	}
 	rows.NextResultSet()
