@@ -48,7 +48,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		InnoUID:    payload.InnoUID,
 		SocialID:   userID,
 		SocialType: params.SocialType,
-		EA:         ea,
+		EA:         inno.AESEncrypt(ea, []byte(conf.Secret.Key), []byte(conf.Secret.Iv)),
 	}
 
 	// 2. 웹 로그인/가입
