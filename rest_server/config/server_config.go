@@ -38,17 +38,17 @@ type AccessCountryInfo struct {
 }
 
 type TokenManagerServer struct {
-	InternalUri     string `yaml:"internal_uri"`
-	ExternalUri     string `yaml:"external_uri"`
-	InternalVersion string `yaml:"internal_version"`
-	ExternalVersion string `yaml:"external_version"`
+	InternalUri     string `yaml:"api_internal_domain"`
+	ExternalUri     string `yaml:"api_external_domain"`
+	InternalVersion string `yaml:"internal_ver"`
+	ExternalVersion string `yaml:"external_ver"`
 }
 
 type PointManagerServer struct {
-	InternalUri     string `yaml:"internal_uri"`
-	ExternalUri     string `yaml:"external_uri"`
-	InternalVersion string `yaml:"internal_version"`
-	ExternalVersion string `yaml:"external_version"`
+	InternalUri     string `yaml:"api_internal_domain"`
+	ExternalUri     string `yaml:"api_external_domain"`
+	InternalVersion string `yaml:"internal_ver"`
+	ExternalVersion string `yaml:"external_ver"`
 }
 type ApiInno struct {
 	InternalpiDomain string `yaml:"api_internal_domain"`
