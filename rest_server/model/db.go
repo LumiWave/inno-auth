@@ -15,6 +15,8 @@ type DBMeta struct {
 	// 소셜 정보
 	Socials    map[int64]*context.SocialInfo
 	SocialList []*context.SocialInfo
+
+	BaseCoins map[int64]*context.BaseCoinInfo
 }
 
 type DB struct {
@@ -69,6 +71,7 @@ func (o *DB) InitMeta() {
 	o.Socials = make(map[int64]*context.SocialInfo)
 
 	o.GetSocials()
+	o.GetBaseCoins()
 }
 
 func (o *DB) ConnectDB(conf *baseconf.DBAuth) (*basedb.Mssql, error) {

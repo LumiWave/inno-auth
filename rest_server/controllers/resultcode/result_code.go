@@ -28,6 +28,7 @@ const (
 	Result_Auth_Invalid_IPAddress           = 22010
 	Result_Procedure_Add_Base_Account_Coins = 22011
 	Result_Api_PointList_Empty              = 22012
+	Result_NeedWallet_BaseCoins_Error       = 22013
 
 	Result_Auth_MakeTokenError = 23001
 )

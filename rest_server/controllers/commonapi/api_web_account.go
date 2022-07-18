@@ -81,16 +81,15 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		}
 
 		for _, needWallet := range needWallets {
-			var coinIDList []int64
-			switch needWallet.BaseCoinID {
-			case 1:
-				coinIDList = conf.EthToken.IDList
-			case 2:
-				coinIDList = conf.MaticToken.IDList
+			baseCoin, exists := model.GetDB().DBMeta.BaseCoins[needWallet.BaseCoinID]
+			if !exists {
+				log.Errorf("needWallet.BaseCoinID is not exists : %v", needWallet.BaseCoinID)
+				resp.SetReturn(resultcode.Result_NeedWallet_BaseCoins_Error)
+				return c.JSON(http.StatusOK, resp)
 			}
 
 			// 3-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
-			if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, coinIDList); err != nil {
+			if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, baseCoin.IDList); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
 				return c.JSON(http.StatusOK, resp)
