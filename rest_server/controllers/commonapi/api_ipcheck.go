@@ -19,6 +19,7 @@ func PostIPAccessAllow(c echo.Context, params *context.ReqIPCheck) error {
 	// check white list
 	if access := CheckWhiteList(params.Ip); access {
 		respIpCheck := &context.RespIPCheck{
+			Country:     "WL",
 			AllowAccess: access,
 		}
 		resp.Value = respIpCheck
