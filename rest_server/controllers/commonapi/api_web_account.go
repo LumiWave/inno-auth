@@ -1,6 +1,7 @@
 package commonapi
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
@@ -21,100 +22,65 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	resp.Success()
 	conf := config.GetInstance()
 
-	// 1. 소셜 정보 검증
-	userID, ea, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
-	if err != nil || len(userID) == 0 {
-		log.Errorf("VerifySocialKey(SocialType:%v), userID(%v), ea(%v), err(%v)", params.SocialType, userID, ea, err)
-		resp.SetReturn(resultcode.Result_Auth_VerifySocial_Key)
-		return c.JSON(http.StatusOK, resp)
-	}
+	for i := 21; i <= 40; i++ { // 여기 값(Social Key) 범위를 변경하면 됩니다.
+		userStr := fmt.Sprintf("%021d", i)
+		payload := &context.Payload{
+			LoginType: context.WebAccountLogin,
+			InnoUID: inno.AESEncrypt(inno.MakeInnoID(userStr, params.SocialType),
+				[]byte(conf.Secret.Key),
+				[]byte(conf.Secret.Iv)),
+		}
+		reqAccountWeb := &context.ReqAccountWeb{
+			InnoUID:    payload.InnoUID,
+			SocialID:   userStr,
+			SocialType: auth.SocialType_Google,
+			EA:         "",
+		}
 
-	payload := &context.Payload{
-		LoginType:  context.WebAccountLogin,
-		SocialType: params.SocialType,
-		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
-			[]byte(conf.Secret.Key),
-			[]byte(conf.Secret.Iv)),
-	}
-
-	// 1-1. InnoUID 생성 에러 오류
-	if len(payload.InnoUID) == 0 {
-		log.Errorf("MakeInnoUID is empty : InnoUID(%v)", payload.InnoUID)
-		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
-		return c.JSON(http.StatusOK, resp)
-	}
-
-	reqAccountWeb := &context.ReqAccountWeb{
-		InnoUID:    payload.InnoUID,
-		SocialID:   userID,
-		SocialType: params.SocialType,
-		EA:         inno.AESEncrypt(ea, []byte(conf.Secret.Key), []byte(conf.Secret.Iv)),
-	}
-
-	// 2. 웹 로그인/가입
-	resAccountWeb, needWallets, err := model.GetDB().AuthAccounts(reqAccountWeb)
-	if err != nil {
-		log.Errorf("%v", err)
-		resp.SetReturn(resultcode.Result_DBError)
-		return c.JSON(http.StatusOK, resp)
-	} else {
-		payload.AUID = resAccountWeb.AUID
-		resAccountWeb.InnoUID = payload.InnoUID
-		resAccountWeb.SocialType = params.SocialType
-	}
-
-	// 3. ETH, MATIC 메인 지갑이 없는 유저는 지갑을 생성
-	// 3-1. [token-manager] ETH, MATIC 지갑 생성
-	if len(needWallets) > 0 {
-		walletInfo, err := inner.TokenAddressNew(needWallets, payload.InnoUID)
+		// 2. 웹 로그인/가입
+		resAccountWeb, needWallets, err := model.GetDB().AuthAccounts(reqAccountWeb)
 		if err != nil {
-			log.Errorf("%v", err)
-			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
-			return c.JSON(http.StatusOK, resp)
-		}
-
-		// 3-2. [DB] ETH, MATIC 지갑 생성 프로시저 호출
-		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
-			log.Errorf("%v", err)
-			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
-			return c.JSON(http.StatusOK, resp)
-		}
-
-		for _, needWallet := range needWallets {
-			baseCoin, exists := model.GetDB().DBMeta.BaseCoins[needWallet.BaseCoinID]
-			if !exists {
-				log.Errorf("needWallet.BaseCoinID is not exists : %v", needWallet.BaseCoinID)
-				resp.SetReturn(resultcode.Result_NeedWallet_BaseCoins_Error)
-				return c.JSON(http.StatusOK, resp)
-			}
-
-			// 3-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
-			if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, baseCoin.IDList); err != nil {
-				log.Errorf("%v", err)
-				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
-				return c.JSON(http.StatusOK, resp)
-			}
-		}
-	}
-
-	// 4. Access, Refresh 토큰 생성
-	//4-1. 기존에 발급된 토큰이 있는지 확인
-	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
-		// 4-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
-		if jwtInfoValue, err := auth.GetIAuth().MakeWebToken(payload); err != nil {
-			log.Errorf("%v", err)
-			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+			log.Error(err)
+			resp.SetReturn(resultcode.Result_DBError)
 			return c.JSON(http.StatusOK, resp)
 		} else {
-			// 4-3. 새로 발급된 토큰으로 응답
-			resAccountWeb.JwtInfo = *jwtInfoValue
+			payload.AUID = resAccountWeb.AUID
+			resAccountWeb.InnoUID = payload.InnoUID
 		}
-	} else {
-		// 4-2. 기존 발급된 토큰으로 응답
-		resAccountWeb.JwtInfo = *oldJwtInfo
-	}
 
-	resp.Value = *resAccountWeb
+		if len(needWallets) > 0 {
+			walletInfo, err := inner.TokenAddressNew(needWallets, payload.InnoUID)
+			if err != nil {
+				log.Errorf("%v", err)
+				resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+				return c.JSON(http.StatusOK, resp)
+			}
+
+			// 3-2. [DB] ETH, MATIC 지갑 생성 프로시저 호출
+			if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
+				log.Errorf("%v", err)
+				resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+				return c.JSON(http.StatusOK, resp)
+			}
+
+			for _, needWallet := range needWallets {
+				baseCoin, exists := model.GetDB().DBMeta.BaseCoins[needWallet.BaseCoinID]
+				if !exists {
+					log.Errorf("needWallet.BaseCoinID is not exists : %v", needWallet.BaseCoinID)
+					resp.SetReturn(resultcode.Result_NeedWallet_BaseCoins_Error)
+					return c.JSON(http.StatusOK, resp)
+				}
+
+				// 3-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
+				if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, baseCoin.IDList); err != nil {
+					log.Errorf("%v", err)
+					resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+					return c.JSON(http.StatusOK, resp)
+				}
+			}
+		}
+
+	}
 
 	return c.JSON(http.StatusOK, resp)
 }
