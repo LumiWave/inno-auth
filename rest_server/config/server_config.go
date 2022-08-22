@@ -50,11 +50,11 @@ type PointManagerServer struct {
 	InternalVersion string `yaml:"internal_ver"`
 	ExternalVersion string `yaml:"external_ver"`
 }
-type ApiInno struct {
-	InternalpiDomain string `yaml:"api_internal_domain"`
-	ExternalpiDomain string `yaml:"api_external_domain"`
-	InternalVer      string `yaml:"internal_ver"`
-	ExternalVer      string `yaml:"external_ver"`
+type InnoLog struct {
+	InternalUri     string `yaml:"api_internal_domain"`
+	ExternalUri     string `yaml:"api_external_domain"`
+	InternalVersion string `yaml:"internal_ver"`
+	ExternalVersion string `yaml:"external_ver"`
 }
 
 type SecretInfo struct {
@@ -84,7 +84,7 @@ type ServerConfig struct {
 	AccessCountry AccessCountryInfo  `yaml:"access_country"`
 	TokenManager  TokenManagerServer `yaml:"token_manager"`
 	PointManager  PointManagerServer `yaml:"point_manager"`
-	InnoLog       ApiInno            `yaml:"inno-log"`
+	InnoLog       InnoLog            `yaml:"inno-log"`
 	Secret        SecretInfo         `yaml:"secret"`
 	EthToken      EthTokenInfo       `yaml:"eth_token"`
 	MaticToken    MaticTokenInfo     `yaml:"matic_token"`

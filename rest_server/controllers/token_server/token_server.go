@@ -6,9 +6,9 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 )
 
-var gTokenServer *token_manager.TokenServer
+var gTokenServer *token_manager.Server
 
-func GetInstance() *token_manager.TokenServer {
+func GetInstance() *token_manager.Server {
 	return gTokenServer
 }
 
@@ -22,6 +22,6 @@ func InitTokenManager(conf *config.ServerConfig) error {
 		},
 	}
 
-	gTokenServer = token_manager.NewTokenManagerServerInfo(tokenServerInfo)
+	gTokenServer = token_manager.NewServerInfo(tokenServerInfo)
 	return nil
 }

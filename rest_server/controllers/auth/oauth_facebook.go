@@ -12,7 +12,7 @@ const (
 )
 
 type FacebookUser struct {
-	Email  string `json:"email"`
+	EA     string `json:"email"`
 	UserID string `json:"id"`
 }
 type OauthFacebook struct {
@@ -42,5 +42,5 @@ func (o *OauthFacebook) VerifySocialKey(socialKey string) (string, string, error
 	facebookUser := new(FacebookUser)
 	json.Unmarshal(userInfo, &facebookUser)
 
-	return facebookUser.UserID, facebookUser.Email, nil
+	return facebookUser.UserID, facebookUser.EA, nil
 }

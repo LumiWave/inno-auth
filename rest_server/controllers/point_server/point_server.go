@@ -6,9 +6,9 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 )
 
-var gPointServer *point_manager.PointServer
+var gPointServer *point_manager.Server
 
-func GetInstance() *point_manager.PointServer {
+func GetInstance() *point_manager.Server {
 	return gPointServer
 }
 
@@ -22,6 +22,6 @@ func InitPointManager(conf *config.ServerConfig) error {
 		},
 	}
 
-	gPointServer = point_manager.NewPointManagerServerInfo(pointServerInfo)
+	gPointServer = point_manager.NewServerInfo(pointServerInfo)
 	return nil
 }

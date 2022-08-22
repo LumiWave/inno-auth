@@ -2,7 +2,9 @@ package commonapi
 
 import (
 	"net/http"
+	"time"
 
+	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
@@ -63,8 +65,18 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		resAccountWeb.SocialType = params.SocialType
 	}
 
-	// 3. ETH, MATIC 메인 지갑이 없는 유저는 지갑을 생성
-	// 3-1. [token-manager] ETH, MATIC 지갑 생성
+	// 3. [DB] 사용자 로그 등록
+	inner.PostAccountAuthLog(&inno_log.AccountAuthLog{
+		LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
+		LogID:      context.AccountAuthLog_Auth,
+		AUID:       resAccountWeb.AUID,
+		InnoUID:    resAccountWeb.InnoUID,
+		SocialID:   userID,
+		SocialType: params.SocialType,
+	}, resAccountWeb.IsJoined)
+
+	// 4. ETH, MATIC 메인 지갑이 없는 유저는 지갑을 생성
+	// 4-1. [token-manager] ETH, MATIC 지갑 생성
 	if len(needWallets) > 0 {
 		walletInfo, err := inner.TokenAddressNew(needWallets, payload.InnoUID)
 		if err != nil {
@@ -73,7 +85,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 			return c.JSON(http.StatusOK, resp)
 		}
 
-		// 3-2. [DB] ETH, MATIC 지갑 생성 프로시저 호출
+		// 4-2. [DB] ETH, MATIC 지갑 생성 프로시저 호출
 		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
@@ -88,7 +100,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 				return c.JSON(http.StatusOK, resp)
 			}
 
-			// 3-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
+			// 4-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
 			if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, baseCoin.IDList); err != nil {
 				log.Errorf("%v", err)
 				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
@@ -97,20 +109,20 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 		}
 	}
 
-	// 4. Access, Refresh 토큰 생성
-	//4-1. 기존에 발급된 토큰이 있는지 확인
+	// 5. Access, Refresh 토큰 생성
+	//5-1. 기존에 발급된 토큰이 있는지 확인
 	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
-		// 4-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
+		// 5-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
 		if jwtInfoValue, err := auth.GetIAuth().MakeWebToken(payload); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
 			return c.JSON(http.StatusOK, resp)
 		} else {
-			// 4-3. 새로 발급된 토큰으로 응답
+			// 5-3. 새로 발급된 토큰으로 응답
 			resAccountWeb.JwtInfo = *jwtInfoValue
 		}
 	} else {
-		// 4-2. 기존 발급된 토큰으로 응답
+		// 5-2. 기존 발급된 토큰으로 응답
 		resAccountWeb.JwtInfo = *oldJwtInfo
 	}
 

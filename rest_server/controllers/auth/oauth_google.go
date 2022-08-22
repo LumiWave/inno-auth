@@ -14,7 +14,7 @@ const (
 )
 
 type GoogleUser struct {
-	Email  string `json:"email"`
+	EA     string `json:"email"`
 	UserID string `json:"sub"`
 }
 
@@ -49,5 +49,5 @@ func (o *OauthGoogle) VerifySocialKey(socialKey string) (string, string, error) 
 	googleUser := new(GoogleUser)
 	json.Unmarshal(userInfo, &googleUser)
 
-	return googleUser.UserID, googleUser.Email, nil
+	return googleUser.UserID, googleUser.EA, nil
 }

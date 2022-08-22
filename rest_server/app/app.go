@@ -6,13 +6,13 @@ import (
 
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/api_inno_log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/baseapi"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/externalapi"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/internalapi"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/log_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/point_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/token_server"
@@ -38,7 +38,7 @@ func (o *ServerApp) Init(configFile string) (err error) {
 		return err
 	}
 
-	o.InitLogServer(o.conf)
+	o.InitInnoLog(o.conf)
 	o.InitPointManager(o.conf)
 	o.InitTokenManager(o.conf)
 
@@ -49,17 +49,6 @@ func (o *ServerApp) Init(configFile string) (err error) {
 	}
 
 	return err
-}
-
-func (o *ServerApp) InitLogServer(conf *config.ServerConfig) {
-	confLog := conf.InnoLog
-	hostInfo := api_inno_log.HostInfo{
-		IntHostUri: confLog.InternalpiDomain,
-		ExtHostUri: confLog.ExternalpiDomain,
-		IntVer:     confLog.InternalVer,
-		ExtVer:     confLog.ExternalVer,
-	}
-	api_inno_log.NewServerInfo("", hostInfo)
 }
 
 func (o *ServerApp) CleanUp() {
@@ -89,6 +78,10 @@ func NewApp() (*ServerApp, error) {
 
 func (o *ServerApp) NewDB(conf *config.ServerConfig) error {
 	return model.InitDB(conf)
+}
+
+func (o *ServerApp) InitInnoLog(conf *config.ServerConfig) error {
+	return log_server.InitInnoLog(conf)
 }
 
 func (o *ServerApp) InitPointManager(conf *config.ServerConfig) error {
