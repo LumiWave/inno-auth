@@ -9,6 +9,7 @@ import (
 type AccountWeb struct {
 	SocialKey  string `json:"social_key" validate:"required"`
 	SocialType int64  `json:"social_type" validate:"required"`
+	IP         string `json:"ip" validate:"required"`
 }
 
 func NewAccountWeb() *AccountWeb {

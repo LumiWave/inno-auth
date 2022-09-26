@@ -7,6 +7,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
+	"github.com/ONBUFF-IP-TOKEN/baseutil/ip"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
@@ -66,13 +67,18 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 	}
 
 	// 3. [DB] 사용자 로그 등록
+	// 3-1. 유저 IP로 국가 정보 판단
+	countryCode, _ := ip.GetCountryByIp(params.IP, conf.AccessCountry.LocationFilePath)
+
+	// 3-2. Log 전송
 	inner.PostAccountAuthLog(&inno_log.AccountAuthLog{
-		LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
-		LogID:      context.AccountAuthLog_Auth,
-		AUID:       resAccountWeb.AUID,
-		InnoUID:    resAccountWeb.InnoUID,
-		SocialID:   userID,
-		SocialType: params.SocialType,
+		LogDt:       time.Now().Format("2006-01-02 15:04:05.000"),
+		LogID:       context.AccountAuthLog_Auth,
+		AUID:        resAccountWeb.AUID,
+		InnoUID:     resAccountWeb.InnoUID,
+		SocialID:    userID,
+		SocialType:  params.SocialType,
+		CountryCode: countryCode,
 	}, resAccountWeb.IsJoined)
 
 	// 4. ETH, MATIC 메인 지갑이 없는 유저는 지갑을 생성
