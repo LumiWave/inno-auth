@@ -19,9 +19,17 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 	respAccountLogin := new(context.RespAccountLogin)
 
 	// 1. InnoUID 검증
-	if isExists, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || err != nil {
-		log.Errorf("VerifyAccounts err(%v), inno_uid(%v), isExists(%v)", err, params.InnoUID, isExists)
-		resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+	if isExists, isBlocked, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || isBlocked || err != nil {
+		if !isExists {
+			log.Errorf("VerifyAccounts err(%v), inno_uid(%v), isExists(%v)", err, params.InnoUID, isExists)
+			resp.SetReturn(resultcode.Result_Auth_Invalid_InnoUID)
+		} else if isBlocked {
+			log.Errorf("VerifyAccounts err(%v), inno_uid(%v), isBlocked(%v)", err, params.InnoUID, isBlocked)
+			resp.SetReturn(resultcode.Result_Auth_Blocked_InnoUID)
+		} else {
+			log.Errorf("VerifyAccounts err(%v), inno_uid(%v), isExists(%v), isBlocked(%v)", err, params.InnoUID, isExists, isBlocked)
+			resp.SetReturn(resultcode.Result_DBError)
+		}
 		return c.JSON(http.StatusOK, resp)
 	}
 

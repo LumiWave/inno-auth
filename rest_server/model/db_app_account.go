@@ -68,9 +68,9 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 	return resp, err
 }
 
-func (o *DB) VerfiyAccounts(innoUID string) (bool, error) {
+func (o *DB) VerfiyAccounts(innoUID string) (bool, bool, error) {
 	var returnValue orginMssql.ReturnStatus
-	var isExists bool
+	var isExists, isBlocked bool
 	rows, err := o.MssqlAccountRead.QueryContext(contextR.Background(), USPAU_Verify_Accounts,
 		sql.Named("InnoUID", innoUID),
 		sql.Named("IsExists", sql.Out{Dest: &isExists}),
@@ -82,13 +82,16 @@ func (o *DB) VerfiyAccounts(innoUID string) (bool, error) {
 
 	if err != nil {
 		log.Errorf("USPAU_Verify_Accounts QueryContext: %v", err)
-		return false, err
+		return false, false, err
 	}
 
-	if returnValue != 1 {
+	// 50004 는 제재 유저로 에러 로그를 남기지 않음.
+	if returnValue == 50004 {
+		isBlocked = true
+	} else if returnValue != 1 {
 		log.Errorf("USPAU_Verify_Accounts returnvalue: %v", returnValue)
-		return false, err
+		return false, false, err
 	}
 
-	return isExists, err
+	return isExists, isBlocked, err
 }
