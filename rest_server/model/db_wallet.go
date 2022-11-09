@@ -1,7 +1,10 @@
 package model
 
 import (
+	contextR "context"
 	"database/sql"
+	"errors"
+	"strconv"
 
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
@@ -11,6 +14,7 @@ import (
 const (
 	USPAU_Add_AccountCoins     = "[dbo].[USPAU_Add_AccountCoins]"
 	USPAU_Add_AccountBaseCoins = "[dbo].[USPAU_Add_AccountBaseCoins]"
+	USPAU_GetList_AccountCoins = "[dbo].[USPAU_GetList_AccountCoins]"
 )
 
 const (
@@ -76,4 +80,47 @@ func (o *DB) AddAccountBaseCoins(auid int64, walletInfo []*context.WalletInfo) e
 	}
 
 	return nil
+}
+
+// 계정 코인 조회
+func (o *DB) GetListAccountCoins(auid int64) (map[int64]*context.MeCoin, error) {
+	var returnValue orginMssql.ReturnStatus
+	rows, err := o.MssqlAccountRead.QueryContext(contextR.Background(), USPAU_GetList_AccountCoins,
+		sql.Named("AUID", auid),
+		&returnValue)
+
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	if err != nil {
+		log.Error("USPAU_GetList_AccountCoins QueryContext err : ", err)
+		return nil, err
+	}
+
+	meCoinMap := map[int64]*context.MeCoin{}
+	for rows.Next() {
+		meCoin := &context.MeCoin{}
+		if err := rows.Scan(&meCoin.CoinID,
+			&meCoin.BaseCoinID,
+			&meCoin.WalletAddress,
+			&meCoin.Quantity,
+			&meCoin.TodayAcqQuantity,
+			&meCoin.TodayCnsmQuantity,
+			&meCoin.TodayAcqExchangeQuantity,
+			&meCoin.TodayCnsmExchangeQuantity,
+			&meCoin.ResetDate); err != nil {
+			log.Errorf("USPAU_GetList_AccountCoins Scan error %v", err)
+			return nil, err
+		} else {
+			meCoin.CoinSymbol = o.CoinsMap[meCoin.CoinID].CoinSymbol
+			meCoinMap[meCoin.CoinID] = meCoin
+		}
+	}
+
+	if returnValue != 1 {
+		log.Errorf("USPAU_GetList_AccountCoins returnvalue error : %v", returnValue)
+		return nil, errors.New("USPAU_GetList_AccountCoins returnvalue error " + strconv.Itoa(int(returnValue)))
+	}
+	return meCoinMap, nil
 }

@@ -113,6 +113,34 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
 				return c.JSON(http.StatusOK, resp)
 			}
 		}
+	} else {
+		// 지갑 생성은 필요없지만 사용자 코인이 등록이 필요한 유저들은 등록 처리
+		// 4-1. [DB] 등록된 사용자 코인 조회
+		if usedCoinMap, err := model.GetDB().GetListAccountCoins(payload.AUID); err != nil {
+			resp.SetReturn(resultcode.Result_Get_List_AccountCoins_Scan_Error)
+			return c.JSON(http.StatusOK, resp)
+		} else {
+			// 4-2. [config] 사용자 코인 등록이 되어야할 리스트 구성 (ETH + MATIC)
+			idList := append(config.GetInstance().EthToken.IDList, config.GetInstance().MaticToken.IDList...)
+
+			// 4-3. 사용자 코인 등록 리스트와 등록된 사용자 코인을 비교해서 누락된 IDList를 구성
+			var needIDList []int64
+			for _, id := range idList {
+				_, ok := usedCoinMap[id]
+				if !ok {
+					needIDList = append(needIDList, id)
+				}
+			}
+
+			// 4-4. [DB] 누락된 IDList 추가 사용자 코인 등록
+			if len(needIDList) > 0 {
+				if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, needIDList); err != nil {
+					log.Errorf("%v", err)
+					resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+					return c.JSON(http.StatusOK, resp)
+				}
+			}
+		}
 	}
 
 	// 5. Access, Refresh 토큰 생성

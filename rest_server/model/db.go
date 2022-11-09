@@ -16,7 +16,10 @@ type DBMeta struct {
 	Socials    map[int64]*context.SocialInfo
 	SocialList []*context.SocialInfo
 
+	AppCoins  map[int64][]*context.AppCoin // 전체 app에 속한 CoinID 정보 : key AppId
 	BaseCoins map[int64]*context.BaseCoinInfo
+	CoinsMap  map[int64]*context.CoinInfo // 전체 coin 정보 1 : key CoinId
+	Coins     context.CoinList            // 전체 coin 정보 2
 }
 
 type DB struct {
@@ -68,10 +71,9 @@ func InitDB(conf *config.ServerConfig) (err error) {
 }
 
 func (o *DB) InitMeta() {
-	o.Socials = make(map[int64]*context.SocialInfo)
-
 	o.GetSocials()
 	o.GetBaseCoins()
+	o.GetCoins()
 }
 
 func (o *DB) ConnectDB(conf *baseconf.DBAuth) (*basedb.Mssql, error) {
