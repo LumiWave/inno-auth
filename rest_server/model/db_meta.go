@@ -99,7 +99,8 @@ func (o *DB) GetCoins() error {
 			&coin.ExplorePath,
 			&coin.IconUrl,
 			&coin.DailyLimitedAcqExchangeQuantity,
-			&coin.ExchangeFees); err == nil {
+			&coin.ExchangeFees,
+			&coin.IsRechargeable); err == nil {
 			o.Coins.Coins = append(o.Coins.Coins, coin)
 			o.CoinsMap[coin.CoinID] = coin
 		}

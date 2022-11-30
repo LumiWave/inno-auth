@@ -13,6 +13,7 @@ type CoinInfo struct {
 	IconUrl                         string  `json:"icon_url,omitempty"`
 	DailyLimitedAcqExchangeQuantity float64 `json:"daily_limited_acq_exchange_quantity"`
 	ExchangeFees                    float64 `json:"exchange_fees"`
+	IsRechargeable                  bool    `json:"is_rechargeable"`
 }
 
 type CoinList struct {
