@@ -26,7 +26,7 @@ func (o *ExternalAPI) PostWebAccountLogin(c echo.Context) error {
 		return c.JSON(http.StatusOK, err)
 	}
 
-	return commonapi.PostWebAccountLogin(c, params)
+	return commonapi.PostWebAccountLogin(c, params, true)
 }
 
 // Web 계정 로그아웃

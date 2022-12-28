@@ -19,10 +19,22 @@ import (
 )
 
 // Web 계정 로그인/가입
-func PostWebAccountLogin(c echo.Context, params *context.AccountWeb) error {
+func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 	conf := config.GetInstance()
+
+	if isExt {
+		if !auth.CheckValidateExternal(params.SocialType) {
+			resp.SetReturn(resultcode.Result_Auth_InvalidSocial_Type)
+			return c.JSON(http.StatusOK, resp)
+		}
+	} else {
+		if !auth.CheckValidateInternal(params.SocialType) {
+			resp.SetReturn(resultcode.Result_Auth_InvalidSocial_Type)
+			return c.JSON(http.StatusOK, resp)
+		}
+	}
 
 	// 1. 소셜 정보 검증
 	userID, ea, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
