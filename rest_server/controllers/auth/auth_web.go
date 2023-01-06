@@ -18,8 +18,18 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 		AccessUuid:  uuid.NewV4().String(),
 		RefreshUuid: uuid.NewV4().String(),
 
-		AtExpireDt: time.Now().Add(time.Duration(accessExpiryPeriod)).UnixMilli(),
-		RtExpireDt: time.Now().Add(time.Duration(refreshExpiryPeriod)).UnixMilli(),
+		AtExpireDt: func() int64 {
+			if payload.SocialType == SocialType_Inno {
+				return time.Now().Add(time.Duration(365 * 24 * time.Hour)).UnixMilli()
+			}
+			return time.Now().Add(time.Duration(accessExpiryPeriod)).UnixMilli()
+		}(),
+		RtExpireDt: func() int64 {
+			if payload.SocialType == SocialType_Inno {
+				return time.Now().Add(time.Duration(365 * 24 * time.Hour)).UnixMilli()
+			}
+			return time.Now().Add(time.Duration(refreshExpiryPeriod)).UnixMilli()
+		}(),
 	}
 	//create access token
 	atClaims := jwt.MapClaims{}
