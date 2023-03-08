@@ -2,7 +2,9 @@ package commonapi
 
 import (
 	"net/http"
+	"time"
 
+	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
 	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/point_manager"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
@@ -117,7 +119,18 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 			}
 		}
 
-		// 6. 같이 데이터를 담아서 게임서버로 전달해줌.
+		// 6. [DB] 사용자 로그 등록
+		inner.PostMemberAuthLog(&inno_log.MemberAuthLog{
+			LogDt:      time.Now().Format("2006-01-02 15:04:05.000"),
+			LogID:      context.MemberAuthLog_Auth,
+			AUID:       respAuthMember.AUID,
+			InnoUID:    params.InnoUID,
+			MUID:       respAuthMember.MUID,
+			AppID:      ctx.Payload.AppID,
+			DataBaseID: respAuthMember.DataBaseID,
+		}, respAuthMember.IsJoined)
+
+		// 7. 같이 데이터를 담아서 게임서버로 전달해줌.
 		respAccountLogin.MemberInfo.AUID = respAuthMember.AUID
 		respAccountLogin.MemberInfo.IsJoined = respAuthMember.IsJoined
 		respAccountLogin.MemberInfo.MUID = respAuthMember.MUID
