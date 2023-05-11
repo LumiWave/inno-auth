@@ -13,6 +13,7 @@ const (
 	AppLogin
 	AppAccountLogin
 	WebAccountLogin
+	CustomerLogin
 )
 
 var LoginTypeText = map[LoginType]string{
@@ -20,6 +21,7 @@ var LoginTypeText = map[LoginType]string{
 	AppLogin:        "APP",
 	AppAccountLogin: "APPACCOUNT",
 	WebAccountLogin: "WEBACCOUNT",
+	CustomerLogin:   "CUSTOMER",
 }
 
 type Payload struct {
@@ -33,10 +35,17 @@ type Payload struct {
 	SocialType int64     `json:"social_type,omitempty"`
 }
 
+type CustomerPayload struct {
+	AccountID  int64     `json:"account_id,omitempty"`
+	CustomerID int64     `json:"customer_id,omitempty"`
+	LoginType  LoginType `json:"login_type,omitempty"`
+}
+
 // InnoAuthServerContext API의 Request Context
 type InnoAuthContext struct {
 	*base.BaseContext
-	Payload *Payload
+	Payload         *Payload
+	CustomerPayload *CustomerPayload
 }
 
 // NewInnoAuthServerContext 새로운 InnoAuthServer Context 생성

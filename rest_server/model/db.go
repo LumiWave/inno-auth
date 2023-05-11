@@ -25,6 +25,7 @@ type DBMeta struct {
 type DB struct {
 	MssqlAccountAll  *basedb.Mssql
 	MssqlAccountRead *basedb.Mssql
+	MssqlWallet      *basedb.Mssql
 
 	Cache *basedb.Cache
 
@@ -61,6 +62,10 @@ func InitDB(conf *config.ServerConfig) (err error) {
 
 			if db := CheckPingDB(gDB.MssqlAccountRead, conf.MssqlDBAccountRead); db != nil {
 				gDB.MssqlAccountRead = db
+			}
+
+			if db := CheckPingDB(gDB.MssqlWallet, conf.MssqlDBWallet); db != nil {
+				gDB.MssqlWallet = db
 			}
 		}
 	}()
@@ -100,6 +105,11 @@ func ConnectAllDB(conf *config.ServerConfig) error {
 	}
 
 	gDB.MssqlAccountRead, err = gDB.ConnectDB(&conf.MssqlDBAccountRead)
+	if err != nil {
+		return err
+	}
+
+	gDB.MssqlWallet, err = gDB.ConnectDB(&conf.MssqlDBWallet)
 	if err != nil {
 		return err
 	}

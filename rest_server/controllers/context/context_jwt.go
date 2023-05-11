@@ -47,6 +47,8 @@ func GetTokenExpiryperiod(loginType LoginType) (int64, int64) {
 		return confAuth.AppAccessTokenExpiryPeriod * int64(time.Hour), confAuth.AppRefreshTokenExpiryPeriod * int64(time.Hour)
 	case WebAccountLogin:
 		return confAuth.WebAccessTokenExpiryPeriod * int64(time.Hour), confAuth.WebRefreshTokenExpiryPeriod * int64(time.Hour)
+	case CustomerLogin:
+		return confAuth.CustomerAccessTokenExpiryPeriod * int64(time.Hour), confAuth.CustomerRefreshTokenExpiryPeriod * int64(time.Hour)
 	}
 	return 0, 0
 }

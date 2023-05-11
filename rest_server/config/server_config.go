@@ -19,15 +19,17 @@ type InnoAuthServer struct {
 }
 
 type ApiAuth struct {
-	AuthEnable                  bool   `yaml:"auth_enable"`
-	AccessSecretKey             string `yaml:"access_secret_key"`
-	RefreshSecretKey            string `yaml:"refresh_secret_key"`
-	AppAccessTokenExpiryPeriod  int64  `yaml:"app_access_token_expiry_period"`
-	AppRefreshTokenExpiryPeriod int64  `yaml:"app_refresh_token_expiry_period"`
-	WebAccessTokenExpiryPeriod  int64  `yaml:"web_access_token_expiry_period"`
-	WebRefreshTokenExpiryPeriod int64  `yaml:"web_refresh_token_expiry_period"`
-	SignExpiryPeriod            int64  `yaml:"sign_expiry_period"`
-	AesKey                      string `yaml:"aes_key"`
+	AuthEnable                       bool   `yaml:"auth_enable"`
+	AccessSecretKey                  string `yaml:"access_secret_key"`
+	RefreshSecretKey                 string `yaml:"refresh_secret_key"`
+	CustomerAccessTokenExpiryPeriod  int64  `yaml:"customer_access_token_expiry_period"`
+	CustomerRefreshTokenExpiryPeriod int64  `yaml:"customer_refresh_token_expiry_period"`
+	AppAccessTokenExpiryPeriod       int64  `yaml:"app_access_token_expiry_period"`
+	AppRefreshTokenExpiryPeriod      int64  `yaml:"app_refresh_token_expiry_period"`
+	WebAccessTokenExpiryPeriod       int64  `yaml:"web_access_token_expiry_period"`
+	WebRefreshTokenExpiryPeriod      int64  `yaml:"web_refresh_token_expiry_period"`
+	SignExpiryPeriod                 int64  `yaml:"sign_expiry_period"`
+	AesKey                           string `yaml:"aes_key"`
 }
 
 type AccessCountryInfo struct {
@@ -78,6 +80,7 @@ type ServerConfig struct {
 	InnoAuth           InnoAuthServer  `yaml:"inno_auth_server"`
 	MssqlDBAccountAll  baseconf.DBAuth `yaml:"mssql_db_account"`
 	MssqlDBAccountRead baseconf.DBAuth `yaml:"mssql_db_account_read"`
+	MssqlDBWallet      baseconf.DBAuth `yaml:"mssql_db_wallet"`
 	MssqlDBLog         baseconf.DBAuth `yaml:"mssql_db_log"`
 
 	Auth          ApiAuth            `yaml:"api_auth"`
