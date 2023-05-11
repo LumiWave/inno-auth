@@ -39,6 +39,7 @@ type CustomerPayload struct {
 	AccountID  int64     `json:"account_id,omitempty"`
 	CustomerID int64     `json:"customer_id,omitempty"`
 	LoginType  LoginType `json:"login_type,omitempty"`
+	Uuid       string    `json:"uuid,omitempty"`
 }
 
 // InnoAuthServerContext API의 Request Context
@@ -68,8 +69,12 @@ type ReqGetInnoUID struct {
 func AppendRequestParameter() {
 }
 
-func (o *InnoAuthContext) SetAuthContext(payload *Payload) {
+func (o *InnoAuthContext) SetAuthPayloadContext(payload *Payload) {
 	o.Payload = payload
+}
+
+func (o *InnoAuthContext) SetAuthCustomerPayloadContext(payload *CustomerPayload) {
+	o.CustomerPayload = payload
 }
 
 func MakeDt(data *int64) {

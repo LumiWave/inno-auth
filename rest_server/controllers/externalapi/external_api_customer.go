@@ -25,3 +25,8 @@ func (o *ExternalAPI) PostCustomerLogin(c echo.Context) error {
 
 	return commonapi.PostCustomerLogin(c, access)
 }
+
+// 고객사 로그아웃
+func (o *ExternalAPI) DelCustomerLogout(c echo.Context) error {
+	return commonapi.DelCustomerLogout(c)
+}

@@ -101,3 +101,23 @@ func (o *IAuth) ParseClaimsToPayload(loginType context.LoginType, tokenType cont
 	}
 	return payload
 }
+
+func (o *IAuth) ParseClaimsToCustomerPayload(loginType context.LoginType, tokenType context.TokenType, claims jwt.MapClaims) *context.CustomerPayload {
+	payload := new(context.CustomerPayload)
+
+	var claimsType string
+	if tokenType == context.AccessT {
+		claimsType = "access_uuid"
+	} else if tokenType == context.RefreshT {
+		claimsType = "refresh_uuid"
+	}
+
+	payload = &context.CustomerPayload{
+		AccountID:  int64(claims["account_id"].(float64)),
+		CustomerID: int64(claims["customer_id"].(float64)),
+		LoginType:  context.LoginType(int(claims["login_type"].(float64))),
+		Uuid:       fmt.Sprintf("%v", claims[claimsType]),
+	}
+
+	return payload
+}

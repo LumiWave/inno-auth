@@ -62,7 +62,20 @@ func PreCheck(c echo.Context) base.PreCheckResponse {
 		} else {
 			payload = auth.GetIAuth().ParseClaimsToPayload(loginType, context.AccessT, atClaims)
 		}
-		base.GetContext(c).(*context.InnoAuthContext).SetAuthContext(payload)
+		base.GetContext(c).(*context.InnoAuthContext).SetAuthPayloadContext(payload)
+
+		var customerPayload *context.CustomerPayload
+		if err != nil {
+			// auth token 오류 리턴
+			res := base.MakeBaseResponse(resultcode.Result_Auth_InvalidJwt)
+			return base.PreCheckResponse{
+				IsSucceed: false,
+				Response:  res,
+			}
+		} else {
+			customerPayload = auth.GetIAuth().ParseClaimsToCustomerPayload(loginType, context.AccessT, atClaims)
+		}
+		base.GetContext(c).(*context.InnoAuthContext).SetAuthCustomerPayloadContext(customerPayload)
 	}
 
 	return base.PreCheckResponse{
