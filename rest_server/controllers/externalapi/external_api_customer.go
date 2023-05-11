@@ -35,3 +35,14 @@ func (o *ExternalAPI) DelCustomerLogout(c echo.Context) error {
 func (o *ExternalAPI) GetCustomerTokenVerify(c echo.Context) error {
 	return commonapi.GetCustomerTokenVerify(c)
 }
+
+// 고객사 액세스 토큰 갱신/재발급
+func (o *ExternalAPI) PostCustomerTokenRenew(c echo.Context) error {
+	renewTokenRequest := new(context.RenewTokenRequest)
+
+	if err := c.Bind(renewTokenRequest); err != nil {
+		log.Errorf("%v", err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+	return commonapi.PostCustomerTokenRenew(c, renewTokenRequest)
+}

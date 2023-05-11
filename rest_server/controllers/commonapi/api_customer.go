@@ -66,3 +66,25 @@ func GetCustomerTokenVerify(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+func PostCustomerTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenRequest) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	// 1. Refresh 토큰 유효성 검증
+	if loginType, rtClaims, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
+	} else {
+		// 2. Payload를 생성
+		payload := auth.GetIAuth().ParseClaimsToCustomerPayload(loginType, context.RefreshT, rtClaims)
+
+		// 3. Customer 토큰 재발급/갱신
+		if newJwtInfo, resultCode := auth.GetIAuth().CustomerTokenRenew(payload); resultCode != 0 {
+			resp.SetReturn(resultCode)
+		} else {
+			resp.Value = newJwtInfo
+		}
+
+	}
+	return c.JSON(http.StatusOK, resp)
+}

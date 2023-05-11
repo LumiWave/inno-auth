@@ -52,8 +52,8 @@ func (o *IAuth) VerifyAccessToken(accessToken string) (context.LoginType, jwt.Ma
 }
 
 func (o *IAuth) VerifyRefreshToken(refreshToken string) (context.LoginType, jwt.MapClaims, error) {
-	atClaims := jwt.MapClaims{}
-	jwtData, err := jwt.ParseWithClaims(refreshToken, atClaims,
+	rtClaims := jwt.MapClaims{}
+	jwtData, err := jwt.ParseWithClaims(refreshToken, rtClaims,
 		func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, errors.New("")
@@ -69,7 +69,7 @@ func (o *IAuth) VerifyRefreshToken(refreshToken string) (context.LoginType, jwt.
 		return context.NoneLogin, nil, errors.New("invalid refresh jwt")
 	}
 
-	return context.LoginType(int(atClaims["login_type"].(float64))), atClaims, nil
+	return context.LoginType(int(rtClaims["login_type"].(float64))), rtClaims, nil
 }
 
 func (o *IAuth) ParseClaimsToPayload(loginType context.LoginType, tokenType context.TokenType, claims jwt.MapClaims) *context.Payload {
