@@ -51,3 +51,18 @@ func DelCustomerLogout(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+func GetCustomerTokenVerify(c echo.Context) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	ctx := base.GetContext(c).(*context.InnoAuthContext)
+
+	if _, err := auth.GetIAuth().GetJwtInfoByUUID(ctx.CustomerPayload.LoginType, context.AccessT, ctx.CustomerPayload.Uuid); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+	} else {
+		resp.Value = ctx.CustomerPayload
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}

@@ -30,3 +30,8 @@ func (o *ExternalAPI) PostCustomerLogin(c echo.Context) error {
 func (o *ExternalAPI) DelCustomerLogout(c echo.Context) error {
 	return commonapi.DelCustomerLogout(c)
 }
+
+// 고객사 액세스 토큰 검증
+func (o *ExternalAPI) GetCustomerTokenVerify(c echo.Context) error {
+	return commonapi.GetCustomerTokenVerify(c)
+}
