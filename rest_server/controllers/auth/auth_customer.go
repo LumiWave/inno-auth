@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"time"
 
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
@@ -90,4 +92,9 @@ func (o *IAuth) GetJwtInfoByCustomerUUID(loginType context.LoginType, tokenType 
 // delete redis jwt info
 func (o *IAuth) DeleteJwtInfoByCustomerUUID(loginType context.LoginType, tokenType context.TokenType, uuid string) error {
 	return model.GetDB().DeleteJwtInfoByCustomerUUID(loginType, tokenType, uuid)
+}
+
+func GetMd5Hash(text string) string {
+	hash := md5.Sum([]byte(text))
+	return hex.EncodeToString(hash[:])
 }

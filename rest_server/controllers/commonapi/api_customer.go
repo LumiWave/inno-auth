@@ -16,12 +16,15 @@ func PostCustomerLogin(c echo.Context, access *context.CustomerAccess) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// 1. 인증 서버 접근
+	// 1. password md5 암호화
+	access.AccessPW = auth.GetMd5Hash(access.AccessPW)
+
+	// 2. 인증 서버 접근
 	if payload, err := model.GetDB().GetCustomerAccountsByAccountID(access); err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
 	} else {
-		// 2. access, refresh 토큰 생성
+		// 1. access, refresh 토큰 생성
 		if jwtInfoValue, err := auth.GetIAuth().MakeCustomerToken(payload); err != nil {
 			log.Errorf("%v", err)
 			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
