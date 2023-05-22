@@ -31,7 +31,8 @@ const (
 	Result_NeedWallet_BaseCoins_Error       = 22013
 	Result_Auth_Blocked_InnoUID             = 22014
 	Result_Get_List_AccountCoins_Scan_Error = 22015
-	Result_Auth_InvalidSocial_Type          = 220016
+	Result_Auth_InvalidSocial_Type          = 22016
+	Result_Auth_Invalid_Customer_AccountID  = 22017
 
 	Result_Auth_MakeTokenError = 23001
 )
@@ -67,6 +68,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_Blocked_InnoUID:             "Blocked InnoUID",
 	Result_Get_List_AccountCoins_Scan_Error: "GetListAccountCoins DB Scan Error",
 	Result_Auth_InvalidSocial_Type:          "Invalid Social Type",
+	Result_Auth_Invalid_Customer_AccountID:  "Invalid Access Infomation",
 
 	Result_Auth_MakeTokenError: "Make Token Error",
 }

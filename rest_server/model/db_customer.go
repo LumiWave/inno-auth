@@ -12,8 +12,8 @@ const (
 	USPWA_Get_CustomerAccounts_By_AccessID = "[dbo].[USPWA_Get_CustomerAccounts_By_AccessID]"
 )
 
-// 인증 서버 접근 (앱 로그인/가입)
-func (o *DB) GetCustomerAccountsByAccountID(access *context.CustomerAccess) (*context.CustomerPayload, error) {
+// 고객사
+func (o *DB) GetCustomerAccountsByAccountID(access *context.CustomerAccess) (*context.CustomerPayload, int64, error) {
 	payload := new(context.CustomerPayload)
 
 	var returnValue orginMssql.ReturnStatus
@@ -30,8 +30,8 @@ func (o *DB) GetCustomerAccountsByAccountID(access *context.CustomerAccess) (*co
 	}
 
 	if returnValue != 1 {
-		return nil, err
+		return nil, int64(returnValue), err
 	}
 
-	return payload, err
+	return payload, int64(returnValue), err
 }

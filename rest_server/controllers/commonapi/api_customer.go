@@ -20,9 +20,13 @@ func PostCustomerLogin(c echo.Context, access *context.CustomerAccess) error {
 	access.AccessPW = auth.GetMd5Hash(access.AccessPW)
 
 	// 2. 인증 서버 접근
-	if payload, err := model.GetDB().GetCustomerAccountsByAccountID(access); err != nil {
-		log.Errorf("%v", err)
-		resp.SetReturn(resultcode.Result_DBError)
+	if payload, returnValue, err := model.GetDB().GetCustomerAccountsByAccountID(access); err != nil || returnValue != 1 {
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_DBError)
+		} else {
+			resp.SetReturn(resultcode.Result_Auth_Invalid_Customer_AccountID)
+		}
 	} else {
 		// 1. access, refresh 토큰 생성
 		if jwtInfoValue, err := auth.GetIAuth().MakeCustomerToken(payload); err != nil {
