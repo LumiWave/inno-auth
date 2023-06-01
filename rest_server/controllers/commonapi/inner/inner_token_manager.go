@@ -10,8 +10,8 @@ import (
 // token-manager 새 지갑 주소 생성 요청
 func GetTokenAddressNew(symbol string, nickName string) (*token_manager.RespAddressNew, error) {
 	params := &token_manager.ReqAddressNew{
-		Symbol:   symbol,
-		NickName: nickName,
+		BaseSymbol: symbol,
+		NickName:   nickName,
 	}
 
 	resp, err := token_server.GetInstance().GetTokenAddressNew(params)

@@ -35,6 +35,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.0.48 h1:GYTHnojp5byS5eh4/y1uJTpNZqiiaLIa+ywm4uc3Cus=
 github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.0.48/go.mod h1:btwX4cJvQGSITZmQndT47Hd+7QMe0mzOsE5bMKrPV/c=
+github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.4 h1:kaRRUJlsaMUJ8CsWu9A2ncYDBTDcRwfsA9urELNmhVs=
+github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.4/go.mod h1:btwX4cJvQGSITZmQndT47Hd+7QMe0mzOsE5bMKrPV/c=
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.12/go.mod h1:NQLToyeNDUPLYUqvLbbKm9ho5LySl2ycptA1rNIktGc=
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.13/go.mod h1:NQLToyeNDUPLYUqvLbbKm9ho5LySl2ycptA1rNIktGc=
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.15 h1:reIrorLXlnnZ7IrT2wp0koUav+WTXnNFhmrf8+yWRLk=

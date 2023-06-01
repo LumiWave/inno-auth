@@ -56,6 +56,7 @@ func (o *DB) GetBaseCoins() error {
 
 	eth := config.GetInstance().EthToken
 	matic := config.GetInstance().MaticToken
+	sui := config.GetInstance().SuiToken
 	o.BaseCoins = make(map[int64]*context.BaseCoinInfo)
 
 	for rows.Next() {
@@ -65,6 +66,8 @@ func (o *DB) GetBaseCoins() error {
 				baseCoin.IDList = eth.IDList
 			} else if baseCoin.BaseCoinSymbol == "MATIC" {
 				baseCoin.IDList = matic.IDList
+			} else if baseCoin.BaseCoinSymbol == "SUI" {
+				baseCoin.IDList = sui.IDList
 			}
 			o.BaseCoins[baseCoin.BaseCoinID] = baseCoin
 		}

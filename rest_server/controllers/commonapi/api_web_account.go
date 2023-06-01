@@ -119,10 +119,14 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 			}
 
 			// 4-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
-			if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, baseCoin.IDList); err != nil {
-				log.Errorf("%v", err)
-				resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
-				return c.JSON(http.StatusOK, resp)
+			if len(baseCoin.IDList) != 0 {
+				if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, baseCoin.IDList); err != nil {
+					log.Errorf("%v", err)
+					resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+					return c.JSON(http.StatusOK, resp)
+				}
+			} else {
+				log.Warnf("new coinID list is null [basecoin:%v, symbol:%v]", baseCoin.BaseCoinID, baseCoin.BaseCoinSymbol)
 			}
 		}
 	} else {
