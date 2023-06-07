@@ -9,6 +9,7 @@ type CoinInfo struct {
 	CoinName                        string  `json:"coin_name"`
 	CoinSymbol                      string  `json:"coin_symbol,omitempty"`
 	ContractAddress                 string  `json:"contract_address,omitempty"`
+	Decimal                         int64   `json:"dicimal"`
 	ExplorePath                     string  `json:"explore_path"`
 	IconUrl                         string  `json:"icon_url,omitempty"`
 	DailyLimitedAcqExchangeQuantity float64 `json:"daily_limited_acq_exchange_quantity"`
