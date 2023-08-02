@@ -67,7 +67,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 	}
 
 	// 2. 웹 로그인/가입
-	resAccountWeb, _, err := model.GetDB().AuthAccounts(reqAccountWeb)
+	resAccountWeb, needWallets, err := model.GetDB().AuthAccounts(reqAccountWeb)
 	if err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
@@ -92,6 +92,72 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		SocialType:  params.SocialType,
 		CountryCode: countryCode,
 	}, resAccountWeb.IsJoined)
+
+	// 4. ETH, MATIC 메인 지갑이 없는 유저는 지갑을 생성
+	// 4-1. [token-manager] ETH, MATIC 지갑 생성
+	if len(needWallets) > 0 {
+		walletInfo, err := inner.TokenAddressNew(needWallets, payload.InnoUID)
+		if err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Api_Get_Token_Address_New)
+			return c.JSON(http.StatusOK, resp)
+		}
+
+		// 4-2. [DB] ETH, MATIC 지갑 생성 프로시저 호출
+		if err := model.GetDB().AddAccountBaseCoins(resAccountWeb.AUID, walletInfo); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Procedure_Add_Base_Account_Coins)
+			return c.JSON(http.StatusOK, resp)
+		}
+
+		for _, needWallet := range needWallets {
+			baseCoin, exists := model.GetDB().DBMeta.BaseCoins[needWallet.BaseCoinID]
+			if !exists {
+				log.Errorf("needWallet.BaseCoinID is not exists : %v", needWallet.BaseCoinID)
+				resp.SetReturn(resultcode.Result_NeedWallet_BaseCoins_Error)
+				return c.JSON(http.StatusOK, resp)
+			}
+
+			// 4-3. [DB] ONIT, ETH, MATIC 사용자 코인 등록
+			if len(baseCoin.IDList) != 0 {
+				if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, baseCoin.IDList); err != nil {
+					log.Errorf("%v", err)
+					resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+					return c.JSON(http.StatusOK, resp)
+				}
+			} else {
+				log.Warnf("new coinID list is null [basecoin:%v, symbol:%v]", baseCoin.BaseCoinID, baseCoin.BaseCoinSymbol)
+			}
+		}
+	} else {
+		// 지갑 생성은 필요없지만 사용자 코인이 등록이 필요한 유저들은 등록 처리
+		// 4-1. [DB] 등록된 사용자 코인 조회
+		if usedCoinMap, err := model.GetDB().GetListAccountCoins(payload.AUID); err != nil {
+			resp.SetReturn(resultcode.Result_Get_List_AccountCoins_Scan_Error)
+			return c.JSON(http.StatusOK, resp)
+		} else {
+			// 4-2. [config] 사용자 코인 등록이 되어야할 리스트 구성 (ETH + MATIC)
+			idList := append(config.GetInstance().EthToken.IDList, config.GetInstance().MaticToken.IDList...)
+
+			// 4-3. 사용자 코인 등록 리스트와 등록된 사용자 코인을 비교해서 누락된 IDList를 구성
+			var needIDList []int64
+			for _, id := range idList {
+				_, ok := usedCoinMap[id]
+				if !ok {
+					needIDList = append(needIDList, id)
+				}
+			}
+
+			// 4-4. [DB] 누락된 IDList 추가 사용자 코인 등록
+			if len(needIDList) > 0 {
+				if err := model.GetDB().AddAccountCoins(resAccountWeb.AUID, needIDList); err != nil {
+					log.Errorf("%v", err)
+					resp.SetReturn(resultcode.Result_Procedure_Add_Account_Coins)
+					return c.JSON(http.StatusOK, resp)
+				}
+			}
+		}
+	}
 
 	// 5. Access, Refresh 토큰 생성
 	//5-1. 기존에 발급된 토큰이 있는지 확인

@@ -64,6 +64,21 @@ type SecretInfo struct {
 	Iv  string `yaml:"iv"`
 }
 
+type EthTokenInfo struct {
+	SymbolList []string `yaml:"symbol_list"`
+	IDList     []int64  `yaml:"id_list"`
+}
+
+type MaticTokenInfo struct {
+	SymbolList []string `yaml:"symbol_list"`
+	IDList     []int64  `yaml:"id_list"`
+}
+
+type SuiTokenInfo struct {
+	SymbolList []string `yaml:"symbol_list"`
+	IDList     []int64  `yaml:"id_list"`
+}
+
 type ServerConfig struct {
 	baseconf.Config `yaml:",inline"`
 
@@ -79,6 +94,9 @@ type ServerConfig struct {
 	PointManager  PointManagerServer `yaml:"point_manager"`
 	InnoLog       InnoLog            `yaml:"inno-log"`
 	Secret        SecretInfo         `yaml:"secret"`
+	EthToken      EthTokenInfo       `yaml:"eth_token"`
+	MaticToken    MaticTokenInfo     `yaml:"matic_token"`
+	SuiToken      SuiTokenInfo       `yaml:"sui_token"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {
