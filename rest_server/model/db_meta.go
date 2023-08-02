@@ -4,7 +4,6 @@ import (
 	contextR "context"
 
 	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
@@ -54,21 +53,11 @@ func (o *DB) GetBaseCoins() error {
 
 	defer rows.Close()
 
-	eth := config.GetInstance().EthToken
-	matic := config.GetInstance().MaticToken
-	sui := config.GetInstance().SuiToken
 	o.BaseCoins = make(map[int64]*context.BaseCoinInfo)
 
 	for rows.Next() {
 		baseCoin := &context.BaseCoinInfo{}
 		if err := rows.Scan(&baseCoin.BaseCoinID, &baseCoin.BaseCoinName, &baseCoin.BaseCoinSymbol, &baseCoin.IsUsedParentWallet); err == nil {
-			if baseCoin.BaseCoinSymbol == "ETH" {
-				baseCoin.IDList = eth.IDList
-			} else if baseCoin.BaseCoinSymbol == "MATIC" {
-				baseCoin.IDList = matic.IDList
-			} else if baseCoin.BaseCoinSymbol == "SUI" {
-				baseCoin.IDList = sui.IDList
-			}
 			o.BaseCoins[baseCoin.BaseCoinID] = baseCoin
 		}
 	}
