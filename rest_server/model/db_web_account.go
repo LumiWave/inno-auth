@@ -13,7 +13,7 @@ const (
 )
 
 // Web 가입/로그인
-func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, []*context.NeedWallet, error) {
+func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWeb, error) {
 	resp := new(context.ResAccountWeb)
 	var returnValue orginMssql.ReturnStatus
 	rows, err := o.MssqlAccountAll.QueryContext(contextR.Background(), USPAU_Auth_Accounts,
@@ -29,24 +29,9 @@ func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWe
 		defer rows.Close()
 	}
 
-	var needWallets []*context.NeedWallet
-
-	for rows.Next() {
-		var baseCoinID int64
-		var baseCoinSymbol string
-		if err := rows.Scan(&baseCoinID, &baseCoinSymbol); err != nil {
-			return nil, nil, err
-		} else {
-			needWallets = append(needWallets, &context.NeedWallet{
-				BaseCoinID:     baseCoinID,
-				BaseCoinSymbol: baseCoinSymbol,
-			})
-		}
-	}
-
 	if returnValue != 1 {
-		return nil, nil, err
+		return nil, err
 	}
 
-	return resp, needWallets, err
+	return resp, err
 }

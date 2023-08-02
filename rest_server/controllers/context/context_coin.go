@@ -21,12 +21,6 @@ type CoinList struct {
 	Coins []*CoinInfo `json:"coins"`
 }
 
-// 필요한 지갑 정보
-type NeedWallet struct {
-	BaseCoinID     int64
-	BaseCoinSymbol string
-}
-
 type AppCoin struct {
 	AppID int64 `json:"app_id"`
 	CoinInfo

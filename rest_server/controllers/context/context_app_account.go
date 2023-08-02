@@ -47,12 +47,10 @@ type ReqPointApp struct {
 
 // USPAU_Auth_Members 프로시저 Response
 type RespAuthMember struct {
-	AUID          int64
-	MUID          int64
-	DataBaseID    int64
-	IsJoined      bool
-	BaseCoinList  []*NeedWallet
-	AppCoinIDList []int64
+	AUID       int64
+	MUID       int64
+	DataBaseID int64
+	IsJoined   bool
 }
 
 // token-manager 새 지갑 주소 생성 Request

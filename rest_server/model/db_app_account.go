@@ -32,35 +32,6 @@ func (o *DB) AuthMembers(account *context.Account, payload *context.Payload) (*c
 		defer rows.Close()
 	}
 
-	// 지갑 생성이 안된 Base Coin List를 전달받는다.
-	for rows.Next() {
-		var baseCoinID int64
-		var baseCoinSymbol string
-		if err := rows.Scan(&baseCoinID, &baseCoinSymbol); err != nil {
-			log.Errorf("%v", err)
-			return nil, err
-		} else {
-			baseCoinInfo := &context.NeedWallet{
-				BaseCoinID:     baseCoinID,
-				BaseCoinSymbol: baseCoinSymbol,
-			}
-			resp.BaseCoinList = append(resp.BaseCoinList, baseCoinInfo)
-		}
-	}
-	rows.NextResultSet()
-
-	// 사용자 코인 등록이 안된 Base Coin List를 전달받는다.
-	// App CoinList
-	for rows.Next() {
-		var coinID int64
-		if err := rows.Scan(&coinID); err != nil {
-			log.Errorf("%v", err)
-			return nil, err
-		} else {
-			resp.AppCoinIDList = append(resp.AppCoinIDList, coinID)
-		}
-	}
-
 	if returnValue != 1 {
 		return nil, err
 	}

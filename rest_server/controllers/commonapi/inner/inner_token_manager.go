@@ -2,8 +2,6 @@ package inner
 
 import (
 	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/token_manager"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/token_server"
 )
 
@@ -20,24 +18,4 @@ func GetTokenAddressNew(symbol string, nickName string) (*token_manager.RespAddr
 	}
 
 	return resp, nil
-}
-
-func TokenAddressNew(coinList []*context.NeedWallet, nickName string) ([]*context.WalletInfo, error) {
-	var addressList []*context.WalletInfo
-
-	for _, coin := range coinList {
-		if resp, err := GetTokenAddressNew(coin.BaseCoinSymbol, nickName); err != nil {
-			log.Errorf("%v", err)
-			return nil, err
-		} else {
-			respAddressNew := &context.WalletInfo{
-				BaseCoinID:     coin.BaseCoinID,
-				BaseCoinSymbol: coin.BaseCoinSymbol,
-				Address:        resp.Value.Address,
-				PrivateKey:     resp.Value.PrivateKey,
-			}
-			addressList = append(addressList, respAddressNew)
-		}
-	}
-	return addressList, nil
 }

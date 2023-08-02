@@ -67,7 +67,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 	}
 
 	// 2. 웹 로그인/가입
-	resAccountWeb, _, err := model.GetDB().AuthAccounts(reqAccountWeb)
+	resAccountWeb, err := model.GetDB().AuthAccounts(reqAccountWeb)
 	if err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
