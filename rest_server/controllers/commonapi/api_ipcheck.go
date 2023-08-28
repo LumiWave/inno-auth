@@ -8,6 +8,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
 )
 
@@ -21,6 +22,7 @@ func PostIPAccessAllow(c echo.Context, params *context.ReqIPCheck) error {
 		respIpCheck := &context.RespIPCheck{
 			Country:     "WL",
 			AllowAccess: access,
+			SwapEnable:  true,
 		}
 		resp.Value = respIpCheck
 		return c.JSON(http.StatusOK, resp)
@@ -30,12 +32,25 @@ func PostIPAccessAllow(c echo.Context, params *context.ReqIPCheck) error {
 	if country, err := ip.GetCountryByIp(params.Ip, conf.LocationFilePath); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_Invalid_IPAddress)
 	} else {
+		// swap 가능 상태 체크
+		bSwapEnable, _ := model.GetDB().GetSwapEnable()
 		respIpCheck := &context.RespIPCheck{
 			Country:     country,
 			AllowAccess: CheckAllowAccess(country, conf.DisallowedCountries),
+			SwapEnable:  bSwapEnable,
 		}
+
 		resp.Value = respIpCheck
 	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+func PutSwapEnable(c echo.Context, params *context.ReqSwapEnable) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	model.GetDB().SetSwapEnable(params.SwapEnable)
 
 	return c.JSON(http.StatusOK, resp)
 }
