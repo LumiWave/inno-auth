@@ -20,6 +20,18 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 	resp.Success()
 	respAccountLogin := new(context.RespAccountLogin)
 
+	// 0. 정검중 체크
+	if status, err := model.GetDB().GetCacheStatus(); err != nil {
+		log.Errorf("system check!")
+		resp.SetReturn(resultcode.Result_SystemCheck)
+		return c.JSON(http.StatusOK, resp)
+	} else {
+		if status.IsMaintenance != 0 {
+			resp.SetReturn(resultcode.Result_SystemCheck)
+			return c.JSON(http.StatusOK, resp)
+		}
+	}
+
 	// 1. InnoUID 검증
 	if isExists, isBlocked, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || isBlocked || err != nil {
 		if !isExists {
