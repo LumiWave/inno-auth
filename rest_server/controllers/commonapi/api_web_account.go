@@ -36,18 +36,6 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		}
 	}
 
-	// 0. 정검중 체크
-	if status, err := model.GetDB().GetCacheStatus(); err != nil {
-		log.Errorf("system check!")
-		resp.SetReturn(resultcode.Result_SystemCheck)
-		return c.JSON(http.StatusOK, resp)
-	} else {
-		if status.IsMaintenance != 0 {
-			resp.SetReturn(resultcode.Result_SystemCheck)
-			return c.JSON(http.StatusOK, resp)
-		}
-	}
-
 	// 1. 소셜 정보 검증
 	userID, ea, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
 	if err != nil || len(userID) == 0 {

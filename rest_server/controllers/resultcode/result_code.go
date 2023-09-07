@@ -6,7 +6,6 @@ const (
 	Result_DBError        = 13000
 	Result_DBNotExistItem = 13001
 	Result_RedisError     = 13002
-	Result_SystemCheck    = 13003
 
 	Result_Auth_InvalidJwt = 20000
 	Result_Auth_ExpiredJwt = 20001
@@ -44,7 +43,6 @@ var ResultCodeText = map[int]string{
 	Result_DBError:        "Internal DB error",
 	Result_DBNotExistItem: "Not exist item",
 	Result_RedisError:     "Redis Error",
-	Result_SystemCheck:    "System check",
 
 	Result_Auth_InvalidJwt: "Invalid jwt token",
 	Result_Auth_ExpiredJwt: "Expired jwt token",

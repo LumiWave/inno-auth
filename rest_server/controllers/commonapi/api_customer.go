@@ -16,18 +16,6 @@ func PostCustomerLogin(c echo.Context, access *context.CustomerAccess) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	// 0. 정검중 체크
-	if status, err := model.GetDB().GetCacheStatus(); err != nil {
-		log.Errorf("system check!")
-		resp.SetReturn(resultcode.Result_SystemCheck)
-		return c.JSON(http.StatusOK, resp)
-	} else {
-		if status.IsMaintenance != 0 {
-			resp.SetReturn(resultcode.Result_SystemCheck)
-			return c.JSON(http.StatusOK, resp)
-		}
-	}
-
 	// 1. password md5 암호화
 	access.AccessPW = auth.GetMd5Hash(access.AccessPW)
 
