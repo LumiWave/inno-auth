@@ -16,6 +16,18 @@ func PostAppLogin(c echo.Context, access *context.Access) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
+	// 0. 정검중 체크
+	if status, err := model.GetDB().GetCacheStatus(); err != nil {
+		log.Errorf("system check!")
+		resp.SetReturn(resultcode.Result_SystemCheck)
+		return c.JSON(http.StatusOK, resp)
+	} else {
+		if status.IsMaintenance != 0 {
+			resp.SetReturn(resultcode.Result_SystemCheck)
+			return c.JSON(http.StatusOK, resp)
+		}
+	}
+
 	// 1. 인증 서버 접근
 	if payload, returnValue, err := model.GetDB().GetApplications(access); err != nil || returnValue != 1 {
 		if err != nil {
