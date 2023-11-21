@@ -96,6 +96,7 @@ func (o *DB) GetCoins() error {
 			&coin.CoinName,
 			&coin.CoinSymbol,
 			&coin.ContractAddress,
+			&coin.DecimalPlaceValue,
 			&coin.ExplorePath,
 			&coin.IconUrl,
 			&coin.DailyLimitedAcqExchangeQuantity,
