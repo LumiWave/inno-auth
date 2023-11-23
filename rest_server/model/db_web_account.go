@@ -23,6 +23,7 @@ func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWe
 		sql.Named("EA", account.EA),
 		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
 		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
+		sql.Named("IsMigrated", sql.Out{Dest: &resp.IsMigrated}),
 		&returnValue)
 
 	if rows != nil {

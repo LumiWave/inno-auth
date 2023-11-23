@@ -5,7 +5,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 )
 
-////////// web 로그인/가입 정보
+// //////// web 로그인/가입 정보
 type AccountWeb struct {
 	SocialKey  string `json:"social_key" validate:"required"`
 	SocialType int64  `json:"social_type" validate:"required"`
@@ -68,6 +68,7 @@ type ResAccountWeb struct {
 	IsJoined   bool   `json:"is_joined" validate:"required"`
 	AUID       int64  `json:"au_id" validate:"required"`
 	SocialType int64  `json:"social_type" validate:"required"`
+	IsMigrated bool   `json:"is_migrated" validate:"required"`
 }
 
 ////////////////////////////////////////////
