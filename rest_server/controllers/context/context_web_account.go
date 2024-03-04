@@ -9,6 +9,7 @@ import (
 type AccountWeb struct {
 	SocialKey  string `json:"social_key" validate:"required"`
 	SocialType int64  `json:"social_type" validate:"required"`
+	IDToken    string `json:"id_token" validate:"required"`
 	IP         string `json:"ip" validate:"required"`
 }
 
@@ -22,6 +23,9 @@ func (o *AccountWeb) CheckValidate() *base.BaseResponse {
 	}
 	if o.SocialType == 0 {
 		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialType)
+	}
+	if len(o.IDToken) == 0 {
+		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyIDToken)
 	}
 	return nil
 }
@@ -69,6 +73,7 @@ type ResAccountWeb struct {
 	AUID       int64  `json:"au_id" validate:"required"`
 	SocialType int64  `json:"social_type" validate:"required"`
 	IsMigrated bool   `json:"is_migrated" validate:"required"`
+	IDToken    string `json:"id_token"`
 }
 
 ////////////////////////////////////////////

@@ -62,6 +62,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
+		IDToken: params.IDToken,
 	}
 
 	// 1-1. InnoUID 생성 에러 오류
@@ -88,6 +89,7 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		payload.AUID = resAccountWeb.AUID
 		resAccountWeb.InnoUID = payload.InnoUID
 		resAccountWeb.SocialType = params.SocialType
+		resAccountWeb.IDToken = params.IDToken
 	}
 
 	// 3. [DB] 사용자 로그 등록

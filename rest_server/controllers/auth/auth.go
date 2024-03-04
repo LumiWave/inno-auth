@@ -97,6 +97,7 @@ func (o *IAuth) ParseClaimsToPayload(loginType context.LoginType, tokenType cont
 			AUID:       int64(claims["au_id"].(float64)),
 			SocialType: int64(claims["social_type"].(float64)),
 			Uuid:       fmt.Sprintf("%v", claims[claimsType]),
+			IDToken:    fmt.Sprintf("%v", claims["id_token"]),
 		}
 	}
 	return payload

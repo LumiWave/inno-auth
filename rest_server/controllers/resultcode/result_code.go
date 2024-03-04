@@ -34,6 +34,7 @@ const (
 	Result_Get_List_AccountCoins_Scan_Error = 22015
 	Result_Auth_InvalidSocial_Type          = 22016
 	Result_Auth_Invalid_Customer_AccountID  = 22017
+	Result_Auth_EmptyIDToken                = 22018
 
 	Result_Auth_MakeTokenError = 23001
 )
@@ -71,6 +72,7 @@ var ResultCodeText = map[int]string{
 	Result_Get_List_AccountCoins_Scan_Error: "GetListAccountCoins DB Scan Error",
 	Result_Auth_InvalidSocial_Type:          "Invalid Social Type",
 	Result_Auth_Invalid_Customer_AccountID:  "Invalid Access Infomation",
+	Result_Auth_EmptyIDToken:                "Empty Account id_token",
 
 	Result_Auth_MakeTokenError: "Make Token Error",
 }

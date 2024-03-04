@@ -33,6 +33,7 @@ type Payload struct {
 	InnoUID    string    `json:"inno_uid,omitempty"`
 	AUID       int64     `json:"au_id,omitempty"`
 	SocialType int64     `json:"social_type,omitempty"`
+	IDToken    string    `json:"id_token,omitempty"`
 }
 
 type CustomerPayload struct {
