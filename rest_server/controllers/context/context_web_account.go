@@ -24,9 +24,9 @@ func (o *AccountWeb) CheckValidate() *base.BaseResponse {
 	if o.SocialType == 0 {
 		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyAccountSocialType)
 	}
-	if len(o.IDToken) == 0 {
-		return base.MakeBaseResponse(resultcode.Result_Auth_EmptyIDToken)
-	}
+	// if len(o.IDToken) == 0 {
+	// 	return base.MakeBaseResponse(resultcode.Result_Auth_EmptyIDToken)
+	// }
 	return nil
 }
 
