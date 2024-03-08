@@ -1,13 +1,20 @@
 package auth
 
 import (
+	"crypto/sha256"
+	"errors"
+	"fmt"
+	"io"
+	"math/big"
 	"time"
 
+	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
+	"golang.org/x/crypto/hkdf"
 )
 
 func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error) {
@@ -40,12 +47,15 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	atClaims["social_type"] = payload.SocialType
 	atClaims["id_token"] = payload.IDToken
 	atClaims["exp"] = jwtInfo.AtExpireDt
+	atClaims["salt"] = payload.Salt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+
 	accessToken, err := at.SignedString([]byte(o.conf.AccessSecretKey))
 	if err != nil {
 		return nil, err
 	}
+
 	jwtInfo.AccessToken = accessToken
 
 	//create refresh token
@@ -57,6 +67,7 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	rtClaims["social_type"] = payload.SocialType
 	rtClaims["id_token"] = payload.IDToken
 	rtClaims["exp"] = jwtInfo.RtExpireDt
+	rtClaims["salt"] = payload.Salt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
 	refreshToken, err := rt.SignedString([]byte(o.conf.RefreshSecretKey))
@@ -116,4 +127,56 @@ func (o *IAuth) GetJwtInfoByInnoUID(loginType context.LoginType, tokenType conte
 // delete redis jwt info
 func (o *IAuth) DeleteJwtInfoByInnoUID(loginType context.LoginType, tokenType context.TokenType, innoUID string) error {
 	return model.GetDB().DeleteJwtInfoByInnoUID(loginType, tokenType, innoUID)
+}
+
+func (o *IAuth) MakeSalt(idToken string) (string, error) {
+	// 토큰 파싱 (여기서는 서명 검증을 생략하고 클레임만 추출합니다)
+	token, _, err := new(jwt.Parser).ParseUnverified(idToken, jwt.MapClaims{})
+	if err != nil {
+		fmt.Printf("Failed to parse token: %v", err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", errors.New("Invalid claims")
+	}
+
+	for key, val := range claims {
+		fmt.Printf("%s: %v\n", key, val)
+	}
+
+	aud := ""
+	sub := ""
+	if getAud, ok := claims["aud"]; !ok {
+		log.Errorf("not exist aud id_token:%v", idToken)
+	} else {
+		aud = getAud.(string)
+	}
+
+	if getsub, ok := claims["sub"]; !ok {
+		log.Errorf("not exist sub id_token : %v", idToken)
+	} else {
+		sub = getsub.(string)
+	}
+
+	return makeHKDFsha256(o.conf.AccessSecretKey, aud, sub)
+}
+
+func makeHKDFsha256(seed, salt, info string) (string, error) {
+	ikm := []byte(seed)
+	saltByte := []byte(salt)
+	infoByte := []byte(info)
+
+	// HKDF 객체 생성
+	hkdf := hkdf.New(sha256.New, ikm, saltByte, infoByte)
+
+	// 파생된 키를 저장할 슬라이스 생성 (여기서는 SHA-256 해시 크기와 동일하게 16 바이트로 설정)
+	derivedKey := make([]byte, 16)
+
+	// HKDF로부터 키를 읽어 derivedKey에 저장
+	if _, err := io.ReadFull(hkdf, derivedKey); err != nil {
+		return "", err
+	}
+
+	return new(big.Int).SetBytes(derivedKey).String(), nil
 }

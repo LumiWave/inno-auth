@@ -34,6 +34,8 @@ type Payload struct {
 	AUID       int64     `json:"au_id,omitempty"`
 	SocialType int64     `json:"social_type,omitempty"`
 	IDToken    string    `json:"id_token,omitempty"`
+
+	Salt string `json:"salt,omitempty"` // 내부 생성용
 }
 
 type CustomerPayload struct {

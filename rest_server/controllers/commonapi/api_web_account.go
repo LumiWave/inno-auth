@@ -107,6 +107,14 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		CountryCode: countryCode,
 	}, resAccountWeb.IsJoined)
 
+	salt, err := auth.GetIAuth().MakeSalt(payload.IDToken)
+	if err == nil {
+		payload.Salt = salt
+		resAccountWeb.Salt = salt
+	} else {
+		log.Errorf("makeSalt err : %v", err)
+	}
+
 	// 5. Access, Refresh 토큰 생성
 	//5-1. 기존에 발급된 토큰이 있는지 확인
 	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {

@@ -74,6 +74,7 @@ type ResAccountWeb struct {
 	SocialType int64  `json:"social_type" validate:"required"`
 	IsMigrated bool   `json:"is_migrated" validate:"required"`
 	IDToken    string `json:"id_token"`
+	Salt       string `json:"salt"`
 }
 
 ////////////////////////////////////////////
