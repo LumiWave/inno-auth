@@ -52,7 +52,7 @@ type PointManagerServer struct {
 	InternalVersion string `yaml:"internal_ver"`
 	ExternalVersion string `yaml:"external_ver"`
 }
-type InnoLog struct {
+type ExternalServer struct {
 	InternalUri     string `yaml:"api_internal_domain"`
 	ExternalUri     string `yaml:"api_external_domain"`
 	InternalVersion string `yaml:"internal_ver"`
@@ -73,12 +73,14 @@ type ServerConfig struct {
 	MssqlDBWallet      baseconf.DBAuth `yaml:"mssql_db_wallet"`
 	MssqlDBLog         baseconf.DBAuth `yaml:"mssql_db_log"`
 
-	Auth          ApiAuth            `yaml:"api_auth"`
-	AccessCountry AccessCountryInfo  `yaml:"access_country"`
-	TokenManager  TokenManagerServer `yaml:"token_manager"`
-	PointManager  PointManagerServer `yaml:"point_manager"`
-	InnoLog       InnoLog            `yaml:"inno-log"`
-	Secret        SecretInfo         `yaml:"secret"`
+	Auth          ApiAuth           `yaml:"api_auth"`
+	AccessCountry AccessCountryInfo `yaml:"access_country"`
+	TokenManager  ExternalServer    `yaml:"token_manager"`
+	PointManager  ExternalServer    `yaml:"point_manager"`
+	InnoLog       ExternalServer    `yaml:"inno-log"`
+	SuiProv       ExternalServer    `yaml:"sui_prover"`
+
+	Secret SecretInfo `yaml:"secret"`
 }
 
 func GetInstance(filepath ...string) *ServerConfig {

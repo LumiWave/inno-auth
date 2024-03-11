@@ -51,7 +51,7 @@ require (
 )
 
 require (
-	github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.4
+	github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.28
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8

@@ -1,7 +1,8 @@
 package resultcode
 
 const (
-	Result_Success = 0
+	Result_Success            = 0
+	ResultInternalServerError = 500
 
 	Result_DBError        = 13000
 	Result_DBNotExistItem = 13001
@@ -35,12 +36,14 @@ const (
 	Result_Auth_InvalidSocial_Type          = 22016
 	Result_Auth_Invalid_Customer_AccountID  = 22017
 	Result_Auth_EmptyIDToken                = 22018
+	Result_SUI_Prove                        = 22019
 
 	Result_Auth_MakeTokenError = 23001
 )
 
 var ResultCodeText = map[int]string{
-	Result_Success: "success",
+	Result_Success:            "success",
+	ResultInternalServerError: "internal server error",
 
 	Result_DBError:        "Internal DB error",
 	Result_DBNotExistItem: "Not exist item",
@@ -73,6 +76,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_InvalidSocial_Type:          "Invalid Social Type",
 	Result_Auth_Invalid_Customer_AccountID:  "Invalid Access Infomation",
 	Result_Auth_EmptyIDToken:                "Empty Account id_token",
+	Result_SUI_Prove:                        "sui prove error",
 
 	Result_Auth_MakeTokenError: "Make Token Error",
 }
