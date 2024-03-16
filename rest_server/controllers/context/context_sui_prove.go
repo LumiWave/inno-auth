@@ -6,6 +6,7 @@ type ReqProve struct {
 	Jwt                        string `json:"jwt"`
 	KeyClaimName               string `json:"keyClaimName"`
 	ExtendedEphemeralPublicKey string `json:"extendedEphemeralPublicKey"`
+	EphemeralPublicKey         string `json:"ephemeralPublicKey"`
 	Salt                       string `json:"salt"`
 }
 

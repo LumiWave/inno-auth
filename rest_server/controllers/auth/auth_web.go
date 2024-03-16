@@ -46,6 +46,8 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	atClaims["au_id"] = payload.AUID
 	atClaims["social_type"] = payload.SocialType
 	atClaims["id_token"] = payload.IDToken
+	atClaims["extendedEphemeralPublicKey"] = payload.ExtendedEphemeralPublicKey
+	atClaims["ephemeralPublicKey"] = payload.EphemeralPublicKey
 	atClaims["exp"] = jwtInfo.AtExpireDt
 	atClaims["salt"] = payload.Salt
 
@@ -66,6 +68,8 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	rtClaims["au_id"] = payload.AUID
 	rtClaims["social_type"] = payload.SocialType
 	rtClaims["id_token"] = payload.IDToken
+	atClaims["extendedEphemeralPublicKey"] = payload.ExtendedEphemeralPublicKey
+	atClaims["ephemeralPublicKey"] = payload.EphemeralPublicKey
 	rtClaims["exp"] = jwtInfo.RtExpireDt
 	rtClaims["salt"] = payload.Salt
 

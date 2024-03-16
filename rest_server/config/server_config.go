@@ -57,6 +57,8 @@ type ExternalServer struct {
 	ExternalUri     string `yaml:"api_external_domain"`
 	InternalVersion string `yaml:"internal_ver"`
 	ExternalVersion string `yaml:"external_ver"`
+	SecretKey       string `yaml:"secret_key"`
+	Network         string `yaml:"network"`
 }
 
 type SecretInfo struct {
@@ -79,6 +81,7 @@ type ServerConfig struct {
 	PointManager  ExternalServer    `yaml:"point_manager"`
 	InnoLog       ExternalServer    `yaml:"inno-log"`
 	SuiProv       ExternalServer    `yaml:"sui_prover"`
+	SuiEnoki      ExternalServer    `yaml:"sui_enoki"`
 
 	Secret SecretInfo `yaml:"secret"`
 }

@@ -1,10 +1,12 @@
 package commonapi
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
+	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/sui_enoki"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/ip"
@@ -14,6 +16,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/sui_enoki_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
 )
@@ -62,7 +65,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
-		IDToken: params.IDToken,
+		IDToken:                    params.IDToken,
+		ExtendedEphemeralPublicKey: params.ExtendedEphemeralPublicKey,
+		EphemeralPublicKey:         params.EphemeralPublicKey,
 	}
 
 	// 1-1. InnoUID 생성 에러 오류
@@ -90,6 +95,8 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		resAccountWeb.InnoUID = payload.InnoUID
 		resAccountWeb.SocialType = params.SocialType
 		resAccountWeb.IDToken = params.IDToken
+		resAccountWeb.ExtendedEphemeralPublicKey = params.ExtendedEphemeralPublicKey
+		resAccountWeb.EphemeralPublicKey = params.EphemeralPublicKey
 	}
 
 	// 3. [DB] 사용자 로그 등록
@@ -107,13 +114,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		CountryCode: countryCode,
 	}, resAccountWeb.IsJoined)
 
-	salt, err := auth.GetIAuth().MakeSalt(payload.IDToken)
-	if err == nil {
-		payload.Salt = salt
-		resAccountWeb.Salt = salt
-	} else {
-		log.Errorf("makeSalt err : %v", err)
-	}
+	salt := getSalt(payload.IDToken)
+	payload.Salt = salt
+	resAccountWeb.Salt = salt
 
 	// 5. Access, Refresh 토큰 생성
 	//5-1. 기존에 발급된 토큰이 있는지 확인
@@ -174,4 +177,32 @@ func PostWebAccountInfo(c echo.Context, params *context.ReqAccountInfo) error {
 	}
 
 	return c.JSON(http.StatusOK, resp)
+}
+
+// salt 생성이 실패나면 빈 문자열로 리턴한다.
+func getSalt(idToken string) string {
+	retSalt := ""
+
+	// 자체 salt 계산 사용시
+	// salt, err := auth.GetIAuth().MakeSalt(payload.IDToken)
+	// if err == nil {
+	// 	retSalt = salt
+	// } else {
+	// 	log.Errorf("makeSalt err : %v", err)
+	// }
+
+	// sui enoki 사용시
+	suiReq := &sui_enoki.ReqzkLogin{
+		IDToken: idToken,
+	}
+	respZklogin, respErr, err := sui_enoki_server.GetInstance().GetZklogin(suiReq)
+	if err != nil {
+		log.Errorf("GetZklogin err : %v", err)
+	} else if respErr != nil {
+		temp, _ := json.Marshal(respErr)
+		log.Errorf("GetZklogin respErr : %v", string(temp))
+	} else {
+		retSalt = respZklogin.Data.Salt
+	}
+	return retSalt
 }

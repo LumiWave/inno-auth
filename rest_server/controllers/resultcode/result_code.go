@@ -39,6 +39,8 @@ const (
 	Result_SUI_Prove                        = 22019
 
 	Result_Auth_MakeTokenError = 23001
+
+	Result_Auth_SuiEnoki_ZKP_Error = 23100
 )
 
 var ResultCodeText = map[int]string{
@@ -79,4 +81,6 @@ var ResultCodeText = map[int]string{
 	Result_SUI_Prove:                        "sui prove error",
 
 	Result_Auth_MakeTokenError: "Make Token Error",
+
+	Result_Auth_SuiEnoki_ZKP_Error: "sui zkp error",
 }

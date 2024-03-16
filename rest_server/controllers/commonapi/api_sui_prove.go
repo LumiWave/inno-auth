@@ -33,7 +33,23 @@ func PostSuiProver(ctx *context.InnoAuthContext, params *context.ReqProve) error
 			resp.SetReturn(resultcode.Result_SUI_Prove)
 		}
 		resp.Value = res
-
 	}
+	// req := &sui_enoki.ReqzkLoginZKP{
+	// 	Network:            config.GetInstance().SuiEnoki.Network,
+	// 	Randomness:         params.JwtRandomness,
+	// 	MaxEpoch:           params.MaxEpoch,
+	// 	EphemeralPublicKey: params.EphemeralPublicKey,
+	// }
+	// respEnoki, errEnoki, err := sui_enoki_server.GetInstance().PostZkloginZkp(req, ctx.Payload.IDToken)
+	// if err != nil {
+	// 	log.Errorf("PostZkloginZkp err : %v", err)
+	// 	resp.SetReturn(resultcode.ResultInternalServerError)
+	// } else if errEnoki != nil {
+	// 	temp, _ := json.Marshal(errEnoki)
+	// 	log.Errorf("PostZkloginZkp errEnoki : %v", string(temp))
+	// 	resp.SetReturn(resultcode.Result_Auth_SuiEnoki_ZKP_Error)
+	// } else {
+	// 	resp.Value = respEnoki
+	// }
 	return ctx.EchoContext.JSON(http.StatusOK, resp)
 }

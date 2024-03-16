@@ -15,6 +15,7 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/log_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/point_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
+	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/sui_enoki_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/sui_prover"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/token_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
@@ -43,6 +44,7 @@ func (o *ServerApp) Init(configFile string) (err error) {
 	o.InitPointManager(o.conf)
 	o.InitTokenManager(o.conf)
 	o.InitSuiProve(o.conf)
+	o.InitSuiEnoki(o.conf)
 
 	if auth, err := auth.NewIAuth(&o.conf.Auth); err != nil {
 		return err
@@ -96,4 +98,8 @@ func (o *ServerApp) InitTokenManager(conf *config.ServerConfig) error {
 
 func (o *ServerApp) InitSuiProve(conf *config.ServerConfig) error {
 	return sui_prover.InitSuiProveManager(conf)
+}
+
+func (o *ServerApp) InitSuiEnoki(conf *config.ServerConfig) error {
+	return sui_enoki_server.InitSuiEnokiManager(conf)
 }

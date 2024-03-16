@@ -7,10 +7,12 @@ import (
 
 // //////// web 로그인/가입 정보
 type AccountWeb struct {
-	SocialKey  string `json:"social_key" validate:"required"`
-	SocialType int64  `json:"social_type" validate:"required"`
-	IDToken    string `json:"id_token" validate:"required"`
-	IP         string `json:"ip" validate:"required"`
+	SocialKey                  string `json:"social_key" validate:"required"`
+	SocialType                 int64  `json:"social_type" validate:"required"`
+	IDToken                    string `json:"id_token" validate:"required"`
+	ExtendedEphemeralPublicKey string `json:"extendedEphemeralPublicKey"`
+	EphemeralPublicKey         string `json:"ephemeralPublicKey"`
+	IP                         string `json:"ip" validate:"required"`
 }
 
 func NewAccountWeb() *AccountWeb {
@@ -68,13 +70,15 @@ type ReqAccountWeb struct {
 
 type ResAccountWeb struct {
 	JwtInfo
-	InnoUID    string `json:"inno_uid" validate:"required"`
-	IsJoined   bool   `json:"is_joined" validate:"required"`
-	AUID       int64  `json:"au_id" validate:"required"`
-	SocialType int64  `json:"social_type" validate:"required"`
-	IsMigrated bool   `json:"is_migrated" validate:"required"`
-	IDToken    string `json:"id_token"`
-	Salt       string `json:"salt"`
+	InnoUID                    string `json:"inno_uid" validate:"required"`
+	IsJoined                   bool   `json:"is_joined" validate:"required"`
+	AUID                       int64  `json:"au_id" validate:"required"`
+	SocialType                 int64  `json:"social_type" validate:"required"`
+	IsMigrated                 bool   `json:"is_migrated" validate:"required"`
+	IDToken                    string `json:"id_token"`
+	ExtendedEphemeralPublicKey string `json:"extendedEphemeralPublicKey"`
+	EphemeralPublicKey         string `json:"ephemeralPublicKey"`
+	Salt                       string `json:"salt"`
 }
 
 ////////////////////////////////////////////

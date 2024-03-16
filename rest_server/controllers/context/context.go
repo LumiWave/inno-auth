@@ -25,15 +25,17 @@ var LoginTypeText = map[LoginType]string{
 }
 
 type Payload struct {
-	CompanyID  int64     `json:"company_id,omitempty"`
-	AppID      int64     `json:"app_id,omitempty"`
-	LoginType  LoginType `json:"login_type,omitempty"`
-	Uuid       string    `json:"uuid,omitempty"`
-	IsEnabled  bool      `json:"is_enabled,omitempty"`
-	InnoUID    string    `json:"inno_uid,omitempty"`
-	AUID       int64     `json:"au_id,omitempty"`
-	SocialType int64     `json:"social_type,omitempty"`
-	IDToken    string    `json:"id_token,omitempty"`
+	CompanyID                  int64     `json:"company_id,omitempty"`
+	AppID                      int64     `json:"app_id,omitempty"`
+	LoginType                  LoginType `json:"login_type,omitempty"`
+	Uuid                       string    `json:"uuid,omitempty"`
+	IsEnabled                  bool      `json:"is_enabled,omitempty"`
+	InnoUID                    string    `json:"inno_uid,omitempty"`
+	AUID                       int64     `json:"au_id,omitempty"`
+	SocialType                 int64     `json:"social_type,omitempty"`
+	IDToken                    string    `json:"id_token,omitempty"`
+	ExtendedEphemeralPublicKey string    `json:"extendedEphemeralPublicKey,omitempty"`
+	EphemeralPublicKey         string    `json:"ephemeralPublicKey,omitempty"`
 
 	Salt string `json:"salt,omitempty"` // 내부 생성용
 }

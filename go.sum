@@ -37,6 +37,8 @@ github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.4 h1:kaRRUJlsaMUJ8CsWu9A2ncYDBTDc
 github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.4/go.mod h1:btwX4cJvQGSITZmQndT47Hd+7QMe0mzOsE5bMKrPV/c=
 github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.28 h1:m+XDYit2RVO/8dBTiD00G5NMAIEmvredGMX38idY2D4=
 github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.28/go.mod h1:ge1/RrgkViem3egp2eBNfTKSM1O/QBM6/37XWcMVKwI=
+github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.29 h1:h6BDFzXPd/oylRcV3c6nnaQRI4Jyb16UqiTbdNaDgEg=
+github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.29/go.mod h1:ge1/RrgkViem3egp2eBNfTKSM1O/QBM6/37XWcMVKwI=
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.15 h1:reIrorLXlnnZ7IrT2wp0koUav+WTXnNFhmrf8+yWRLk=
 github.com/ONBUFF-IP-TOKEN/baseapp v1.0.15/go.mod h1:NQLToyeNDUPLYUqvLbbKm9ho5LySl2ycptA1rNIktGc=
 github.com/ONBUFF-IP-TOKEN/basedb v1.1.14 h1:i5J9xsx0J4hAY7gWrIJ4zyxeWziT+RTG6vGVHHhA3Cc=
