@@ -34,8 +34,8 @@ type Payload struct {
 	AUID                       int64     `json:"au_id,omitempty"`
 	SocialType                 int64     `json:"social_type,omitempty"`
 	IDToken                    string    `json:"id_token,omitempty"`
-	ExtendedEphemeralPublicKey string    `json:"extendedEphemeralPublicKey,omitempty"`
-	EphemeralPublicKey         string    `json:"ephemeralPublicKey,omitempty"`
+	ExtendedEphemeralPublicKey string    `json:"extended_ephemeral_publickey,omitempty"`
+	EphemeralPublicKey         string    `json:"ephemeral_publickey,omitempty"`
 
 	Salt string `json:"salt,omitempty"` // 내부 생성용
 }

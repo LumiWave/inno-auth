@@ -10,8 +10,8 @@ type AccountWeb struct {
 	SocialKey                  string `json:"social_key" validate:"required"`
 	SocialType                 int64  `json:"social_type" validate:"required"`
 	IDToken                    string `json:"id_token" validate:"required"`
-	ExtendedEphemeralPublicKey string `json:"extendedEphemeralPublicKey"`
-	EphemeralPublicKey         string `json:"ephemeralPublicKey"`
+	ExtendedEphemeralPublicKey string `json:"extended_ephemeral_publickey"`
+	EphemeralPublicKey         string `json:"ephemeral_publickey"`
 	IP                         string `json:"ip" validate:"required"`
 }
 
@@ -76,8 +76,8 @@ type ResAccountWeb struct {
 	SocialType                 int64  `json:"social_type" validate:"required"`
 	IsMigrated                 bool   `json:"is_migrated" validate:"required"`
 	IDToken                    string `json:"id_token"`
-	ExtendedEphemeralPublicKey string `json:"extendedEphemeralPublicKey"`
-	EphemeralPublicKey         string `json:"ephemeralPublicKey"`
+	ExtendedEphemeralPublicKey string `json:"extended_ephemeral_publickey"`
+	EphemeralPublicKey         string `json:"ephemeral_publickey"`
 	Salt                       string `json:"salt"`
 }
 

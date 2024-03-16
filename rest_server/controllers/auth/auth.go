@@ -98,8 +98,8 @@ func (o *IAuth) ParseClaimsToPayload(loginType context.LoginType, tokenType cont
 			SocialType:                 int64(claims["social_type"].(float64)),
 			Uuid:                       fmt.Sprintf("%v", claims[claimsType]),
 			IDToken:                    fmt.Sprintf("%v", claims["id_token"]),
-			ExtendedEphemeralPublicKey: fmt.Sprintf("%v", claims["extendedEphemeralPublicKey"]),
-			EphemeralPublicKey:         fmt.Sprintf("%v", claims["ephemeralPublicKey"]),
+			ExtendedEphemeralPublicKey: fmt.Sprintf("%v", claims["extended_ephemeral_publickey"]),
+			EphemeralPublicKey:         fmt.Sprintf("%v", claims["ephemeral_publickey"]),
 			Salt:                       fmt.Sprintf("%v", claims["salt"]),
 		}
 	}
