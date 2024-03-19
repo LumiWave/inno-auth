@@ -24,20 +24,29 @@ var LoginTypeText = map[LoginType]string{
 	CustomerLogin:   "CUSTOMER",
 }
 
-type Payload struct {
-	CompanyID                  int64     `json:"company_id,omitempty"`
-	AppID                      int64     `json:"app_id,omitempty"`
-	LoginType                  LoginType `json:"login_type,omitempty"`
-	Uuid                       string    `json:"uuid,omitempty"`
-	IsEnabled                  bool      `json:"is_enabled,omitempty"`
-	InnoUID                    string    `json:"inno_uid,omitempty"`
-	AUID                       int64     `json:"au_id,omitempty"`
-	SocialType                 int64     `json:"social_type,omitempty"`
-	IDToken                    string    `json:"id_token,omitempty"`
-	ExtendedEphemeralPublicKey string    `json:"extended_ephemeral_publickey,omitempty"`
-	EphemeralPublicKey         string    `json:"ephemeral_publickey,omitempty"`
+// sui zklogin 용
+type ZkLogin struct {
+	IDToken                    string `json:"id_token"`
+	ExtendedEphemeralPublicKey string `json:"extended_ephemeral_publickey"`
+	EphemeralPublicKey         string `json:"ephemeral_publickey"`
+	Salt                       string `json:"salt"`
+	Epoch                      int64  `json:"epoch"`
+	Randomness                 string `json:"randomness"`
+	Privatekey                 string `json:"private_key"`
+	PublicKey                  string `json:"public_key"`
+}
 
-	Salt string `json:"salt,omitempty"` // 내부 생성용
+type Payload struct {
+	CompanyID  int64     `json:"company_id,omitempty"`
+	AppID      int64     `json:"app_id,omitempty"`
+	LoginType  LoginType `json:"login_type,omitempty"`
+	Uuid       string    `json:"uuid,omitempty"`
+	IsEnabled  bool      `json:"is_enabled,omitempty"`
+	InnoUID    string    `json:"inno_uid,omitempty"`
+	AUID       int64     `json:"au_id,omitempty"`
+	SocialType int64     `json:"social_type,omitempty"`
+
+	ZkLogin `json:"zklogin"`
 }
 
 type CustomerPayload struct {

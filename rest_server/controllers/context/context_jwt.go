@@ -34,6 +34,9 @@ type JwtInfo struct {
 	RefreshUuid  string `json:"refresh_uuid"`
 	AtExpireDt   int64  `json:"access_token_expire_dt"`
 	RtExpireDt   int64  `json:"refresh_token_expire_dt"`
+
+	// sui zklogin 용
+	ZkLogin `json:"zklogin"`
 }
 
 type RenewTokenRequest struct {

@@ -65,9 +65,16 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
-		IDToken:                    params.IDToken,
-		ExtendedEphemeralPublicKey: params.ExtendedEphemeralPublicKey,
-		EphemeralPublicKey:         params.EphemeralPublicKey,
+		ZkLogin: context.ZkLogin{
+			IDToken:                    params.IDToken,
+			ExtendedEphemeralPublicKey: params.ExtendedEphemeralPublicKey,
+			EphemeralPublicKey:         params.EphemeralPublicKey,
+
+			Epoch:      params.Epoch,
+			Randomness: params.Randomness,
+			Privatekey: params.Privatekey,
+			PublicKey:  params.PublicKey,
+		},
 	}
 
 	// 1-1. InnoUID 생성 에러 오류
@@ -94,9 +101,6 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		payload.AUID = resAccountWeb.AUID
 		resAccountWeb.InnoUID = payload.InnoUID
 		resAccountWeb.SocialType = params.SocialType
-		resAccountWeb.IDToken = params.IDToken
-		resAccountWeb.ExtendedEphemeralPublicKey = params.ExtendedEphemeralPublicKey
-		resAccountWeb.EphemeralPublicKey = params.EphemeralPublicKey
 	}
 
 	// 3. [DB] 사용자 로그 등록
@@ -114,13 +118,14 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 		CountryCode: countryCode,
 	}, resAccountWeb.IsJoined)
 
-	salt := getSalt(payload.IDToken)
-	payload.Salt = salt
-	resAccountWeb.Salt = salt
-
 	// 5. Access, Refresh 토큰 생성
 	//5-1. 기존에 발급된 토큰이 있는지 확인
 	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
+		// zklogin 용 salt 생성 (salt 요청에 시간 소요가 필요하기 때문에 redis에 없을때마 생성하도록 한다.)
+		salt := getSalt(payload.IDToken)
+		payload.Salt = salt
+		resAccountWeb.Salt = salt
+
 		// 5-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
 		if jwtInfoValue, err := auth.GetIAuth().MakeWebToken(payload); err != nil {
 			log.Errorf("%v", err)

@@ -37,7 +37,18 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 			}
 			return time.Now().Add(time.Duration(refreshExpiryPeriod)).UnixMilli()
 		}(),
+		ZkLogin: context.ZkLogin{
+			IDToken:                    payload.ZkLogin.IDToken,
+			ExtendedEphemeralPublicKey: payload.ExtendedEphemeralPublicKey,
+			EphemeralPublicKey:         payload.EphemeralPublicKey,
+			Salt:                       payload.Salt,
+			Epoch:                      payload.Epoch,
+			Randomness:                 payload.Randomness,
+			Privatekey:                 payload.Privatekey,
+			PublicKey:                  payload.PublicKey,
+		},
 	}
+
 	//create access token
 	atClaims := jwt.MapClaims{}
 	atClaims["access_uuid"] = jwtInfo.AccessUuid
@@ -45,11 +56,7 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	atClaims["inno_uid"] = payload.InnoUID
 	atClaims["au_id"] = payload.AUID
 	atClaims["social_type"] = payload.SocialType
-	atClaims["id_token"] = payload.IDToken
-	atClaims["extended_ephemeral_publickey"] = payload.ExtendedEphemeralPublicKey
-	atClaims["ephemeral_publickey"] = payload.EphemeralPublicKey
 	atClaims["exp"] = jwtInfo.AtExpireDt
-	atClaims["salt"] = payload.Salt
 
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 
@@ -67,11 +74,7 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	rtClaims["inno_uid"] = payload.InnoUID
 	rtClaims["au_id"] = payload.AUID
 	rtClaims["social_type"] = payload.SocialType
-	rtClaims["id_token"] = payload.IDToken
-	atClaims["extended_ephemeral_publickey"] = payload.ExtendedEphemeralPublicKey
-	atClaims["ephemeral_publickey"] = payload.EphemeralPublicKey
 	rtClaims["exp"] = jwtInfo.RtExpireDt
-	rtClaims["salt"] = payload.Salt
 
 	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
 	refreshToken, err := rt.SignedString([]byte(o.conf.RefreshSecretKey))
@@ -102,13 +105,15 @@ func (o *IAuth) DeleteInnoUIDRedis(loginType context.LoginType, tokenType contex
 }
 
 func (o *IAuth) WebTokenRenew(payload *context.Payload) (*context.JwtInfo, int) {
-	if _, err := o.GetJwtInfoByInnoUID(payload.LoginType, context.RefreshT, payload.InnoUID); err != nil {
+	if jwtInfo, err := o.GetJwtInfoByInnoUID(payload.LoginType, context.RefreshT, payload.InnoUID); err != nil {
 		return nil, resultcode.Result_Auth_ExpiredJwt
 	} else {
 		// 1. 기존 로그인 정보 (AccessToken, RefreshToken) 삭제
 		if err := o.DeleteInnoUIDRedis(payload.LoginType, context.RefreshT, payload.InnoUID); err != nil {
 			return nil, resultcode.Result_RedisError
 		}
+		// accesstoken payload에는 zklogin 관련정보가 없기 때문에 redis에서 가져와서 load 한다.
+		payload.ZkLogin = jwtInfo.ZkLogin
 		// 2. Web 토큰 재발급
 		if newJwtInfo, err := o.MakeWebToken(payload); err != nil {
 			return nil, resultcode.Result_Auth_MakeTokenError

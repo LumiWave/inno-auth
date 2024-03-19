@@ -92,15 +92,11 @@ func (o *IAuth) ParseClaimsToPayload(loginType context.LoginType, tokenType cont
 		}
 	case context.WebAccountLogin:
 		payload = &context.Payload{
-			LoginType:                  context.LoginType(int(claims["login_type"].(float64))),
-			InnoUID:                    fmt.Sprintf("%v", claims["inno_uid"]),
-			AUID:                       int64(claims["au_id"].(float64)),
-			SocialType:                 int64(claims["social_type"].(float64)),
-			Uuid:                       fmt.Sprintf("%v", claims[claimsType]),
-			IDToken:                    fmt.Sprintf("%v", claims["id_token"]),
-			ExtendedEphemeralPublicKey: fmt.Sprintf("%v", claims["extended_ephemeral_publickey"]),
-			EphemeralPublicKey:         fmt.Sprintf("%v", claims["ephemeral_publickey"]),
-			Salt:                       fmt.Sprintf("%v", claims["salt"]),
+			LoginType:  context.LoginType(int(claims["login_type"].(float64))),
+			InnoUID:    fmt.Sprintf("%v", claims["inno_uid"]),
+			AUID:       int64(claims["au_id"].(float64)),
+			SocialType: int64(claims["social_type"].(float64)),
+			Uuid:       fmt.Sprintf("%v", claims[claimsType]),
 		}
 	}
 	return payload

@@ -38,9 +38,11 @@ func GetTokenVerify(c echo.Context) error {
 			resp.Value = ctx.Payload
 		}
 	case context.WebAccountLogin:
-		if _, err := auth.GetIAuth().GetJwtInfoByInnoUID(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
+		if jwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
 			resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
 		} else {
+			// accesstoken의 payload에는 zklogin 관련 정보는 없기 때문에 redis에서 load해서 응답해준다.
+			ctx.Payload.ZkLogin = jwtInfo.ZkLogin
 			resp.Value = ctx.Payload
 		}
 	}
