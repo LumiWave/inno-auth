@@ -1,12 +1,10 @@
 package commonapi
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/sui_enoki"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
 	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
 	"github.com/ONBUFF-IP-TOKEN/baseutil/ip"
@@ -16,7 +14,6 @@ import (
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/sui_enoki_server"
 	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
 )
@@ -184,25 +181,25 @@ func getSalt(idToken string) string {
 	retSalt := ""
 
 	// 자체 salt 계산 사용시
-	// salt, err := auth.GetIAuth().MakeSalt(payload.IDToken)
-	// if err == nil {
-	// 	retSalt = salt
-	// } else {
-	// 	log.Errorf("makeSalt err : %v", err)
-	// }
+	salt, err := auth.GetIAuth().MakeSalt(idToken)
+	if err == nil {
+		retSalt = salt
+	} else {
+		log.Errorf("makeSalt err : %v", err)
+	}
 
 	// sui enoki 사용시
-	suiReq := &sui_enoki.ReqzkLogin{
-		IDToken: idToken,
-	}
-	respZklogin, respErr, err := sui_enoki_server.GetInstance().GetZklogin(suiReq)
-	if err != nil {
-		log.Errorf("GetZklogin err : %v", err)
-	} else if respErr != nil {
-		temp, _ := json.Marshal(respErr)
-		log.Errorf("GetZklogin respErr : %v", string(temp))
-	} else {
-		retSalt = respZklogin.Data.Salt
-	}
+	// suiReq := &sui_enoki.ReqzkLogin{
+	// 	IDToken: idToken,
+	// }
+	// respZklogin, respErr, err := sui_enoki_server.GetInstance().GetZklogin(suiReq)
+	// if err != nil {
+	// 	log.Errorf("GetZklogin err : %v", err)
+	// } else if respErr != nil {
+	// 	temp, _ := json.Marshal(respErr)
+	// 	log.Errorf("GetZklogin respErr : %v", string(temp))
+	// } else {
+	// 	retSalt = respZklogin.Data.Salt
+	// }
 	return retSalt
 }
