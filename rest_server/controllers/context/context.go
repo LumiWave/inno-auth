@@ -26,14 +26,12 @@ var LoginTypeText = map[LoginType]string{
 
 // sui zklogin 용
 type ZkLogin struct {
-	IDToken                    string `json:"id_token"`
-	ExtendedEphemeralPublicKey string `json:"extended_ephemeral_publickey"`
-	EphemeralPublicKey         string `json:"ephemeral_publickey"`
-	Salt                       string `json:"salt"`
-	Epoch                      int64  `json:"epoch"`
-	Randomness                 string `json:"randomness"`
-	Privatekey                 string `json:"private_key"`
-	PublicKey                  string `json:"public_key"`
+	IDToken            string `json:"id_token"`
+	EphemeralPublicKey string `json:"ephemeral_publickey"`
+	Salt               string `json:"salt"`
+	Epoch              int64  `json:"epoch"`
+	Randomness         string `json:"randomness"`
+	Privatekey         string `json:"private_key"`
 }
 
 type Payload struct {

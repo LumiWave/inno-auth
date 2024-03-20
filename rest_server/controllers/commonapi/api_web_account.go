@@ -66,14 +66,11 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 			[]byte(conf.Secret.Key),
 			[]byte(conf.Secret.Iv)),
 		ZkLogin: context.ZkLogin{
-			IDToken:                    params.IDToken,
-			ExtendedEphemeralPublicKey: params.ExtendedEphemeralPublicKey,
-			EphemeralPublicKey:         params.EphemeralPublicKey,
-
-			Epoch:      params.Epoch,
-			Randomness: params.Randomness,
-			Privatekey: params.Privatekey,
-			PublicKey:  params.PublicKey,
+			IDToken:            params.IDToken,
+			EphemeralPublicKey: params.EphemeralPublicKey,
+			Epoch:              params.Epoch,
+			Randomness:         params.Randomness,
+			Privatekey:         params.Privatekey,
 		},
 	}
 

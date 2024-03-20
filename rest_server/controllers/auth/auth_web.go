@@ -38,14 +38,12 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 			return time.Now().Add(time.Duration(refreshExpiryPeriod)).UnixMilli()
 		}(),
 		ZkLogin: context.ZkLogin{
-			IDToken:                    payload.ZkLogin.IDToken,
-			ExtendedEphemeralPublicKey: payload.ExtendedEphemeralPublicKey,
-			EphemeralPublicKey:         payload.EphemeralPublicKey,
-			Salt:                       payload.Salt,
-			Epoch:                      payload.Epoch,
-			Randomness:                 payload.Randomness,
-			Privatekey:                 payload.Privatekey,
-			PublicKey:                  payload.PublicKey,
+			IDToken:            payload.ZkLogin.IDToken,
+			EphemeralPublicKey: payload.EphemeralPublicKey,
+			Salt:               payload.Salt,
+			Epoch:              payload.Epoch,
+			Randomness:         payload.Randomness,
+			Privatekey:         payload.Privatekey,
 		},
 	}
 
