@@ -1,6 +1,6 @@
 package auth
 
-import "github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
+import "github.com/LumiWave/inno-auth/rest_server/model"
 
 const (
 	SocialType_Google   = 1

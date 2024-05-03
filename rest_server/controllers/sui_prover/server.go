@@ -1,9 +1,9 @@
 package sui_prover
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/context"
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/sui_prove"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
+	"github.com/LumiWave/baseInnoClient/context"
+	"github.com/LumiWave/baseInnoClient/sui_prove"
+	"github.com/LumiWave/inno-auth/rest_server/config"
 )
 
 var gServer *sui_prove.Server

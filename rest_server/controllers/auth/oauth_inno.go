@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseapp/auth/inno"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
+	"github.com/LumiWave/baseapp/auth/inno"
+	"github.com/LumiWave/inno-auth/rest_server/config"
 )
 
 type AIUsaa struct {

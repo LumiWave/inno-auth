@@ -4,7 +4,7 @@ import (
 	contextR "context"
 	"database/sql"
 
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )

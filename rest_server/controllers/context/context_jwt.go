@@ -3,7 +3,7 @@ package context
 import (
 	"time"
 
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
+	"github.com/LumiWave/inno-auth/rest_server/config"
 )
 
 type TokenType int

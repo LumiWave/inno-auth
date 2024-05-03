@@ -1,9 +1,9 @@
 package log_server
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/context"
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
+	"github.com/LumiWave/baseInnoClient/context"
+	"github.com/LumiWave/baseInnoClient/inno_log"
+	"github.com/LumiWave/inno-auth/rest_server/config"
 )
 
 var gLogServer *inno_log.Server

@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
+	"github.com/LumiWave/baseapp/base"
+	"github.com/LumiWave/baseutil/log"
 	"github.com/google/go-querystring/query"
 )
 

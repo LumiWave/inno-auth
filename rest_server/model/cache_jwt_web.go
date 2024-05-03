@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/config"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 )
 
 func (o *DB) SaveRedisInfoByInnoUID(jwtInfo *context.JwtInfo, payload *context.Payload, tokenType context.TokenType, expiryPeriod int64) error {

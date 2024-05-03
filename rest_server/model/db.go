@@ -4,11 +4,11 @@ import (
 	"strconv"
 	"time"
 
-	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
-	"github.com/ONBUFF-IP-TOKEN/basedb"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	baseconf "github.com/LumiWave/baseapp/config"
+	"github.com/LumiWave/basedb"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/config"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 )
 
 type DBMeta struct {

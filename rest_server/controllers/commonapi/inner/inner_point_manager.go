@@ -1,8 +1,8 @@
 package inner
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/point_manager"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/point_server"
+	"github.com/LumiWave/baseInnoClient/point_manager"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/point_server"
 )
 
 // point-manager 포인트 멤버 등록

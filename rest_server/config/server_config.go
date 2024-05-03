@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	baseconf "github.com/ONBUFF-IP-TOKEN/baseapp/config"
+	baseconf "github.com/LumiWave/baseapp/config"
 )
 
 var once sync.Once

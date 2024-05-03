@@ -5,9 +5,9 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/resultcode"
+	"github.com/LumiWave/inno-auth/rest_server/model"
 	"github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
 )

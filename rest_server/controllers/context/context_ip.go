@@ -1,6 +1,6 @@
 package context
 
-import "github.com/ONBUFF-IP-TOKEN/baseapp/base"
+import "github.com/LumiWave/baseapp/base"
 
 type ReqIPCheck struct {
 	Ip string `json:"ip"`

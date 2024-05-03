@@ -1,9 +1,9 @@
 package context
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/point_manager"
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
+	"github.com/LumiWave/baseInnoClient/point_manager"
+	"github.com/LumiWave/baseapp/base"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/resultcode"
 )
 
 // 계정 정보

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 	"github.com/labstack/gommon/log"
 )
 

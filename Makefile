@@ -21,7 +21,7 @@ endif
 
 build: init
 	# build $(app)
-	go build -ldflags "-X github.com/ONBUFF-IP-TOKEN/baseapp/base.AppVersion=$(revVersion).$(buildTime)" -o $(output)/$(app) rest_server/main.go
+	go build -ldflags "-X github.com/LumiWave/baseapp/base.AppVersion=$(revVersion).$(buildTime)" -o $(output)/$(app) rest_server/main.go
 
 init:
 	# initialize output directory.
@@ -43,7 +43,7 @@ test:
 	# test
 	# If the test succeeds, kill the test process and then do the next build,
 	# if it fails, kill the test process and exit the build.
-	go test github.com/ONBUFF-IP-TOKEN/inno-auth -v -timeout 30s \
+	go test github.com/LumiWave/inno-auth -v -timeout 30s \
 		&& { echo test success; make stop; } \
 		|| { echo test failure; make stop; exit 1;}
 

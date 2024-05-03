@@ -4,14 +4,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/point_manager"
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/model"
+	"github.com/LumiWave/baseInnoClient/inno_log"
+	"github.com/LumiWave/baseInnoClient/point_manager"
+	"github.com/LumiWave/baseapp/base"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/commonapi/inner"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/resultcode"
+	"github.com/LumiWave/inno-auth/rest_server/model"
 	"github.com/labstack/echo"
 )
 

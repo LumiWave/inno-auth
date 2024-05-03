@@ -1,8 +1,8 @@
 package inner
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/token_manager"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/token_server"
+	"github.com/LumiWave/baseInnoClient/token_manager"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/token_server"
 )
 
 // token-manager 새 지갑 주소 생성 요청

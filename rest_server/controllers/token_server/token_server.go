@@ -1,9 +1,9 @@
 package token_server
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/context"
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/token_manager"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
+	"github.com/LumiWave/baseInnoClient/context"
+	"github.com/LumiWave/baseInnoClient/token_manager"
+	"github.com/LumiWave/inno-auth/rest_server/config"
 )
 
 var gTokenServer *token_manager.Server

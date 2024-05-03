@@ -3,13 +3,13 @@ package commonapi
 import (
 	"net/http"
 
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/auth"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi/inner"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
+	"github.com/LumiWave/baseapp/base"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/config"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/auth"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/commonapi/inner"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/resultcode"
 
 	"github.com/labstack/echo"
 )

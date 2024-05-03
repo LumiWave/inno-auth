@@ -4,10 +4,10 @@ package externalapi
 import (
 	"net/http"
 
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/baseapp/base"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/commonapi"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 	"github.com/labstack/echo"
 )
 

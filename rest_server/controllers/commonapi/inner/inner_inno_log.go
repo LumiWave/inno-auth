@@ -1,9 +1,9 @@
 package inner
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/inno_log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/log_server"
+	"github.com/LumiWave/baseInnoClient/inno_log"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/log_server"
 )
 
 func PostAccountAuthLog(params *inno_log.AccountAuthLog, IsJoined bool) {

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/config"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 	"github.com/dgrijalva/jwt-go"
 )
 

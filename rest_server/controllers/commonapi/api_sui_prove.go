@@ -3,12 +3,12 @@ package commonapi
 import (
 	"net/http"
 
-	"github.com/ONBUFF-IP-TOKEN/baseInnoClient/sui_prove"
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/resultcode"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/sui_prover"
+	"github.com/LumiWave/baseInnoClient/sui_prove"
+	"github.com/LumiWave/baseapp/base"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/resultcode"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/sui_prover"
 )
 
 func PostSuiProver(ctx *context.InnoAuthContext, params *context.ReqProve) error {

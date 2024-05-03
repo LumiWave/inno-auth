@@ -3,8 +3,8 @@ package model
 import (
 	"fmt"
 
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/config"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/config"
 )
 
 func (o *DB) GetSwapEnable() (bool, error) {

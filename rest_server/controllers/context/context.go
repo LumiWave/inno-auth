@@ -1,8 +1,8 @@
 package context
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/baseapp/base"
-	"github.com/ONBUFF-IP-TOKEN/baseutil/datetime"
+	"github.com/LumiWave/baseapp/base"
+	"github.com/LumiWave/baseutil/datetime"
 )
 
 type LoginType int

@@ -3,8 +3,8 @@ package model
 import (
 	contextR "context"
 
-	"github.com/ONBUFF-IP-TOKEN/baseutil/log"
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/context"
+	"github.com/LumiWave/baseutil/log"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 	orginMssql "github.com/denisenkom/go-mssqldb"
 )
 

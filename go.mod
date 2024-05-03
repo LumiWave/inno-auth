@@ -1,11 +1,11 @@
-module github.com/ONBUFF-IP-TOKEN/inno-auth
+module github.com/LumiWave/inno-auth
 
 go 1.20
 
 require (
-	github.com/ONBUFF-IP-TOKEN/baseapp v1.0.15
-	github.com/ONBUFF-IP-TOKEN/basedb v1.1.14
-	github.com/ONBUFF-IP-TOKEN/baseutil v1.0.7
+	github.com/LumiWave/baseapp v1.0.15
+	github.com/LumiWave/basedb v1.1.14
+	github.com/LumiWave/baseutil v1.0.9
 	github.com/denisenkom/go-mssqldb v0.11.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/labstack/echo v3.3.10+incompatible
@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	github.com/ONBUFF-IP-TOKEN/basenet v1.0.7 // indirect
+	github.com/LumiWave/basenet v1.0.7 // indirect
 	github.com/couchbase/gocb v1.6.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
@@ -51,7 +51,7 @@ require (
 )
 
 require (
-	github.com/ONBUFF-IP-TOKEN/baseInnoClient v1.1.29
+	github.com/LumiWave/baseInnoClient v1.1.29
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8

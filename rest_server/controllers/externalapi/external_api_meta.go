@@ -1,7 +1,7 @@
 package externalapi
 
 import (
-	"github.com/ONBUFF-IP-TOKEN/inno-auth/rest_server/controllers/commonapi"
+	"github.com/LumiWave/inno-auth/rest_server/controllers/commonapi"
 	"github.com/labstack/echo"
 )
 
