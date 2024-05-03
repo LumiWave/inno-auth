@@ -3,17 +3,17 @@ module github.com/LumiWave/inno-auth
 go 1.20
 
 require (
-	github.com/LumiWave/baseapp v1.0.15
-	github.com/LumiWave/basedb v1.1.14
+	github.com/LumiWave/baseapp v1.0.19
+	github.com/LumiWave/basedb v1.1.22
 	github.com/LumiWave/baseutil v1.0.9
-	github.com/denisenkom/go-mssqldb v0.11.0
+	github.com/denisenkom/go-mssqldb v0.12.3
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/satori/go.uuid v1.2.0
 )
 
 require (
-	github.com/LumiWave/basenet v1.0.7 // indirect
+	github.com/LumiWave/basenet v1.0.8 // indirect
 	github.com/couchbase/gocb v1.6.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
@@ -23,7 +23,7 @@ require (
 	github.com/googollee/go-engine.io v1.0.1 // indirect
 	github.com/googollee/go-socket.io v1.0.1 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
-	github.com/labstack/gommon v0.3.0 // indirect
+	github.com/labstack/gommon v0.3.0
 	github.com/lestrrat/go-file-rotatelogs v0.0.0-20180223000712-d3151e2a480f // indirect
 	github.com/lestrrat/go-strftime v0.0.0-20180220042222-ba3bf9c1d042 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -31,12 +31,11 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible
-	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
-	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	golang.org/x/crypto v0.1.0 // indirect
+	golang.org/x/crypto v0.1.0
 	golang.org/x/net v0.4.0 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.8.0 // indirect
@@ -51,7 +50,7 @@ require (
 )
 
 require (
-	github.com/LumiWave/baseInnoClient v1.1.29
+	github.com/LumiWave/baseInnoClient v1.2.0
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
@@ -63,6 +62,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.4 // indirect
 	github.com/go-redsync/redsync/v4 v4.4.2 // indirect
+	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
