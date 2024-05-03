@@ -55,8 +55,8 @@ config: init
 	cp etc/conf/config.$(env).yml $(output)/config.yml
 	cp etc/conf/$(server_int_api) $(output)/$(server_int_api)
 	cp etc/conf/$(server_ext_api) $(output)/$(server_ext_api)
-	cp etc/onbuffcerti.crt bin/onbuffcerti.crt
-	cp etc/onbuffcerti.key bin/onbuffcerti.key
+	cp etc/lumiwavecerti.crt bin/lumiwavecerti.crt
+	cp etc/lumiwavecerti.key bin/lumiwavecerti.key
 	cp etc/IP2LOCATION-LITE-DB1.BIN bin/IP2LOCATION-LITE-DB1.BIN
 	
 docs: init
