@@ -119,9 +119,9 @@ func PostWebAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool)
 	//5-1. 기존에 발급된 토큰이 있는지 확인
 	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUID(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
 		// zklogin 용 salt 생성 (salt 요청에 시간 소요가 필요하기 때문에 redis에 없을때마 생성하도록 한다.)
-		salt := getSalt(payload.IDToken)
-		payload.Salt = salt
-		resAccountWeb.Salt = salt
+		//salt := getSalt(payload.IDToken)
+		//payload.Salt = salt
+		//resAccountWeb.Salt = salt
 
 		// 5-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
 		if jwtInfoValue, err := auth.GetIAuth().MakeWebToken(payload); err != nil {
