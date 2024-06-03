@@ -25,7 +25,7 @@ func PostSuiProver(ctx *context.InnoAuthContext, params *context.ReqProve) error
 	}
 
 	if res, err := sui_prover.GetInstance().PostProver(req); err != nil {
-		log.Errorf("GetNFTOwned err : %v", err)
+		log.Errorf("PostProver err : %v", err)
 		resp.SetReturn(resultcode.ResultInternalServerError)
 	} else {
 		if len(res.Message) > 0 {
