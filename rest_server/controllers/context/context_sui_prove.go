@@ -24,3 +24,22 @@ type ResProve struct {
 	} `json:"issBase64Details"`
 	HeaderBase64 string `json:"headerBase64"`
 }
+
+type ReqProveNonce struct {
+	EphemeralPublicKey string `json:"ephemeralPublicKey"`
+}
+
+type ResProveNonce struct {
+	Name        string `json:"name"`
+	Message     string `json:"message"`
+	ProofPoints struct {
+		A []string   `json:"a"`
+		B [][]string `json:"b"`
+		C []string   `json:"c"`
+	} `json:"proofPoints"`
+	IssBase64Details struct {
+		Value     string `json:"value"`
+		IndexMod4 int64  `json:"indexMod4"`
+	} `json:"issBase64Details"`
+	HeaderBase64 string `json:"headerBase64"`
+}

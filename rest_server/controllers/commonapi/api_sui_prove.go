@@ -11,6 +11,7 @@ import (
 	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 	"github.com/LumiWave/inno-auth/rest_server/controllers/resultcode"
 	"github.com/LumiWave/inno-auth/rest_server/controllers/sui_enoki_server"
+	"github.com/labstack/echo"
 )
 
 func PostSuiProver(ctx *context.InnoAuthContext, params *context.ReqProve) error {
@@ -55,4 +56,26 @@ func PostSuiProver(ctx *context.InnoAuthContext, params *context.ReqProve) error
 		resp.Value = respEnoki
 	}
 	return ctx.EchoContext.JSON(http.StatusOK, resp)
+}
+
+func PostSuiProverNonce(c echo.Context, params *context.ReqProveNonce) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	req := &sui_enoki.ReqzkLoginNonce{
+		Network:            config.GetInstance().SuiEnoki.Network,
+		EphemeralPublicKey: params.EphemeralPublicKey,
+	}
+	respEnoki, errEnoki, err := sui_enoki_server.GetInstance().PostZkloginNonce(req)
+	if err != nil {
+		log.Errorf("PostZkloginNonce err : %v", err)
+		resp.SetReturn(resultcode.ResultInternalServerError)
+	} else if errEnoki != nil {
+		temp, _ := json.Marshal(errEnoki)
+		log.Errorf("PostZkloginNonce errEnoki : %v", string(temp))
+		resp.SetReturn(resultcode.Result_Auth_SuiEnoki_ZKP_Error)
+	} else {
+		resp.Value = respEnoki
+	}
+	return c.JSON(http.StatusOK, resp)
 }
