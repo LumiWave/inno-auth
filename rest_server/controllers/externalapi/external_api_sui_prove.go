@@ -19,3 +19,14 @@ func (o *ExternalAPI) PostSuiProver(c echo.Context) error {
 
 	return commonapi.PostSuiProver(ctx, params)
 }
+
+func (o *ExternalAPI) PostSuiProverNonce(c echo.Context) error {
+	params := new(context.ReqProveNonce)
+
+	if err := c.Bind(params); err != nil {
+		log.Error(err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+
+	return commonapi.PostSuiProverNonce(c, params)
+}
