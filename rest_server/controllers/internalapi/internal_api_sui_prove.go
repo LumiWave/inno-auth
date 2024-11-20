@@ -1,4 +1,4 @@
-package externalapi
+package internalapi
 
 import (
 	"github.com/LumiWave/baseapp/base"
@@ -8,19 +8,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func (o *ExternalAPI) PostSuiProver(c echo.Context) error {
-	ctx := base.GetContext(c).(*context.InnoAuthContext)
-	params := new(context.ReqProve)
-
-	if err := ctx.EchoContext.Bind(params); err != nil {
-		log.Error(err)
-		return base.BaseJSONInternalServerError(c, err)
-	}
-
-	return commonapi.PostSuiProver(ctx, params)
-}
-
-func (o *ExternalAPI) PostSuiProverNonce(c echo.Context) error {
+func (o *InternalAPI) PostSuiProverNonce(c echo.Context) error {
 	params := new(context.ReqProveNonce)
 
 	if err := c.Bind(params); err != nil {

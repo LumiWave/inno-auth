@@ -185,6 +185,10 @@ func PostWebAccountInfo(c echo.Context, params *context.ReqAccountInfo) error {
 func getSalt(idToken string) string {
 	retSalt := ""
 
+	if len(idToken) == 0 {
+		return retSalt
+	}
+
 	// 자체 salt 계산 사용시
 	// salt, err := auth.GetIAuth().MakeSalt(idToken)
 	// if err == nil {
