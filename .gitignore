@@ -21,3 +21,4 @@ etc/lumiwavecerti.crt
 etc/lumiwavecerti.key
 etc/conf/
 etc/IP2LOCATION-LITE-DB1.BIN
+rest_server/__debug_bin
