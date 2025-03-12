@@ -89,6 +89,66 @@ func (o *IAuth) MakeWebToken(payload *context.Payload) (*context.JwtInfo, error)
 	return jwtInfo, err
 }
 
+// zkloing 정보 제거하고 redis 에 저장 하지 않는 용도
+func (o *IAuth) MakeWebTokenForApp(payload *context.Payload) (*context.JwtInfo, error) {
+	// Select ExpiryPeriod (App or Web)
+	accessExpiryPeriod, refreshExpiryPeriod := context.GetTokenExpiryperiod(payload.LoginType)
+
+	jwtInfo := &context.JwtInfo{
+		AccessUuid:  uuid.NewV4().String(),
+		RefreshUuid: uuid.NewV4().String(),
+
+		AtExpireDt: func() int64 {
+			if payload.SocialType == SocialType_Inno {
+				return time.Now().Add(time.Duration(365 * 24 * time.Hour)).UnixMilli()
+			}
+			return time.Now().Add(time.Duration(accessExpiryPeriod)).UnixMilli()
+		}(),
+		RtExpireDt: func() int64 {
+			if payload.SocialType == SocialType_Inno {
+				return time.Now().Add(time.Duration(365 * 24 * time.Hour)).UnixMilli()
+			}
+			return time.Now().Add(time.Duration(refreshExpiryPeriod)).UnixMilli()
+		}(),
+	}
+
+	//create access token
+	atClaims := jwt.MapClaims{}
+	atClaims["access_uuid"] = jwtInfo.AccessUuid
+	atClaims["login_type"] = payload.LoginType
+	atClaims["inno_uid"] = payload.InnoUID
+	atClaims["au_id"] = payload.AUID
+	atClaims["social_type"] = payload.SocialType
+	atClaims["exp"] = jwtInfo.AtExpireDt
+
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+
+	accessToken, err := at.SignedString([]byte(o.conf.AccessSecretKey))
+	if err != nil {
+		return nil, err
+	}
+
+	jwtInfo.AccessToken = accessToken
+
+	//create refresh token
+	rtClaims := jwt.MapClaims{}
+	rtClaims["refresh_uuid"] = jwtInfo.RefreshUuid
+	rtClaims["login_type"] = payload.LoginType
+	rtClaims["inno_uid"] = payload.InnoUID
+	rtClaims["au_id"] = payload.AUID
+	rtClaims["social_type"] = payload.SocialType
+	rtClaims["exp"] = jwtInfo.RtExpireDt
+
+	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, rtClaims)
+	refreshToken, err := rt.SignedString([]byte(o.conf.RefreshSecretKey))
+	if err != nil {
+		return nil, err
+	}
+	jwtInfo.RefreshToken = refreshToken
+
+	return jwtInfo, err
+}
+
 func (o *IAuth) DeleteInnoUIDRedis(loginType context.LoginType, tokenType context.TokenType, innoUID string) error {
 	// Redis에 AccessToken 정보 삭제
 	if err := o.DeleteJwtInfoByInnoUID(loginType, context.AccessT, innoUID); err != nil {

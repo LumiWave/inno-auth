@@ -76,4 +76,12 @@ type ResAccountWeb struct {
 	IsMigrated bool   `json:"is_migrated" validate:"required"`
 }
 
+type ResAccountWebForOnce struct {
+	InnoUID    string `json:"inno_uid" validate:"required"`
+	IsJoined   bool   `json:"is_joined" validate:"required"`
+	AUID       int64  `json:"au_id" validate:"required"`
+	SocialType int64  `json:"social_type" validate:"required"`
+	IsMigrated bool   `json:"is_migrated" validate:"required"`
+}
+
 ////////////////////////////////////////////

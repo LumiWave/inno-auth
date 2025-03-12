@@ -36,3 +36,27 @@ func (o *DB) AuthAccounts(account *context.ReqAccountWeb) (*context.ResAccountWe
 
 	return resp, err
 }
+
+func (o *DB) AuthAccountsForOnce(account *context.ReqAccountWeb) (*context.ResAccountWebForOnce, error) {
+	resp := new(context.ResAccountWebForOnce)
+	var returnValue orginMssql.ReturnStatus
+	rows, err := o.MssqlAccountAll.QueryContext(contextR.Background(), USPAU_Auth_Accounts,
+		sql.Named("InnoUID", account.InnoUID),
+		sql.Named("SocialID", account.SocialID),
+		sql.Named("SocialType", account.SocialType),
+		sql.Named("EA", account.EA),
+		sql.Named("IsJoined", sql.Out{Dest: &resp.IsJoined}),
+		sql.Named("AUID", sql.Out{Dest: &resp.AUID}),
+		sql.Named("IsMigrated", sql.Out{Dest: &resp.IsMigrated}),
+		&returnValue)
+
+	if rows != nil {
+		defer rows.Close()
+	}
+
+	if returnValue != 1 {
+		return nil, err
+	}
+
+	return resp, err
+}
