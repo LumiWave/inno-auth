@@ -18,9 +18,8 @@ import (
 	"github.com/labstack/echo"
 )
 
-// Web 계정 로그인/가입 으로 정상 가입을 해야하는데 단순 inno id를 추출하고 플랫폼에 가입만 하는 용도로 사용된다.
-// zklogin 정보도 추출하지 않고 캐시에 기록도 하지 않는다.
-func PostWebAccountLoginOnce(c echo.Context, params *context.AccountWeb, isExt bool) error {
+// Web 계정 로그인/가입
+func PostGameAccountLogin(c echo.Context, params *context.AccountWeb, isExt bool) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 	conf := config.GetInstance()
@@ -58,7 +57,7 @@ func PostWebAccountLoginOnce(c echo.Context, params *context.AccountWeb, isExt b
 	}
 
 	payload := &context.Payload{
-		LoginType:  context.WebAccountLogin,
+		LoginType:  context.GameAccountLogin,
 		SocialType: params.SocialType,
 		InnoUID: inno.AESEncrypt(inno.MakeInnoID(userID, params.SocialType),
 			[]byte(conf.Secret.Key),
@@ -87,7 +86,7 @@ func PostWebAccountLoginOnce(c echo.Context, params *context.AccountWeb, isExt b
 	}
 
 	// 2. 웹 로그인/가입
-	resAccountWeb, err := model.GetDB().AuthAccountsForOnce(reqAccountWeb)
+	resAccountWeb, err := model.GetDB().AuthAccounts(reqAccountWeb)
 	if err != nil {
 		log.Errorf("%v", err)
 		resp.SetReturn(resultcode.Result_DBError)
@@ -113,7 +112,63 @@ func PostWebAccountLoginOnce(c echo.Context, params *context.AccountWeb, isExt b
 		CountryCode: countryCode,
 	}, resAccountWeb.IsJoined)
 
+	// 5. Access, Refresh 토큰 생성
+	//5-1. 기존에 발급된 토큰이 있는지 확인
+	if oldJwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUIDGame(payload.LoginType, context.AccessT, payload.InnoUID); err != nil || oldJwtInfo == nil {
+		// 5-2. 기존에 발급된 토큰이 없다면 토큰을 발급한다. (Redis 확인)
+		if jwtInfoValue, err := auth.GetIAuth().MakeGameToken(payload); err != nil {
+			log.Errorf("%v", err)
+			resp.SetReturn(resultcode.Result_Auth_MakeTokenError)
+			return c.JSON(http.StatusOK, resp)
+		} else {
+			// 5-3. 새로 발급된 토큰으로 응답
+			resAccountWeb.JwtInfo = *jwtInfoValue
+		}
+	} else {
+		// 5-2. 기존 발급된 토큰으로 응답
+		resAccountWeb.JwtInfo = *oldJwtInfo
+	}
+
 	resp.Value = *resAccountWeb
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+// Web 계정 로그아웃
+func DelGameAccountLogout(c echo.Context) error {
+	ctx := base.GetContext(c).(*context.InnoAuthContext)
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	// Check if the token has expired
+	if _, err := auth.GetIAuth().GetJwtInfoByInnoUIDGame(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+	} else {
+		// Delete the innoUID in Redis.
+		if err := auth.GetIAuth().DeleteInnoUIDRedisGame(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
+			resp.SetReturn(resultcode.Result_RedisError)
+		}
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+// Web 계정 로그인 정보 확인
+func PostGameAccountInfo(c echo.Context, params *context.ReqAccountInfo) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	if jwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUIDGame(context.GameAccountLogin, context.AccessT, params.InnoUID); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+	} else {
+		respWebAccountInfo := &context.ResWebAccountInfo{
+			JwtInfo:    *jwtInfo,
+			InnoUID:    params.InnoUID,
+			AUID:       params.AUID,
+			SocialType: params.SocialType,
+		}
+		resp.Value = *respWebAccountInfo
+	}
 
 	return c.JSON(http.StatusOK, resp)
 }

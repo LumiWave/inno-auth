@@ -45,6 +45,14 @@ func GetTokenVerify(c echo.Context) error {
 			ctx.Payload.ZkLogin = jwtInfo.ZkLogin
 			resp.Value = ctx.Payload
 		}
+	case context.GameAccountLogin:
+		if jwtInfo, err := auth.GetIAuth().GetJwtInfoByInnoUIDGame(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
+			resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+		} else {
+			// accesstoken의 payload에는 zklogin 관련 정보는 없기 때문에 redis에서 load해서 응답해준다.
+			ctx.Payload.ZkLogin = jwtInfo.ZkLogin
+			resp.Value = ctx.Payload
+		}
 	}
 
 	return c.JSON(http.StatusOK, resp)
@@ -72,6 +80,13 @@ func PostTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenReque
 		case context.WebAccountLogin:
 			// 3. Web 토큰 재발급/갱신
 			if newJwtInfo, resultCode := auth.GetIAuth().WebTokenRenew(payload); resultCode != 0 {
+				resp.SetReturn(resultCode)
+			} else {
+				resp.Value = newJwtInfo
+			}
+		case context.GameAccountLogin:
+			// 3. Web 토큰 재발급/갱신
+			if newJwtInfo, resultCode := auth.GetIAuth().GameTokenRenew(payload); resultCode != 0 {
 				resp.SetReturn(resultCode)
 			} else {
 				resp.Value = newJwtInfo

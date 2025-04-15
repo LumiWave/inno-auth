@@ -14,14 +14,16 @@ const (
 	AppAccountLogin
 	WebAccountLogin
 	CustomerLogin
+	GameAccountLogin
 )
 
 var LoginTypeText = map[LoginType]string{
-	CpLogin:         "CP",
-	AppLogin:        "APP",
-	AppAccountLogin: "APPACCOUNT",
-	WebAccountLogin: "WEBACCOUNT",
-	CustomerLogin:   "CUSTOMER",
+	CpLogin:          "CP",
+	AppLogin:         "APP",
+	AppAccountLogin:  "APPACCOUNT",
+	WebAccountLogin:  "WEBACCOUNT",
+	CustomerLogin:    "CUSTOMER",
+	GameAccountLogin: "GAMEACCOUNT",
 }
 
 // sui zklogin 용
