@@ -80,7 +80,7 @@ var ResultCodeText = map[int]string{
 	Result_Auth_Invalid_Customer_AccountID:  "Invalid Access Infomation",
 	Result_Auth_EmptyIDToken:                "Empty Account id_token",
 	Result_SUI_Prove:                        "sui prove error",
-	Result_Auth_Service_Unavaliable:         "Service Unavaliable",
+	Result_Auth_Service_Unavaliable:         "Not available because of the large amount of service.",
 
 	Result_Auth_MakeTokenError: "Make Token Error",
 
