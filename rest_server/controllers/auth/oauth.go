@@ -7,6 +7,7 @@ const (
 	SocialType_Facebook = 2
 	SocialType_Inno     = 3
 	SocialType_LINE     = 4
+	SocialType_Telegram = 5
 )
 
 type SocialAuth interface {
@@ -17,7 +18,8 @@ type SocialAuth interface {
 func CheckValidateExternal(socialType int64) bool {
 	if socialType == SocialType_Google ||
 		socialType == SocialType_Facebook ||
-		socialType == SocialType_LINE {
+		socialType == SocialType_LINE ||
+		socialType == SocialType_Telegram {
 		return true
 	}
 	return false
@@ -49,6 +51,11 @@ func MakeSocialAuths(iAuth *IAuth) {
 			socialAuths[social.SocialType] = &isocial
 		case social.SocialType == SocialType_LINE:
 			isocial := OauthLine{
+				SocialType: social.SocialType,
+			}
+			socialAuths[social.SocialType] = &isocial
+		case social.SocialType == SocialType_Telegram:
+			isocial := OauthTelegram{
 				SocialType: social.SocialType,
 			}
 			socialAuths[social.SocialType] = &isocial

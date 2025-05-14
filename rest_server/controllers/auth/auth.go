@@ -90,7 +90,7 @@ func (o *IAuth) ParseClaimsToPayload(loginType context.LoginType, tokenType cont
 			LoginType: context.LoginType(int(claims["login_type"].(float64))),
 			Uuid:      fmt.Sprintf("%v", claims[claimsType]),
 		}
-	case context.WebAccountLogin, context.GameAccountLogin:
+	case context.WebAccountLogin:
 		payload = &context.Payload{
 			LoginType:  context.LoginType(int(claims["login_type"].(float64))),
 			InnoUID:    fmt.Sprintf("%v", claims["inno_uid"]),

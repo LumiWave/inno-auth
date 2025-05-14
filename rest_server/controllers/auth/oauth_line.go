@@ -12,9 +12,6 @@ const (
 )
 
 type LineUser struct {
-	// EA     string `json:"email"`
-	// UserID string `json:"sub"`
-
 	Scope     string `json:"scope"`
 	ClientID  string `json:"client_id"`
 	ExpiresIn int64  `json:"expires_in"`

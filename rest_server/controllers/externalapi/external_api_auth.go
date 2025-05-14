@@ -21,3 +21,17 @@ func (o *ExternalAPI) PostTokenRenew(c echo.Context) error {
 	}
 	return commonapi.PostTokenRenew(c, renewTokenRequest)
 }
+
+func (o *ExternalAPI) PostIPAccessAllow(c echo.Context) error {
+	reqIpCheck := new(context.ReqIPCheck)
+	// Request json 파싱
+	if err := c.Bind(reqIpCheck); err != nil {
+		log.Errorf("%v", err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+	return commonapi.PostIPAccessAllow(c, reqIpCheck)
+}
+
+func (o *ExternalAPI) GetPermissionAvailable(c echo.Context) error {
+	return commonapi.GetPermissionAvailable(c)
+}

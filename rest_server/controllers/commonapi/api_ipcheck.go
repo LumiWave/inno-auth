@@ -5,6 +5,7 @@ import (
 
 	"github.com/LumiWave/baseapp/base"
 	"github.com/LumiWave/baseutil/ip"
+	"github.com/LumiWave/baseutil/log"
 	"github.com/LumiWave/inno-auth/rest_server/config"
 	"github.com/LumiWave/inno-auth/rest_server/controllers/context"
 	"github.com/LumiWave/inno-auth/rest_server/controllers/resultcode"
@@ -41,6 +42,30 @@ func PostIPAccessAllow(c echo.Context, params *context.ReqIPCheck) error {
 		}
 
 		resp.Value = respIpCheck
+	}
+
+	return c.JSON(http.StatusOK, resp)
+}
+
+func GetPermissionAvailable(c echo.Context) error {
+	resp := new(base.BaseResponse)
+	resp.Success()
+
+	remoteIP := c.RealIP()
+	log.Debugf("real ip:%v", remoteIP)
+
+	// check white list
+	if access := CheckWhiteList(remoteIP); access {
+		return c.JSON(http.StatusOK, resp)
+	}
+
+	if country, err := ip.GetCountryByIp(remoteIP, config.GetInstance().AccessCountry.LocationFilePath); err != nil {
+		resp.SetReturn(resultcode.Result_Auth_Invalid_IPAddress)
+	} else {
+		// swap 가능 상태 체크
+		if !CheckAllowAccess(country, config.GetInstance().AccessCountry.DisallowedCountries) {
+			resp.SetReturn(resultcode.Result_Auth_Service_Unavaliable)
+		}
 	}
 
 	return c.JSON(http.StatusOK, resp)
