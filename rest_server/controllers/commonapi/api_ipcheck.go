@@ -51,7 +51,7 @@ func GetPermissionAvailable(c echo.Context, params *context.ReqPermissionAvailab
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	remoteIP := params.Ip
+	remoteIP := c.RealIP()
 	log.Debugf("real ip:%v", remoteIP)
 
 	if len(remoteIP) == 0 {
