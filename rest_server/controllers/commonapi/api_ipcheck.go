@@ -54,13 +54,18 @@ func GetPermissionAvailable(c echo.Context, params *context.ReqPermissionAvailab
 	remoteIP := params.Ip
 	log.Debugf("real ip:%v", remoteIP)
 
+	if len(remoteIP) == 0 {
+		resp.SetReturn(resultcode.Result_Auth_Service_Unavaliable)
+		return c.JSON(http.StatusOK, resp)
+	}
+
 	// check white list
 	if access := CheckWhiteList(remoteIP); access {
 		return c.JSON(http.StatusOK, resp)
 	}
 
 	if country, err := ip.GetCountryByIp(remoteIP, config.GetInstance().AccessCountry.LocationFilePath); err != nil {
-		resp.SetReturn(resultcode.Result_Auth_Invalid_IPAddress)
+		resp.SetReturn(resultcode.Result_Auth_Service_Unavaliable)
 	} else {
 		// swap 가능 상태 체크
 		if !CheckAllowAccess(country, config.GetInstance().AccessCountry.DisallowedCountries) {
