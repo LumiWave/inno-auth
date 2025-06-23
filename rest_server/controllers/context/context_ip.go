@@ -22,5 +22,5 @@ func (o *ReqSwapEnable) CheckValidate() *base.BaseResponse {
 }
 
 type ReqPermissionAvailable struct {
-	Ip string `url:"ip"`
+	Ip string `json:"ip" url:"ip"`
 }
