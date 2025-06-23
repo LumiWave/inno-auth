@@ -43,9 +43,5 @@ func (o *ExternalAPI) GetPermissionAvailable(c echo.Context) error {
 
 func (o *ExternalAPI) PostPermissionAvailable(c echo.Context) error {
 	reqPA := new(context.ReqPermissionAvailable)
-	if err := c.Bind(reqPA); err != nil {
-		log.Errorf("%v", err)
-		return base.BaseJSONInternalServerError(c, err)
-	}
 	return commonapi.GetPermissionAvailable(c, reqPA)
 }
