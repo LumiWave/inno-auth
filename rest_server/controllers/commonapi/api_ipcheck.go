@@ -47,11 +47,11 @@ func PostIPAccessAllow(c echo.Context, params *context.ReqIPCheck) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-func GetPermissionAvailable(c echo.Context) error {
+func GetPermissionAvailable(c echo.Context, params *context.ReqPermissionAvailable) error {
 	resp := new(base.BaseResponse)
 	resp.Success()
 
-	remoteIP := c.RealIP()
+	remoteIP := params.Ip
 	log.Debugf("real ip:%v", remoteIP)
 
 	// check white list

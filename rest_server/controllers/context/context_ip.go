@@ -20,3 +20,7 @@ type ReqSwapEnable struct {
 func (o *ReqSwapEnable) CheckValidate() *base.BaseResponse {
 	return nil
 }
+
+type ReqPermissionAvailable struct {
+	Ip string `url:"ip"`
+}

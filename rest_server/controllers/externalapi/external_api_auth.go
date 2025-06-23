@@ -33,5 +33,11 @@ func (o *ExternalAPI) PostIPAccessAllow(c echo.Context) error {
 }
 
 func (o *ExternalAPI) GetPermissionAvailable(c echo.Context) error {
-	return commonapi.GetPermissionAvailable(c)
+
+	reqPA := new(context.ReqPermissionAvailable)
+	if err := c.Bind(reqPA); err != nil {
+		log.Errorf("%v", err)
+		return base.BaseJSONInternalServerError(c, err)
+	}
+	return commonapi.GetPermissionAvailable(c, reqPA)
 }
