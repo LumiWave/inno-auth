@@ -46,7 +46,8 @@ func PostSuiProver(ctx *context.InnoAuthContext, params *context.ReqProve) error
 	}
 	respEnoki, errEnoki, err := sui_enoki_server.GetInstance().PostZkloginZkp(req, params.Jwt)
 	if err != nil {
-		log.Errorf("PostZkloginZkp err : %v", err)
+		temp, _ := json.Marshal(req)
+		log.Errorf("PostZkloginZkp err : %v, %v, jwt:%v", err, string(temp), params.Jwt)
 		resp.SetReturn(resultcode.ResultInternalServerError)
 	} else if errEnoki != nil {
 		temp, _ := json.Marshal(errEnoki)
