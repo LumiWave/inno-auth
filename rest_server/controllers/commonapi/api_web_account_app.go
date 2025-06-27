@@ -49,6 +49,11 @@ func PostWebAccountLoginOnce(c echo.Context, params *context.AccountWeb, isExt b
 		}
 	}
 
+	if params.SocialType == auth.SocialType_Facebook {
+		resp.SetReturn(resultcode.Result_SystemCheck)
+		return c.JSON(http.StatusOK, resp)
+	}
+
 	// 1. 소셜 정보 검증
 	userID, ea, err := auth.GetIAuth().SocialAuths[params.SocialType].VerifySocialKey(params.SocialKey)
 	if err != nil || len(userID) == 0 {
