@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"time"
 
 	"github.com/LumiWave/baseutil/log"
 	"github.com/MicahParks/keyfunc"
@@ -46,7 +47,10 @@ func getAppleJWKsVerify(socialKey string, appleUser *AppleUser) error {
 	}
 
 	// 토큰 파싱 및 서명 검증
-	token, err := jwt.Parse(socialKey, jwks.Keyfunc)
+	// iat(발급시각)는 Apple↔서버 clock skew 때문에 "Token used before issued" 오탐이 나므로
+	// 기본 claims 검증(iat/exp/nbf)을 끄고 서명만 검증한 뒤, exp 는 아래에서 수동으로 확인한다.
+	parser := jwt.NewParser(jwt.WithoutClaimsValidation())
+	token, err := parser.Parse(socialKey, jwks.Keyfunc)
 	if err != nil || !token.Valid {
 		log.Errorf("apple not invalid token err : %v", err)
 		if err == nil {
@@ -60,6 +64,12 @@ func getAppleJWKsVerify(socialKey string, appleUser *AppleUser) error {
 	if !ok {
 		log.Errorf("apple token.Claims fail")
 		return errors.New("apple token claims parse fail")
+	}
+
+	// exp(만료)만 수동 검증 — iat 는 clock skew 로 스킵
+	if !claims.VerifyExpiresAt(time.Now().Unix(), true) {
+		log.Errorf("apple token expired")
+		return errors.New("apple token expired")
 	}
 
 	// sub : Apple 고유 사용자 식별자
