@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/LumiWave/baseapp v1.0.19
-	github.com/LumiWave/basedb v1.1.22
+	github.com/LumiWave/basedb v1.3.0-rc.5
 	github.com/LumiWave/baseutil v1.0.9
 	github.com/denisenkom/go-mssqldb v0.12.3
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -35,11 +35,11 @@ require (
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	golang.org/x/crypto v0.1.0
-	golang.org/x/net v0.4.0 // indirect
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/crypto v0.17.0
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sync v0.1.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/couchbase/gocbcore.v7 v7.1.18 // indirect
 	gopkg.in/couchbaselabs/gocbconnstr.v1 v1.0.4 // indirect
@@ -69,6 +69,9 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
 	github.com/ip2location/ip2location-go/v9 v9.2.0 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
+	github.com/jackc/pgx/v5 v5.5.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.6 // indirect
 	github.com/tklauser/numcpus v0.2.2 // indirect
 	google.golang.org/protobuf v1.26.0 // indirect
