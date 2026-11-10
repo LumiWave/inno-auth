@@ -55,6 +55,7 @@ func MakeSocialAuths(iAuth *IAuth) {
 		case social.SocialType == SocialType_LINE:
 			isocial := OauthLine{
 				SocialType: social.SocialType,
+				ChannelID:  iAuth.conf.LineChannelID,
 			}
 			socialAuths[social.SocialType] = &isocial
 		case social.SocialType == SocialType_Telegram:

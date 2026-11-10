@@ -30,6 +30,7 @@ type ApiAuth struct {
 	WebRefreshTokenExpiryPeriod      int64  `yaml:"web_refresh_token_expiry_period"`
 	SignExpiryPeriod                 int64  `yaml:"sign_expiry_period"`
 	AesKey                           string `yaml:"aes_key"`
+	LineChannelID                    string `yaml:"line_channel_id"` // inno-game 과 같은 LINE 채널 ID (ID 토큰 aud)
 }
 
 type AccessCountryInfo struct {
