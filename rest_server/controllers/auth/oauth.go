@@ -16,11 +16,12 @@ type SocialAuth interface {
 	VerifySocialKey(string) (string, string, error)
 }
 
+// Telegram 은 차단: oauth_telegram.go 가 봇 토큰 없이(빈 문자열) 서명을 검증해 누구나 로그인 값을 위조할 수 있음.
+// 봇 토큰 검증 + auth_date 만료 검사를 고치기 전에는 다시 넣지 말 것.
 func CheckValidateExternal(socialType int64) bool {
 	if socialType == SocialType_Google ||
 		socialType == SocialType_Facebook ||
 		socialType == SocialType_LINE ||
-		socialType == SocialType_Telegram ||
 		socialType == SocialType_Apple {
 		return true
 	}
