@@ -45,6 +45,9 @@ func GetTokenVerify(c echo.Context) error {
 			ctx.Payload.ZkLogin = jwtInfo.ZkLogin
 			resp.Value = ctx.Payload
 		}
+	default:
+		// 앱도 웹 회원도 아닌 토큰에 성공과 빈 값을 돌려주면, 받는 서버가 AUID 0 인 신원으로 요청을 진행한다.
+		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
 	}
 
 	return c.JSON(http.StatusOK, resp)
@@ -61,6 +64,12 @@ func PostTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenReque
 		// 2. Payload를 생성
 		payload := auth.GetIAuth().ParseClaimsToPayload(loginType, context.RefreshT, rtClaims)
 
+		// 서명만 맞는 위조 refresh 토큰으로 남의 세션을 재발급받지 못하도록, 보관 중인 토큰과 대조한다.
+		if err := auth.GetIAuth().CheckSession(loginType, context.RefreshT, payload.Uuid, payload.InnoUID, refreshTokenRequest.RefreshToken); err != nil {
+			resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+			return c.JSON(http.StatusOK, resp)
+		}
+
 		switch loginType {
 		case context.AppLogin:
 			// 3. App 토큰 재발급/갱신
@@ -76,6 +85,8 @@ func PostTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTokenReque
 			} else {
 				resp.Value = newJwtInfo
 			}
+		default:
+			resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
 		}
 
 	}

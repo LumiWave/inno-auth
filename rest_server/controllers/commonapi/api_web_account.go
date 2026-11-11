@@ -156,6 +156,10 @@ func DelWebAccountLogout(c echo.Context) error {
 		if err := auth.GetIAuth().DeleteInnoUIDRedis(ctx.Payload.LoginType, context.AccessT, ctx.Payload.InnoUID); err != nil {
 			resp.SetReturn(resultcode.Result_RedisError)
 		}
+		// 갱신 전에 발급했던 토큰도 같이 무효로 만든다.
+		if err := model.GetDB().DeletePrevTokens(ctx.Payload.LoginType, ctx.Payload.InnoUID); err != nil {
+			log.Errorf("DeletePrevTokens err : %v", err)
+		}
 	}
 
 	return c.JSON(http.StatusOK, resp)

@@ -32,6 +32,13 @@ func PostAppAccountLogin(c echo.Context, params *context.Account) error {
 		}
 	}
 
+	// 0-1. 게임 서버용 API 이므로 앱 로그인 토큰만 받는다.
+	// 회원 토큰으로 부르면 토큰의 app_id 가 0 인 채로 아무 회원의 정보를 받아 갈 수 있다.
+	if payload := base.GetContext(c).(*context.InnoAuthContext).Payload; payload == nil || payload.LoginType != context.AppLogin || payload.AppID == 0 {
+		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
+		return c.JSON(http.StatusOK, resp)
+	}
+
 	// 1. InnoUID 검증
 	if isExists, isBlocked, err := model.GetDB().VerfiyAccounts(params.InnoUID); !isExists || isBlocked || err != nil {
 		if !isExists {

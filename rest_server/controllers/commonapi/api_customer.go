@@ -93,9 +93,18 @@ func PostCustomerTokenRenew(c echo.Context, refreshTokenRequest *context.RenewTo
 	// 1. Refresh 토큰 유효성 검증
 	if loginType, rtClaims, err := auth.GetIAuth().VerifyRefreshToken(refreshTokenRequest.RefreshToken); err != nil {
 		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
+	} else if loginType != context.CustomerLogin {
+		// 고객 토큰이 아니면 아래 파싱에서 panic 이 나므로 먼저 거절한다.
+		resp.SetReturn(resultcode.Result_Auth_InvalidJwt)
 	} else {
 		// 2. Payload를 생성
 		payload := auth.GetIAuth().ParseClaimsToCustomerPayload(loginType, context.RefreshT, rtClaims)
+
+		// 서명만 맞는 위조 refresh 토큰으로 재발급받지 못하도록, 보관 중인 토큰과 대조한다.
+		if err := auth.GetIAuth().CheckSession(loginType, context.RefreshT, payload.Uuid, "", refreshTokenRequest.RefreshToken); err != nil {
+			resp.SetReturn(resultcode.Result_Auth_ExpiredJwt)
+			return c.JSON(http.StatusOK, resp)
+		}
 
 		// 3. Customer 토큰 재발급/갱신
 		if newJwtInfo, resultCode := auth.GetIAuth().CustomerTokenRenew(payload); resultCode != 0 {

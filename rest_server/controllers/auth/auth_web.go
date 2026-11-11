@@ -166,6 +166,10 @@ func (o *IAuth) WebTokenRenew(payload *context.Payload) (*context.JwtInfo, int) 
 	if jwtInfo, err := o.GetJwtInfoByInnoUID(payload.LoginType, context.RefreshT, payload.InnoUID); err != nil {
 		return nil, resultcode.Result_Auth_ExpiredJwt
 	} else {
+		// 0. 다른 기기가 들고 있는 갱신 전 토큰도 로그아웃 전까지는 쓸 수 있도록 해시를 보관한다.
+		if err := model.GetDB().AddPrevTokenHashes(payload.LoginType, payload.InnoUID, TokenHash(jwtInfo.AccessToken), TokenHash(jwtInfo.RefreshToken)); err != nil {
+			log.Errorf("AddPrevTokenHashes err : %v", err)
+		}
 		// 1. 기존 로그인 정보 (AccessToken, RefreshToken) 삭제
 		if err := o.DeleteInnoUIDRedis(payload.LoginType, context.RefreshT, payload.InnoUID); err != nil {
 			return nil, resultcode.Result_RedisError

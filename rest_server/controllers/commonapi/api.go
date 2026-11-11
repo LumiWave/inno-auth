@@ -1,6 +1,7 @@
 package commonapi
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/LumiWave/baseapp/base"
@@ -49,7 +50,17 @@ func PreCheck(c echo.Context) base.PreCheckResponse {
 				Response:  res,
 			}
 		}
-		loginType, atClaims, err := auth.GetIAuth().VerifyAccessToken(author[0][7:])
+		// "Bearer " 뒤에 토큰이 없으면 잘라낼 때 panic 이 나므로 길이를 먼저 확인한다.
+		if len(author) == 0 || len(author[0]) <= 7 {
+			res := base.MakeBaseResponse(resultcode.Result_Auth_InvalidJwt)
+
+			return base.PreCheckResponse{
+				IsSucceed: false,
+				Response:  res,
+			}
+		}
+		accessToken := author[0][7:]
+		loginType, atClaims, err := auth.GetIAuth().VerifyAccessToken(accessToken)
 		var payload *context.Payload
 		if err != nil {
 			// auth token 오류 리턴
@@ -62,6 +73,21 @@ func PreCheck(c echo.Context) base.PreCheckResponse {
 		} else {
 			payload = auth.GetIAuth().ParseClaimsToPayload(loginType, context.AccessT, atClaims)
 			base.GetContext(c).(*context.InnoAuthContext).SetAuthPayloadContext(payload)
+		}
+
+		// 서명이 맞아도 서버가 발급해 보관 중인 토큰이 아니면 거절한다.
+		// 서명키만으로 만든 위조 토큰, 로그아웃된 토큰, 발급한 적 없는 로그인 종류의 토큰이 여기서 걸린다.
+		sessionUuid := payload.Uuid
+		if loginType == context.CustomerLogin {
+			sessionUuid = fmt.Sprintf("%v", atClaims["access_uuid"])
+		}
+		if err := auth.GetIAuth().CheckSession(loginType, context.AccessT, sessionUuid, payload.InnoUID, accessToken); err != nil {
+			res := base.MakeBaseResponse(resultcode.Result_Auth_ExpiredJwt)
+
+			return base.PreCheckResponse{
+				IsSucceed: false,
+				Response:  res,
+			}
 		}
 
 		if loginType == context.CustomerLogin {
